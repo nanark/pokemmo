@@ -1,0 +1,39 @@
+html {
+  -moz-osx-font-smoothing: grayscale;
+  -ms-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  box-sizing: border-box;
+  color: $grey-mineshaft;
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  word-spacing: 1px;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  position: relative;
+}
+
+h1 {
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.2em;
+}
+
+a,
+.link {
+  color: $blue-dodger;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+:focus {
+  outline: none;
+}
