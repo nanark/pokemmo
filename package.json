@@ -16,7 +16,8 @@
     "core-js": "2.5.7",
     "firebase": "^6.1.1",
     "lodash": "^4.17.11",
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.0.0",
+    "vue-native-websocket": "^2.0.13"
   },
   "devDependencies": {
     "@nuxtjs/style-resources": "^0.1.2",

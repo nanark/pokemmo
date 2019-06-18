@@ -13,6 +13,7 @@
       "autoFix": true
     }
   ],
+  "javascript.validate.enable": false,
   "eslint.autoFixOnSave": true,
   "editor.tabCompletion": "on",
   "vetur.format.defaultFormatter.js": "vscode-typescript",

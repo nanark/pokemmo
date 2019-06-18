@@ -1,66 +1,74 @@
 <template>
   <section class="container">
+    <ViewportWindow id="viewport" />
     <div>
-      <app-logo />
-      <h1 class="title">
-        pokemmo
-      </h1>
-      <h2 class="subtitle">
-        Nuxt.js project
-      </h2>
-      <div class="links">
-        <a href="https://nuxtjs.org/" target="_blank" class="button--green"
-          >Documentation</a
-        >
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-          >GitHub</a
-        >
-      </div>
+      <form action="#" @submit.prevent="sendMessage">
+        <input v-model="messageInput" /><button type="submit">
+          Send Message
+        </button>
+      </form>
+      <ul id="logs">
+        <li v-for="(log, index) in logs" :key="index" class="log">
+          {{ log.event }}: {{ log.data }}
+        </li>
+      </ul>
     </div>
   </section>
 </template>
 
 <script>
-import AppLogo from "~/components/AppLogo.vue";
+import { mapState } from "vuex";
+import ViewportWindow from "@/components/ViewportWindow";
 
 export default {
   components: {
-    AppLogo
+    ViewportWindow
+  },
+  data() {
+    return {
+      messageInput: "",
+      logs: [],
+      status: "disconnected"
+    };
+  },
+  computed: mapState({
+    socket: state => state.socket
+  }),
+  created() {
+    console.log("============================================");
+    console.log(this.$socket);
+    console.log("============================================");
+  },
+  methods: {
+    // connect() {
+    //   // $socket is [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket) instance
+    //   this.$socket.send("some data");
+    //   // or with {format: 'json'} enabled
+    //   this.$socket.send("some data");
+    // },
+    // connect() {
+    //   ws.onmessage = ({ data }) => {
+    //     this.logs.push({ event: "Received message", data });
+    //   };
+    // },
+    // disconnect() {
+    //   ws.close();
+    //   this.status = "disconnected";
+    //   this.logs = [];
+    // },
+    sendMessage() {
+      this.$store.dispatch("sendMessage", this.messageInput);
+      this.logs.push({ event: "Sent message", data: this.messageInput });
+      console.log(this.socket);
+      this.messageInput = "";
+    }
   }
 };
 </script>
 
 <style>
-.container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* 1 */
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+#viewport {
+  width: 100%;
+  height: 20vh;
 }
 </style>
