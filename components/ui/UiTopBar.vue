@@ -1,7 +1,7 @@
 <template>
   <section class="ui-top-bar">
     <div class="left">
-      <UserAvatar :user="user" size="30px" />
+      <UserAvatar :user="user" size="40px" />
     </div>
     <div class="right">
       <button @click="disconnect">{{ $t("global.disconnect") }}</button>
@@ -40,8 +40,12 @@ export default {
 
 .left {
   flex-grow: 1;
-  padding-left: 10px;
+  padding: 5px 10px;
   text-align: left;
+}
+
+.user-avatar {
+  display: block;
 }
 
 .right {
