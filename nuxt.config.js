@@ -37,11 +37,11 @@ module.exports = {
 
   // Styles
   css: [
-    "~/assets/boilerplate/normalize.css",
-    "~/assets/boilerplate/main.css",
-    "~/assets/global.scss"
+    "@/assets/boilerplate/normalize.css",
+    "@/assets/boilerplate/main.css",
+    "@/assets/global.scss"
   ],
-  plugins: [{ src: "~/plugins/websocket", ssr: false }],
+  plugins: ["@/plugins/websocket"],
   modules: ["@nuxtjs/style-resources"],
   styleResources: {
     scss: ["~/assets/partials/_index.scss"]

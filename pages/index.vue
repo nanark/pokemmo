@@ -1,18 +1,22 @@
 <template>
   <section class="container">
     <ViewportWindow id="viewport" />
-    <div>
+    <template v-if="socket.isConnected">
       <form action="#" @submit.prevent="sendMessage">
         <input v-model="messageInput" /><button type="submit">
           Send Message
         </button>
+        <div @click="disconnect">Disco</div>
       </form>
       <ul id="logs">
         <li v-for="(log, index) in logs" :key="index" class="log">
           {{ log.event }}: {{ log.data }}
         </li>
       </ul>
-    </div>
+    </template>
+    <template v-else>
+      <button @click="connect">Connect</button>
+    </template>
   </section>
 </template>
 
@@ -35,9 +39,9 @@ export default {
     socket: state => state.socket
   }),
   created() {
-    console.log("============================================");
-    console.log(this.$socket);
-    console.log("============================================");
+    console.log(this);
+    this.$options.sockets.onmessage = data =>
+      this.logs.push({ event: "Message received", data: data.data });
   },
   methods: {
     // connect() {
@@ -51,15 +55,25 @@ export default {
     //     this.logs.push({ event: "Received message", data });
     //   };
     // },
-    // disconnect() {
-    //   ws.close();
-    //   this.status = "disconnected";
-    //   this.logs = [];
-    // },
+    connect() {
+      this.$connect("ws://ws.upody.com:7070/ws?user=3", {
+        store: this.$store,
+        connectManually: true,
+        reconnection: true,
+        format: "json"
+      });
+      this.status = "connected";
+    },
+    disconnect() {
+      this.$disconnect();
+      this.status = "disconnected";
+    },
     sendMessage() {
+      // message = {
+
+      // }
       this.$store.dispatch("sendMessage", this.messageInput);
       this.logs.push({ event: "Sent message", data: this.messageInput });
-      console.log(this.socket);
       this.messageInput = "";
     }
   }
