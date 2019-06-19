@@ -73,11 +73,11 @@ export default {
 
 .container {
   background-color: rgba($black, 0.4);
-  border-radius: 8px;
+  border-radius: 3px;
   display: flex;
   flex-direction: column;
   height: 300px;
-  padding: 20px;
+  padding: 0;
   width: 400px;
 }
 
@@ -85,6 +85,15 @@ export default {
   flex-grow: 1;
   list-style-type: none;
   margin: 0;
-  padding: 0;
+  padding: 10px;
+  text-shadow: 0 0 3px rgba($black, 0.8);
+}
+
+.message-input {
+  background-color: rgba($black, 0.65);
+  border: 0;
+  border-radius: 0 0 3px 3px;
+  color: $white;
+  padding: 10px;
 }
 </style>

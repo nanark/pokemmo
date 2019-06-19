@@ -1,10 +1,10 @@
 <template>
   <section id="container">
     <template v-if="socket.isConnected">
-      <div id="topbar">
-        <button @click="disconnect">{{ $t("global.disconnect") }}</button>
-      </div>
-      <ViewportWindow id="viewport"><UiChatbox id="chatbox"/></ViewportWindow>
+      <UiTopBar @disconnect="disconnect" />
+      <ViewportWindow id="viewport">
+        <UiChatbox id="chatbox" />
+      </ViewportWindow>
     </template>
     <template v-else>
       <SignIn @signInClicked="connect" />
@@ -14,14 +14,16 @@
 
 <script>
 import { mapState } from "vuex";
-import SignIn from "@/components/SignIn";
+import SignIn from "@/components/welcome/WelcomeSignIn";
 import UiChatbox from "@/components/ui/UiChatbox";
+import UiTopBar from "@/components/ui/UiTopBar";
 import ViewportWindow from "@/components/ViewportWindow";
 
 export default {
   components: {
     SignIn,
     UiChatbox,
+    UiTopBar,
     ViewportWindow
   },
   data() {
@@ -67,15 +69,6 @@ export default {
   bottom: 10px;
   left: 10px;
   position: absolute;
-}
-
-#topbar {
-  align-items: center;
-  background-color: $black;
-  display: flex;
-  justify-content: flex-end;
-  padding: 10px;
-  width: 100%;
 }
 
 #locales {

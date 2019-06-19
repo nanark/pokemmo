@@ -1,6 +1,5 @@
 {
   "global": {
-    "connect": "Connexion",
     "disconnect": "Déconnexion"
   },
   "chatbox": {

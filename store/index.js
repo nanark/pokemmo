@@ -3,14 +3,40 @@ import Vue from "vue";
 export const state = () => ({
   locales: ["en", "fr"],
   locale: "fr",
+  user: "",
   socket: {
     isConnected: false,
     message: "",
     reconnectError: false
-  }
+  },
+  users: [
+    {
+      id: 1,
+      username: "nanark",
+      avatar:
+        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/054.png"
+    },
+    {
+      id: 2,
+      username: "jcbedier",
+      avatar:
+        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/094.png"
+    },
+    {
+      id: 3,
+      username: "Mehdi",
+      avatar:
+        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/143.png"
+    }
+  ]
 });
 
 export const mutations = {
+  SET_USER(state, userId) {
+    state.user = state.users.find(user => {
+      return user.id === userId;
+    });
+  },
   SET_LANG(state, locale) {
     if (state.locales.indexOf(locale) !== -1) {
       state.locale = locale;
@@ -40,11 +66,17 @@ export const mutations = {
 };
 
 export const actions = {
-  setLocale(context, locale) {
-    context.commit("SET_LANG", locale);
+  setUser: function(context, userId) {
+    context.commit("SET_USER", userId);
   },
-
   sendMessage: function(context, message) {
-    Vue.prototype.$socket.send(message);
+    const payload = {
+      namespace: "chat",
+      event_type: "message",
+      data: {
+        message: message
+      }
+    };
+    Vue.prototype.$socket.send(JSON.stringify(payload));
   }
 };
