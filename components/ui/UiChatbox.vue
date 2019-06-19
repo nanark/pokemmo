@@ -10,6 +10,7 @@
         <transition name="fade">
           <input
             v-if="showInput"
+            ref="input"
             v-model="messageInput"
             class="message-input"
           />
@@ -46,6 +47,7 @@ export default {
     },
     focus() {
       this.showInput = true;
+      this.$nextTick(() => this.$refs.input.focus());
     },
     blur() {
       this.showInput = false;
@@ -77,5 +79,8 @@ export default {
 
 .log {
   flex-grow: 1;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 </style>
