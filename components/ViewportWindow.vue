@@ -1,6 +1,6 @@
 <template>
   <section class="viewport-window">
-    Gameplay
+    <slot />
   </section>
 </template>
 
@@ -12,7 +12,9 @@ export default {
 
 <style lang="scss" scoped>
 .viewport-window {
-  background-color: $black;
+  background: url("/background.png");
+  background-size: cover;
   color: $white;
+  position: relative;
 }
 </style>

@@ -1,60 +1,36 @@
 <template>
-  <section class="container">
-    <ViewportWindow id="viewport" />
+  <section id="container">
     <template v-if="socket.isConnected">
-      <form action="#" @submit.prevent="sendMessage">
-        <input v-model="messageInput" /><button type="submit">
-          Send Message
-        </button>
-        <div @click="disconnect">Disco</div>
-      </form>
-      <ul id="logs">
-        <li v-for="(log, index) in logs" :key="index" class="log">
-          {{ log.event }}: {{ log.data }}
-        </li>
-      </ul>
+      <div id="topbar"><button @click="disconnect">Disconnect</button></div>
+      <ViewportWindow id="viewport"><UiChatbox id="chatbox"/></ViewportWindow>
     </template>
     <template v-else>
-      <button @click="connect">Connect</button>
+      <SignIn @signInClicked="connect" />
     </template>
   </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import SignIn from "@/components/SignIn";
+import UiChatbox from "@/components/ui/UiChatbox";
 import ViewportWindow from "@/components/ViewportWindow";
 
 export default {
   components: {
+    SignIn,
+    UiChatbox,
     ViewportWindow
   },
   data() {
     return {
-      messageInput: "",
-      logs: [],
       status: "disconnected"
     };
   },
   computed: mapState({
     socket: state => state.socket
   }),
-  created() {
-    console.log(this);
-    this.$options.sockets.onmessage = data =>
-      this.logs.push({ event: "Message received", data: data.data });
-  },
   methods: {
-    // connect() {
-    //   // $socket is [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket) instance
-    //   this.$socket.send("some data");
-    //   // or with {format: 'json'} enabled
-    //   this.$socket.send("some data");
-    // },
-    // connect() {
-    //   ws.onmessage = ({ data }) => {
-    //     this.logs.push({ event: "Received message", data });
-    //   };
-    // },
     connect() {
       this.$connect("ws://ws.upody.com:7070/ws?user=3", {
         store: this.$store,
@@ -67,22 +43,38 @@ export default {
     disconnect() {
       this.$disconnect();
       this.status = "disconnected";
-    },
-    sendMessage() {
-      // message = {
-
-      // }
-      this.$store.dispatch("sendMessage", this.messageInput);
-      this.logs.push({ event: "Sent message", data: this.messageInput });
-      this.messageInput = "";
     }
   }
 };
 </script>
 
-<style>
-#viewport {
+<style lang="scss" scoped>
+#container {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  height: 100vh;
   width: 100%;
-  height: 20vh;
+}
+
+#chatbox {
+  bottom: 10px;
+  left: 10px;
+  position: absolute;
+}
+
+#topbar {
+  align-items: center;
+  background-color: $black;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  width: 100%;
+}
+
+#viewport {
+  flex-grow: 1;
+  width: 100%;
 }
 </style>
