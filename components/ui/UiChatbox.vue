@@ -62,6 +62,7 @@ export default {
     },
     blur() {
       this.$refs.input.style.opacity = 0.2;
+      this.$nextTick(() => this.$refs.input.blur());
     }
   }
 };
