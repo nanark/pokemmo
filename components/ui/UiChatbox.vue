@@ -3,7 +3,7 @@
     <form action="#" @submit.prevent="sendMessage">
       <div class="container" @mouseover="focus" @mouseleave="blur">
         <ul v-chat-scroll="{ always: false, smooth: true }" class="log">
-          <li v-for="(log, index) in logs" :key="index">
+          <li v-for="(log, index) in logs" :key="index" :class="log.class">
             {{ log.author }}: {{ log.data }}
           </li>
         </ul>
@@ -39,6 +39,7 @@ export default {
       const dataParsed = JSON.parse(data.data);
       if (dataParsed.namespace && dataParsed.namespace === "chat") {
         this.logs.push({
+          class: "message",
           author: dataParsed.data.user.username,
           data: dataParsed.data.message
         });
@@ -49,6 +50,7 @@ export default {
     sendMessage() {
       this.$store.dispatch("chat/sendMessage", this.messageInput);
       this.logs.push({
+        class: "own",
         author: this.$t("chatbox.player_name"),
         data: this.messageInput
       });
@@ -93,6 +95,10 @@ export default {
   overflow: auto;
   padding: 10px;
   text-shadow: 0 0 3px rgba($black, 0.8);
+
+  .message {
+    color: yellow;
+  }
 }
 
 .message-input {
