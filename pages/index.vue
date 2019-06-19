@@ -32,11 +32,12 @@ export default {
     };
   },
   computed: mapState({
+    user: state => state.user,
     socket: state => state.socket
   }),
   methods: {
     connect() {
-      this.$connect("ws://ws.upody.com:7070/ws?user=3", {
+      this.$connect(`ws://ws.upody.com:7070/ws?user=${this.user.id}`, {
         store: this.$store,
         connectManually: true,
         reconnection: true,
