@@ -1,0 +1,10 @@
+{
+  "global": {
+    "connect": "Connexion",
+    "disconnect": "Déconnexion"
+  },
+  "chatbox": {
+    "placeholder": "Votre message ici",
+    "player_name": "Vous"
+  }
+}

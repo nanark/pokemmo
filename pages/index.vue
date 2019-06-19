@@ -1,7 +1,9 @@
 <template>
   <section id="container">
     <template v-if="socket.isConnected">
-      <div id="topbar"><button @click="disconnect">Disconnect</button></div>
+      <div id="topbar">
+        <button @click="disconnect">{{ $t("global.disconnect") }}</button>
+      </div>
       <ViewportWindow id="viewport"><UiChatbox id="chatbox"/></ViewportWindow>
     </template>
     <template v-else>
@@ -43,6 +45,9 @@ export default {
     disconnect() {
       this.$disconnect();
       this.status = "disconnected";
+    },
+    changeLocale(lang) {
+      this.$store.dispatch("setLocale", lang);
     }
   }
 };
@@ -71,6 +76,14 @@ export default {
   justify-content: flex-end;
   padding: 10px;
   width: 100%;
+}
+
+#locales {
+  font-size: 18px;
+
+  span {
+    cursor: pointer;
+  }
 }
 
 #viewport {

@@ -1,6 +1,8 @@
 import Vue from "vue";
 
 export const state = () => ({
+  locales: ["en", "fr"],
+  locale: "fr",
   socket: {
     isConnected: false,
     message: "",
@@ -9,6 +11,11 @@ export const state = () => ({
 });
 
 export const mutations = {
+  SET_LANG(state, locale) {
+    if (state.locales.indexOf(locale) !== -1) {
+      state.locale = locale;
+    }
+  },
   SOCKET_ONOPEN(state, event) {
     Vue.prototype.$socket = event.currentTarget;
     state.socket.isConnected = true;
@@ -33,6 +40,10 @@ export const mutations = {
 };
 
 export const actions = {
+  setLocale(context, locale) {
+    context.commit("SET_LANG", locale);
+  },
+
   sendMessage: function(context, message) {
     Vue.prototype.$socket.send(message);
   }

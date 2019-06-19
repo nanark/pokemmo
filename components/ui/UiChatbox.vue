@@ -4,7 +4,7 @@
       <div class="container" @mouseover="focus" @mouseleave="blur">
         <ul class="log">
           <li v-for="(log, index) in logs" :key="index">
-            {{ log.event }}: {{ log.data }}
+            {{ log.event }} {{ log.data }}
           </li>
         </ul>
         <transition name="fade">
@@ -13,6 +13,7 @@
             ref="input"
             v-model="messageInput"
             class="message-input"
+            :placeholder="$t(`chatbox.placeholder`)"
           />
         </transition>
       </div>
@@ -42,7 +43,10 @@ export default {
   methods: {
     sendMessage() {
       this.$store.dispatch("sendMessage", this.messageInput);
-      this.logs.push({ event: "You: ", data: this.messageInput });
+      this.logs.push({
+        event: `${this.$t("chatbox.player_name")}: `,
+        data: this.messageInput
+      });
       this.messageInput = "";
     },
     focus() {

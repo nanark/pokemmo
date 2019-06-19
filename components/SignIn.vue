@@ -1,14 +1,22 @@
 <template>
   <section class="sign-in">
     <div class="background">
-      <button @click="signIn">Connection</button>
+      <select v-model="$i18n.locale">
+        <option v-for="(lang, i) in locales" :key="`Lang${i}`" :value="lang">{{
+          lang
+        }}</option>
+      </select>
+      <button @click="signIn">{{ $t("global.connect") }}</button>
     </div>
   </section>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "SignIn",
+  computed: mapState(["locales"]),
   methods: {
     signIn() {
       this.$emit("signInClicked", true);
