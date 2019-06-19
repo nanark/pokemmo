@@ -2,14 +2,13 @@
   <section class="ui-chatbox">
     <form action="#" @submit.prevent="sendMessage">
       <div class="container" @mouseover="focus" @mouseleave="blur">
-        <ul class="log">
+        <ul v-chat-scroll="{ always: false, smooth: true }" class="log">
           <li v-for="(log, index) in logs" :key="index">
             {{ log.author }}: {{ log.data }}
           </li>
         </ul>
         <transition name="fade">
           <input
-            v-if="showInput"
             ref="input"
             v-model="messageInput"
             class="message-input"
@@ -28,7 +27,6 @@ export default {
   name: "UiChatbox",
   data() {
     return {
-      showInput: false,
       messageInput: "",
       logs: []
     };
@@ -57,11 +55,11 @@ export default {
       this.messageInput = "";
     },
     focus() {
-      this.showInput = true;
+      this.$refs.input.style.opacity = 1;
       this.$nextTick(() => this.$refs.input.focus());
     },
     blur() {
-      this.showInput = false;
+      this.$refs.input.style.opacity = 0.2;
     }
   }
 };
@@ -92,6 +90,7 @@ export default {
   flex-grow: 1;
   list-style-type: none;
   margin: 0;
+  overflow: auto;
   padding: 10px;
   text-shadow: 0 0 3px rgba($black, 0.8);
 }
@@ -101,6 +100,7 @@ export default {
   border: 0;
   border-radius: 0 0 3px 3px;
   color: $white;
+  opacity: 0.2;
   padding: 10px;
 }
 </style>

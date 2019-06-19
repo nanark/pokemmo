@@ -41,7 +41,11 @@ module.exports = {
     "@/assets/boilerplate/main.css",
     "@/assets/global.scss"
   ],
-  plugins: ["@/plugins/websocket", "@/plugins/i18n"],
+  plugins: [
+    "@/plugins/i18n",
+    "@/plugins/vue_chat_scroll",
+    "@/plugins/websocket"
+  ],
   modules: ["@nuxtjs/style-resources"],
   styleResources: {
     scss: ["~/assets/partials/_index.scss"]
