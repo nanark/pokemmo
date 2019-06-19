@@ -4,7 +4,7 @@
       <div class="container" @mouseover="focus" @mouseleave="blur">
         <ul class="log">
           <li v-for="(log, index) in logs" :key="index">
-            {{ log.event }} {{ log.data }}
+            {{ log.author }}: {{ log.data }}
           </li>
         </ul>
         <transition name="fade">
@@ -37,14 +37,21 @@ export default {
     socket: state => state.socket
   }),
   created() {
-    this.$options.sockets.onmessage = data =>
-      this.logs.push({ event: "Message received", data: data.data });
+    this.$options.sockets.onmessage = data => {
+      const dataParsed = JSON.parse(data.data);
+      if (dataParsed.namespace && dataParsed.namespace === "chat") {
+        this.logs.push({
+          author: dataParsed.data.user.username,
+          data: dataParsed.data.message
+        });
+      }
+    };
   },
   methods: {
     sendMessage() {
-      this.$store.dispatch("sendMessage", this.messageInput);
+      this.$store.dispatch("chat/sendMessage", this.messageInput);
       this.logs.push({
-        event: `${this.$t("chatbox.player_name")}: `,
+        author: this.$t("chatbox.player_name"),
         data: this.messageInput
       });
       this.messageInput = "";

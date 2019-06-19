@@ -68,15 +68,5 @@ export const mutations = {
 export const actions = {
   setUser: function(context, userId) {
     context.commit("SET_USER", userId);
-  },
-  sendMessage: function(context, message) {
-    const payload = {
-      namespace: "chat",
-      event_type: "message",
-      data: {
-        message: message
-      }
-    };
-    Vue.prototype.$socket.send(JSON.stringify(payload));
   }
 };

@@ -41,7 +41,26 @@ export default {
         store: this.$store,
         connectManually: true,
         reconnection: true,
-        format: "json"
+        format: "json",
+        passToStoreHandler(eventName, event) {
+          if (!eventName.startsWith("SOCKET_")) {
+            return;
+          }
+          // let method = "commit";
+          let target = eventName.toUpperCase();
+          console.log(target);
+          let msg = event;
+
+          if (this.format === "json" && msg.data) {
+            msg = JSON.parse(msg.data);
+
+            if (msg.namespace) {
+              target = `${msg.namespace}/${target}`;
+            }
+          }
+
+          this.store.commit(target, msg);
+        }
       });
       this.status = "connected";
     },
