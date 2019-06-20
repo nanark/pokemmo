@@ -7,14 +7,12 @@
             {{ log.author }}: {{ log.data }}
           </li>
         </ul>
-        <transition name="fade">
-          <input
-            ref="input"
-            v-model="messageInput"
-            class="message-input"
-            :placeholder="$t(`chatbox.placeholder`)"
-          />
-        </transition>
+        <input
+          ref="input"
+          v-model="messageInput"
+          class="message-input"
+          :placeholder="$t(`chatbox.placeholder`)"
+        />
       </div>
     </form>
   </section>
@@ -48,6 +46,11 @@ export default {
   },
   methods: {
     sendMessage() {
+      if (!this.messageInput.trim()) {
+        this.messageInput = "";
+        return false;
+      }
+
       this.$store.dispatch("chat/sendMessage", this.messageInput);
       this.logs.push({
         class: "own",
@@ -69,16 +72,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
-
 .container {
   background-color: rgba($black, 0.4);
   border-radius: 3px;
@@ -109,5 +102,6 @@ export default {
   color: $white;
   opacity: 0.2;
   padding: 10px;
+  transition: 0.25s;
 }
 </style>
