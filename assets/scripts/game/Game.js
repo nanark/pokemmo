@@ -3,6 +3,8 @@ import GameDisplay from "./GameDisplay";
 
 export const Game = {
   logs: [],
+  player: {},
+  playerDirection: "down",
 
   init() {
     this.display = new GameDisplay();

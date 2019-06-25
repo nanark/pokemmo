@@ -28,19 +28,11 @@ export default class Player extends Character {
     Game.display.app.stage.addChild(this.sprite);
   }
 
-  goUp() {
-    this.sprite._textures = this.buildTextures("walk-up");
+  go(direction) {
+    this.sprite._textures = this.buildTextures(`walk-${direction}`);
   }
 
-  goDown() {
-    this.sprite._textures = this.buildTextures("walk-down");
-  }
-
-  goLeft() {
-    this.sprite._textures = this.buildTextures("walk-left");
-  }
-
-  goRight() {
-    this.sprite._textures = this.buildTextures("walk-right");
+  stand(direction) {
+    this.sprite._textures = this.buildTextures(`face-${direction}`);
   }
 }
