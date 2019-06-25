@@ -6,6 +6,7 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 export default class GameDisplay {
   label = "nothing";
+  player = null;
 
   constructor() {
     this.scale = 1.0;

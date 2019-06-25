@@ -19,7 +19,6 @@ export default function loadResources() {
   // Loading required assets
   PIXI.Loader.shared.add(characters).load(() => {
     Game.logIt("Assets loaded.");
-    Game.loaded = true;
 
     Game.player = new Player();
   });

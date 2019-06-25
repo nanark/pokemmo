@@ -3,27 +3,44 @@ import Character from "./Character";
 import { Game } from "@/assets/scripts/game/Game";
 
 export default class Player extends Character {
+  sprite = {};
+  type = "character";
+
   constructor() {
     super();
 
-    const sheet =
-      PIXI.Loader.shared.resources.character.spritesheet.animations[
-        "walk-down"
-      ];
+    const sheet = this.buildTextures("face-down");
 
-    let cat = new PIXI.AnimatedSprite(sheet);
+    this.sprite = new PIXI.AnimatedSprite(sheet);
 
     // Scale
-    cat.width = cat.width * 4;
-    cat.height = cat.height * 4;
+    this.sprite.width = this.sprite.width * 4;
+    this.sprite.height = this.sprite.height * 4;
 
     // Place it at the center
-    cat.x = Game.display.app.renderer.width / 2 - cat.width / 2;
-    cat.y = Game.display.app.renderer.height / 2 - cat.height / 2;
-    cat.animationSpeed = 0.14;
-    cat.play();
+    this.sprite.x = Game.display.app.renderer.width / 2 - this.sprite.width / 2;
+    this.sprite.y =
+      Game.display.app.renderer.height / 2 - this.sprite.height / 2;
+    this.sprite.animationSpeed = 0.14;
+    this.sprite.play();
 
-    // Add the cat to the stage
-    Game.display.app.stage.addChild(cat);
+    // Add the player to the stage
+    Game.display.app.stage.addChild(this.sprite);
+  }
+
+  goUp() {
+    this.sprite._textures = this.buildTextures("walk-up");
+  }
+
+  goDown() {
+    this.sprite._textures = this.buildTextures("walk-down");
+  }
+
+  goLeft() {
+    this.sprite._textures = this.buildTextures("walk-left");
+  }
+
+  goRight() {
+    this.sprite._textures = this.buildTextures("walk-right");
   }
 }
