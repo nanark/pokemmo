@@ -1,12 +1,18 @@
 <template>
-  <section class="viewport-window">
+  <section id="viewport" class="viewport-window">
     <slot />
   </section>
 </template>
 
 <script>
+import { Game } from "@/assets/scripts/game/Game";
+
 export default {
-  name: "ViewportWindow"
+  name: "ViewportWindow",
+  mounted() {
+    Game.init();
+    document.getElementById("viewport").appendChild(Game.display.app.view);
+  }
 };
 </script>
 

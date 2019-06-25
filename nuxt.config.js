@@ -37,9 +37,9 @@ module.exports = {
 
   // Styles
   css: [
-    "@/assets/boilerplate/normalize.css",
-    "@/assets/boilerplate/main.css",
-    "@/assets/global.scss"
+    "@/assets/styles/boilerplate/normalize.css",
+    "@/assets/styles/boilerplate/main.css",
+    "@/assets/styles/global.scss"
   ],
   plugins: [
     "@/plugins/i18n",
@@ -48,6 +48,6 @@ module.exports = {
   ],
   modules: ["@nuxtjs/style-resources"],
   styleResources: {
-    scss: ["~/assets/partials/_index.scss"]
+    scss: ["~/assets/styles/partials/_index.scss"]
   }
 };

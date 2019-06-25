@@ -5,6 +5,7 @@
       <ViewportWindow id="viewport">
         <UiChatbox id="chatbox" />
       </ViewportWindow>
+      <UiLog />
     </template>
     <template v-else>
       <SignIn @signInClicked="connect" />
@@ -18,11 +19,13 @@ import SignIn from "@/components/welcome/WelcomeSignIn";
 import UiChatbox from "@/components/ui/UiChatbox";
 import UiTopBar from "@/components/ui/UiTopBar";
 import ViewportWindow from "@/components/ViewportWindow";
+import UiLog from "@/components/ui/UiLog";
 
 export default {
   components: {
     SignIn,
     UiChatbox,
+    UiLog,
     UiTopBar,
     ViewportWindow
   },
@@ -48,7 +51,6 @@ export default {
           }
           // let method = "commit";
           let target = eventName.toUpperCase();
-          console.log(target);
           let msg = event;
 
           if (this.format === "json" && msg.data) {
