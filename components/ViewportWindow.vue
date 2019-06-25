@@ -1,7 +1,5 @@
 <template>
-  <section id="viewport" class="viewport-window">
-    <slot />
-  </section>
+  <section id="viewport" class="viewport-window"></section>
 </template>
 
 <script>

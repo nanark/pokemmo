@@ -1,7 +1,9 @@
 <template>
-  <section class="ui-log">
-    {{ log }}
-  </section>
+  <ul class="ui-log">
+    <li v-for="(log, i) in logs" :key="i">
+      {{ log }}
+    </li>
+  </ul>
 </template>
 
 <script>
@@ -9,18 +11,30 @@ import { Game } from "@/assets/scripts/game/Game";
 
 export default {
   name: "UiLog",
-  computed: {
-    log() {
-      return Game.log;
-    }
+  data() {
+    return {
+      logs: Game.logs
+    };
   }
 };
 </script>
 
 <style lang="scss" scoped>
 .ui-log {
-  background-color: $black;
+  background-color: rgba($black, 0.15);
   color: $white;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  height: 100%;
+  list-style-type: none;
+  opacity: 0;
+  padding: 10px 20px;
+  width: 300px;
+  transition: 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 </style>

@@ -1,9 +1,13 @@
 import * as PIXI from "pixi.js";
+import { Game } from "@/assets/scripts/game/Game";
 
-export default function loadResources(callback) {
+export default function loadResources() {
   const characters = {
     name: "character",
-    url: "character.json"
+    url: "character.json",
+    onComplete() {
+      Game.logs.push("Character loaded");
+    }
   };
 
   // Reset all cache and shared sprites resources
@@ -13,6 +17,6 @@ export default function loadResources(callback) {
 
   // Loading required assets
   PIXI.Loader.shared.add(characters).load(() => {
-    callback();
+    Game.logs.push("Done");
   });
 }

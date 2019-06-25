@@ -21,7 +21,7 @@ export default class GameDisplay {
     this.app.renderer.autoResize = true;
     this.app.renderer.resize(window.innerWidth, window.innerHeight);
 
-    loadResources(this.setup);
+    loadResources();
   }
 
   // loadAssets() {

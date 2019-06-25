@@ -2,9 +2,11 @@
 import GameDisplay from "./GameDisplay";
 
 export const Game = {
-  log: "Haha start log",
+  logs: [],
 
   init() {
     this.display = new GameDisplay();
+    console.log("WA");
+    this.logs.push("WA");
   }
 };

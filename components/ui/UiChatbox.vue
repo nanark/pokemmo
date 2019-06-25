@@ -20,6 +20,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { Game } from "@/assets/scripts/game/Game";
 
 export default {
   name: "UiChatbox",
@@ -50,6 +51,8 @@ export default {
         this.messageInput = "";
         return false;
       }
+
+      Game.logs.push(this.messageInput);
 
       this.$store.dispatch("chat/sendMessage", this.messageInput);
       this.logs.push({
@@ -83,6 +86,7 @@ export default {
 }
 
 .log {
+  color: $white;
   flex-grow: 1;
   list-style-type: none;
   margin: 0;
