@@ -1,5 +1,7 @@
 <template>
-  <section id="viewport" class="viewport-window"></section>
+  <div class="viewport-window">
+    <section class="viewport"></section>
+  </div>
 </template>
 
 <script>
@@ -12,16 +14,17 @@ export default {
     Game.init();
 
     // Bind it to the DOM
-    document.getElementById("viewport").appendChild(Game.display.app.view);
+    document.querySelector(".viewport").appendChild(Game.display.app.view);
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.viewport-window {
+.viewport {
   background: url("/background.png");
   background-size: cover;
   color: $white;
+  height: 100%;
   position: relative;
 }
 </style>

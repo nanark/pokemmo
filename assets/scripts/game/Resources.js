@@ -1,10 +1,11 @@
 import * as PIXI from "pixi.js";
 import { Game } from "@/assets/scripts/game/Game";
+import Player from "@/assets/scripts/game/actors/Player";
 
 export default function loadResources() {
   const characters = {
     name: "character",
-    url: "character.json",
+    url: "packs/character.json",
     onComplete() {
       Game.logIt("Character loaded.");
     }
@@ -18,5 +19,8 @@ export default function loadResources() {
   // Loading required assets
   PIXI.Loader.shared.add(characters).load(() => {
     Game.logIt("Assets loaded.");
+    Game.loaded = true;
+
+    Game.player = new Player();
   });
 }
