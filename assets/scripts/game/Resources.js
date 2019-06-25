@@ -6,7 +6,7 @@ export default function loadResources() {
     name: "character",
     url: "character.json",
     onComplete() {
-      Game.logs.push("Character loaded");
+      Game.logIt("Character loaded.");
     }
   };
 
@@ -17,6 +17,6 @@ export default function loadResources() {
 
   // Loading required assets
   PIXI.Loader.shared.add(characters).load(() => {
-    Game.logs.push("Done");
+    Game.logIt("Assets loaded.");
   });
 }

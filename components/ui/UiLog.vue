@@ -1,7 +1,8 @@
 <template>
   <ul class="ui-log">
     <li v-for="(log, i) in logs" :key="i">
-      {{ log }}
+      {{ logDate(log) }}
+      {{ log.message }}
     </li>
   </ul>
 </template>
@@ -15,6 +16,16 @@ export default {
     return {
       logs: Game.logs
     };
+  },
+  methods: {
+    logDate(log) {
+      const date = new Date(log.date);
+      let minutes = date.getMinutes();
+      if (minutes < 10) {
+        minutes = `0${minutes}`;
+      }
+      return `${date.getHours()}h${minutes}`;
+    }
   }
 };
 </script>

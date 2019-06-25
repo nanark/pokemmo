@@ -8,7 +8,10 @@ import { Game } from "@/assets/scripts/game/Game";
 export default {
   name: "ViewportWindow",
   mounted() {
+    // Init the Game object
     Game.init();
+
+    // Bind it to the DOM
     document.getElementById("viewport").appendChild(Game.display.app.view);
   }
 };

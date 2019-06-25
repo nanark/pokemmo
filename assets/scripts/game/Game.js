@@ -6,7 +6,10 @@ export const Game = {
 
   init() {
     this.display = new GameDisplay();
-    console.log("WA");
-    this.logs.push("WA");
+    this.logIt("Initialize the game.");
+  },
+
+  logIt(message) {
+    this.logs.push({ date: Date.now(), message });
   }
 };
