@@ -15,6 +15,26 @@ export default {
 
     // Bind it to the DOM
     document.querySelector(".viewport").appendChild(Game.display.app.view);
+    document.addEventListener("keydown", this.onKeyDown);
+  },
+  methods: {
+    onKeyDown(key) {
+      if (key.keyCode === 87 || key.keyCode === 38) {
+        Game.player.goUp();
+      }
+
+      if (key.keyCode === 83 || key.keyCode === 40) {
+        Game.player.goDown();
+      }
+
+      if (key.keyCode === 65 || key.keyCode === 37) {
+        Game.player.goLeft();
+      }
+
+      if (key.keyCode === 68 || key.keyCode === 39) {
+        Game.player.goRight();
+      }
+    }
   }
 };
 </script>
