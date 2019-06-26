@@ -1,6 +1,10 @@
 import * as PIXI from "pixi.js";
 import { Game } from "@/assets/scripts/game/Game";
-import Player from "@/assets/scripts/game/actors/Player";
+
+const gameLoop = () => {
+  Game.player.sprite.x += Game.player.sprite.vx;
+  Game.player.sprite.y += Game.player.sprite.vy;
+};
 
 export default function loadResources() {
   const characters = {
@@ -20,6 +24,8 @@ export default function loadResources() {
   PIXI.Loader.shared.add(characters).load(() => {
     Game.logIt("Assets loaded.");
 
-    Game.player = new Player();
+    Game.setup();
+
+    Game.display.app.ticker.add(() => gameLoop());
   });
 }

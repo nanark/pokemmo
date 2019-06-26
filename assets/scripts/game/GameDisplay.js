@@ -25,30 +25,4 @@ export default class GameDisplay {
 
     loadResources();
   }
-
-  // setup() {
-  //   // this.label = "hahah";
-  //   const sheet =
-  //     PIXI.Loader.shared.resources.character.spritesheet.animations[
-  //       "walk-left"
-  //     ];
-
-  //   let cat = new PIXI.AnimatedSprite(sheet);
-
-  //   // Scale
-  //   cat.width = cat.width * 4;
-  //   cat.height = cat.height * 4;
-
-  //   console.log(cat.width);
-  //   console.log(cat.height);
-
-  //   // Place it at the center
-  //   cat.x = this.app.renderer.width / 2 - cat.width / 2;
-  //   cat.y = this.app.renderer.height / 2 - cat.height / 2;
-  //   cat.animationSpeed = 0.14;
-  //   cat.play();
-
-  //   //Add the cat to the stage
-  //   Game.display.app.stage.addChild(cat);
-  // }
 }

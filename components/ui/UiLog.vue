@@ -41,8 +41,8 @@ export default {
   list-style-type: none;
   opacity: 0;
   padding: 10px 20px;
-  width: 300px;
   transition: 0.2s;
+  width: 300px;
 
   &:hover {
     opacity: 1;
