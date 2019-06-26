@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
-import loadResources from "./Resources";
-// import { Game } from "./Game";
+import { loadResources } from "./GameLoop";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
