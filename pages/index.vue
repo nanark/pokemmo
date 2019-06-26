@@ -5,7 +5,7 @@
       <div id="viewportContainer">
         <UiChatbox id="chatbox" />
         <UiLog id="log" />
-        <ViewportWindow id="viewport"> </ViewportWindow>
+        <ViewportWindow id="viewport" :user="user"> </ViewportWindow>
       </div>
     </template>
     <template v-else>

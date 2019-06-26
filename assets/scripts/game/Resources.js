@@ -1,28 +1,20 @@
-import { server as wsServer } from "@/plugins/websocket";
 import * as PIXI from "pixi.js";
 import { Game } from "@/assets/scripts/game/Game";
 
 let tickerTime = 0;
-const ws = new WebSocket(wsServer);
 
 const gameLoop = () => {
   tickerTime += 1 + Game.display.app.ticker.deltaMS;
 
   if (tickerTime > 1000) {
     tickerTime = 0;
-    console.log("1 sec + " + Math.random());
-    const feedback = ws.send(
+    Game.ws.send(
       JSON.stringify({
         namespace: "position",
         event_type: "message",
-        data: {
-          x: Game.player.sprite.x,
-          y: Game.player.sprite.y
-          // rand: Math.random()
-        }
+        data: { x: Game.player.sprite.x, y: Game.player.sprite.y }
       })
     );
-    console.log(feedback);
   }
   Game.player.sprite.x += Game.player.sprite.vx;
   Game.player.sprite.y += Game.player.sprite.vy;

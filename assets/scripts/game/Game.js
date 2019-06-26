@@ -8,9 +8,22 @@ export const Game = {
   player: {},
   playerDirection: "down",
 
-  init() {
+  init(userId) {
+    const wsServer = `ws://ws.upody.com:7080/ws?user=${userId}`;
+
     this.display = new GameDisplay();
     this.logIt("Initialize the game.");
+    this.ws = new WebSocket(wsServer);
+
+    this.ws.onopen = function(event) {
+      console.log("eeeeeeee============================");
+      console.log(event);
+    };
+
+    this.ws.onmessage = function(event) {
+      console.log("============================");
+      console.log(event);
+    };
   },
 
   logIt(message) {
@@ -21,6 +34,8 @@ export const Game = {
     Game.player = new Player();
 
     const sprite = Game.player.sprite;
+
+    console.log(this.ws);
 
     // Capture the keyboard arrow keys
     let left = keyboard("ArrowLeft"),

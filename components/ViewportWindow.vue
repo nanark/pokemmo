@@ -9,9 +9,15 @@ import { Game } from "@/assets/scripts/game/Game";
 
 export default {
   name: "ViewportWindow",
+  props: {
+    user: {
+      type: Object,
+      required: true
+    }
+  },
   mounted() {
     // Init the Game object
-    Game.init();
+    Game.init(this.user.id);
 
     // Bind it to the DOM
     document.querySelector(".viewport").appendChild(Game.display.app.view);
