@@ -9,11 +9,13 @@ export const Game = {
   loaded: false,
   player: {},
   playerDirection: "down",
+  population: [],
 
   init(userId) {
     const wsServer = `ws://ws.upody.com:7080/ws?user=${userId}`;
 
     this.display = new GameDisplay();
+    this.userId = userId;
     this.logIt("Initialize the game.");
     this.ws = new WebSocket(wsServer);
 
@@ -23,12 +25,30 @@ export const Game = {
 
     this.ws.onmessage = event => {
       if (this.loaded) {
-        const position = JSON.parse(event.data);
-        this.npc.sprite.x = position.data.x;
-        this.npc.sprite.y = position.data.y;
-        this.npc.animation = position.data.animation || "walk-down";
+        const positions = JSON.parse(event.data);
 
-        this.npc.setAnimation();
+        positions.data.forEach(position => {
+          const x = position.x;
+          const y = position.y;
+          const userId = position.user.id;
+          const username = position.user.username;
+          const animation = position.animation || "walk-down";
+
+          if (Game.userId == userId) {
+            return false;
+          }
+
+          if (!this.population[userId]) {
+            Game.logIt("Generate a new NPC:" + username);
+            this.population[userId] = new NPC(userId, username);
+          }
+
+          this.population[userId].sprite.x = x;
+          this.population[userId].sprite.y = y;
+          this.population[userId].animation = animation;
+
+          this.population[userId].setAnimation();
+        });
       }
     };
   },
@@ -39,7 +59,6 @@ export const Game = {
 
   setup() {
     Game.player = new Player();
-    Game.npc = new NPC();
 
     const sprite = Game.player.sprite;
 
