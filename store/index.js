@@ -27,6 +27,24 @@ export const state = () => ({
       username: "Mehdi",
       avatar:
         "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/143.png"
+    },
+    {
+      id: 4,
+      username: "Jasmine",
+      avatar:
+        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/012.png"
+    },
+    {
+      id: 5,
+      username: "Olivier",
+      avatar:
+        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/010.png"
+    },
+    {
+      id: 6,
+      username: "Fred",
+      avatar:
+        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/027.png"
     }
   ]
 });

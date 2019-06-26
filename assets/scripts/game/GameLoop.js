@@ -17,7 +17,7 @@ const sendPosition = () => {
 
   const position = {
     namespace: "position",
-    event_type: "message",
+    event_type: "movement",
     data: {
       x: Game.player.sprite.x,
       y: Game.player.sprite.y,
