@@ -59,14 +59,16 @@ Each message must declare a namespace attribute and a data object.
 {
   "namespace": "position",
   "event_type": "movement",
-  "data": {
-    "user": {
-      "id": "xRTEx452h",
-      "username": "Graouh"
-    },
-    "x": 143,
-    "y": 120,
-  }
+  "data": [
+    {
+      "user": {
+        "id": "xRTEx452h",
+        "username": "Graouh"
+      },
+      "x": 143,
+      "y": 120,
+    }
+  ]
 }
 
 ```
