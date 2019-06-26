@@ -1,20 +1,32 @@
+import { isEqual } from "lodash";
 import * as PIXI from "pixi.js";
 import { Game } from "@/assets/scripts/game/Game";
 
 let tickerTime = 0;
+let previousPosition = [0, 0];
 
 const gameLoop = () => {
   tickerTime += 1 + Game.display.app.ticker.deltaMS;
 
   if (tickerTime > 10) {
     tickerTime = 0;
-    Game.ws.send(
-      JSON.stringify({
-        namespace: "position",
-        event_type: "message",
-        data: { x: Game.player.sprite.x, y: Game.player.sprite.y }
-      })
-    );
+    const currentPosition = [Game.player.sprite.x, Game.player.sprite.y];
+
+    if (!isEqual(previousPosition, currentPosition)) {
+      previousPosition = currentPosition;
+
+      Game.ws.send(
+        JSON.stringify({
+          namespace: "position",
+          event_type: "message",
+          data: {
+            x: Game.player.sprite.x,
+            y: Game.player.sprite.y,
+            animation: Game.player.animation
+          }
+        })
+      );
+    }
   }
   Game.player.sprite.x += Game.player.sprite.vx;
   Game.player.sprite.y += Game.player.sprite.vy;

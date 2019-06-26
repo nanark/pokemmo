@@ -5,11 +5,12 @@ import { Game } from "@/assets/scripts/game/Game";
 export default class NPC extends Character {
   sprite = {};
   type = "character";
+  animation = "face-down";
 
   constructor() {
     super();
 
-    const sheet = this.buildTextures("face-down");
+    const sheet = this.buildTextures(this.animation);
 
     this.sprite = new PIXI.AnimatedSprite(sheet);
 
@@ -21,5 +22,10 @@ export default class NPC extends Character {
 
     // Add the player to the stage
     Game.display.app.stage.addChild(this.sprite);
+  }
+
+  setAnimation() {
+    this.sprite.textures = this.buildTextures(this.animation);
+    this.sprite.gotoAndPlay(1);
   }
 }

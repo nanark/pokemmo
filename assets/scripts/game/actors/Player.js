@@ -29,13 +29,15 @@ export default class Player extends Character {
   }
 
   go(direction) {
-    this.sprite.textures = this.buildTextures(`walk-${direction}`);
+    this.animation = `walk-${direction}`;
+    this.sprite.textures = this.buildTextures(this.animation);
     this.sprite.gotoAndPlay(1);
     Game.playerDirection = direction;
   }
 
   stand() {
-    this.sprite.textures = this.buildTextures(`face-${Game.playerDirection}`);
+    this.animation = `face-${Game.playerDirection}`;
+    this.sprite.textures = this.buildTextures(this.animation);
     this.sprite.gotoAndPlay(1);
   }
 }

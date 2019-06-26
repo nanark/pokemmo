@@ -26,6 +26,9 @@ export const Game = {
         const position = JSON.parse(event.data);
         this.npc.sprite.x = position.data.x;
         this.npc.sprite.y = position.data.y;
+        this.npc.animation = position.data.animation || "walk-down";
+
+        this.npc.setAnimation();
       }
     };
   },
@@ -36,12 +39,9 @@ export const Game = {
 
   setup() {
     Game.player = new Player();
-
     Game.npc = new NPC();
 
     const sprite = Game.player.sprite;
-
-    console.log(this.ws);
 
     // Capture the keyboard arrow keys
     let left = keyboard("ArrowLeft"),
