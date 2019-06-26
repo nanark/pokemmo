@@ -50,6 +50,7 @@ Each message must declare a namespace attribute and a data object.
   "data": {
     "x": 143,
     "y": 120,
+    "animation": "walk-down"
   }
 }
 ```
@@ -67,6 +68,7 @@ Each message must declare a namespace attribute and a data object.
       },
       "x": 143,
       "y": 120,
+      "animation": "walk-down"
     }
   ]
 }
