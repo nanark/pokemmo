@@ -50,6 +50,7 @@ export default {
           if (!eventName.startsWith("SOCKET_")) {
             return;
           }
+
           // let method = "commit";
           let target = eventName.toUpperCase();
           let msg = event;
