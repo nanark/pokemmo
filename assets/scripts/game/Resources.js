@@ -18,8 +18,6 @@ const gameLoop = () => {
   }
   Game.player.sprite.x += Game.player.sprite.vx;
   Game.player.sprite.y += Game.player.sprite.vy;
-
-  // {"namespace": "test","event_type": "message","data": {"message": "😂 Lol c'est super drôle ma gueule !"}}
 };
 
 export default function loadResources() {
@@ -39,6 +37,7 @@ export default function loadResources() {
   // Loading required assets
   PIXI.Loader.shared.add(characters).load(() => {
     Game.logIt("Assets loaded.");
+    Game.loaded = true;
 
     Game.setup();
 

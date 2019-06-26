@@ -1,10 +1,12 @@
 // import * as PIXI from "pixi.js";
 import GameDisplay from "./GameDisplay";
 import Player from "@/assets/scripts/game/actors/Player";
+import NPC from "@/assets/scripts/game/actors/NPC";
 import { keyboard } from "@/assets/scripts/game/keyboard";
 
 export const Game = {
   logs: [],
+  loaded: false,
   player: {},
   playerDirection: "down",
 
@@ -15,14 +17,16 @@ export const Game = {
     this.logIt("Initialize the game.");
     this.ws = new WebSocket(wsServer);
 
-    this.ws.onopen = function(event) {
-      console.log("eeeeeeee============================");
-      console.log(event);
+    this.ws.onopen = () => {
+      this.logIt("Opening Websocket for positions");
     };
 
-    this.ws.onmessage = function(event) {
-      console.log("============================");
-      console.log(event);
+    this.ws.onmessage = event => {
+      if (this.loaded) {
+        const position = JSON.parse(event.data);
+        this.npc.sprite.x = position.data.x;
+        this.npc.sprite.y = position.data.y;
+      }
     };
   },
 
@@ -32,6 +36,8 @@ export const Game = {
 
   setup() {
     Game.player = new Player();
+
+    Game.npc = new NPC();
 
     const sprite = Game.player.sprite;
 
