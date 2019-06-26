@@ -6,7 +6,7 @@ let tickerTime = 0;
 const gameLoop = () => {
   tickerTime += 1 + Game.display.app.ticker.deltaMS;
 
-  if (tickerTime > 1000) {
+  if (tickerTime > 10) {
     tickerTime = 0;
     Game.ws.send(
       JSON.stringify({
