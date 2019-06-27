@@ -19,8 +19,8 @@ const sendPosition = () => {
     namespace: "position",
     event_type: "movement",
     data: {
-      x: Game.player.sprite.x,
-      y: Game.player.sprite.y,
+      x: ~~Game.player.sprite.x,
+      y: ~~Game.player.sprite.y,
       animation: Game.player.animation
     }
   };
@@ -30,7 +30,7 @@ const sendPosition = () => {
 };
 
 const gameLoop = () => {
-  tickerTime += 1 + Game.display.app.ticker.deltaMS;
+  tickerTime += 1;
 
   // Every 1/100s
   if (tickerTime > 10) {
