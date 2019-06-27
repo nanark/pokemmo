@@ -5,12 +5,11 @@ import { Game } from "@/assets/scripts/game/Game";
 export default class Player extends Character {
   sprite = {};
   type = "character";
-  animation = "face-down";
 
   constructor() {
     super();
 
-    const sheet = this.buildTextures(this.animation);
+    const sheet = this.buildTextures("face-down");
 
     this.sprite = new PIXI.AnimatedSprite(sheet);
 

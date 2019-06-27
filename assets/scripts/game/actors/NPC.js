@@ -7,11 +7,8 @@ export default class NPC extends Character {
   type = "character";
   animation = "face-down";
 
-  constructor(userId, username) {
+  constructor() {
     super();
-
-    this.userId = userId;
-    this.username = username;
 
     const sheet = this.buildTextures(this.animation);
 
