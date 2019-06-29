@@ -32,10 +32,6 @@ const sendPosition = () => {
 const gameLoop = delta => {
   tickerTime += 1 + delta;
 
-  if (Game.debugMode) {
-    console.log(`Delta: ${delta}`);
-  }
-
   // Every 1/100s
   if (tickerTime > 10) {
     tickerTime = 0;
@@ -43,6 +39,10 @@ const gameLoop = delta => {
     // Send the player position if he moved
     if (Game.online) {
       sendPosition();
+    }
+
+    if (Game.debugMode) {
+      console.log(`Delta: ${delta}`);
     }
   }
 
