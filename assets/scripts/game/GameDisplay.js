@@ -9,16 +9,19 @@ export default class GameDisplay {
   constructor() {
     this.scale = 1.0;
 
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
     // Creating the application
     this.app = new PIXI.Application({
       antialias: false,
       autoDensity: true,
-      height: 250,
+      height: windowHeight,
       powerPreference: "high-performance",
       resolution: window.devicePixelRatio,
       transparent: true,
       // backgroundColor: 0x061639,
-      width: 250
+      width: windowWidth
     });
 
     const resize = () => {
@@ -33,7 +36,6 @@ export default class GameDisplay {
     this.app.renderer.view.style.position = "absolute";
     this.app.renderer.view.style.display = "block";
     this.app.renderer.autoResize = true;
-    resize();
 
     // Load resources and start loop
     loadResources();
