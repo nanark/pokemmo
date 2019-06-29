@@ -32,18 +32,23 @@ const sendPosition = () => {
 const gameLoop = delta => {
   // tickerTime += 1 + Game.display.app.ticker.deltaMS;
   tickerTime += 1 + delta;
+  console.log(delta);
 
   // Every 1/100s
   if (tickerTime > 10) {
     tickerTime = 0;
 
     // Send the player position if he moved
-    sendPosition();
+    if (Game.online) {
+      sendPosition();
+    }
   }
 
   // Moving the player on screen
-  Game.player.sprite.x += Game.player.sprite.vx;
-  Game.player.sprite.y += Game.player.sprite.vy;
+  const _vx = Game.player.sprite.vx;
+  const _vy = Game.player.sprite.vy;
+  Game.player.sprite.x += _vx;
+  Game.player.sprite.y += _vy;
 };
 
 // Loading all resources and add the gameloop in the ticker.
@@ -70,6 +75,6 @@ export function loadResources() {
     Game.setup();
 
     // Add a ticker
-    Game.display.app.ticker.add(() => gameLoop());
+    Game.display.app.ticker.add(delta => gameLoop(delta));
   });
 }
