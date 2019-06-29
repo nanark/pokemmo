@@ -10,18 +10,20 @@ export const Game = {
   player: {},
   playerDirection: "down",
   population: [],
+  ws: null,
 
   init(userId) {
-    const wsServer = `ws://ws.upody.com:7070/ws?user=${userId}`;
-
     this.display = new GameDisplay();
     this.userId = userId;
     this.logIt("Initialize the game.");
-    this.ws = new WebSocket(wsServer);
+  },
 
-    this.ws.onopen = () => {
+  setWebsocket(ws) {
+    this.ws = ws;
+
+    if (ws.readyState === 1) {
       this.logIt("Opening Websocket for positions");
-    };
+    }
 
     this.ws.onmessage = event => {
       if (this.loaded) {
