@@ -29,8 +29,9 @@ const sendPosition = () => {
   Game.ws.send(JSON.stringify(position));
 };
 
-const gameLoop = () => {
-  tickerTime += 1 + Game.display.app.ticker.deltaMS;
+const gameLoop = delta => {
+  // tickerTime += 1 + Game.display.app.ticker.deltaMS;
+  tickerTime += 1 + delta;
 
   // Every 1/100s
   if (tickerTime > 10) {
