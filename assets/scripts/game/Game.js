@@ -12,7 +12,7 @@ export const Game = {
   population: [],
 
   init(userId) {
-    const wsServer = `ws://ws.upody.com:7080/ws?user=${userId}`;
+    const wsServer = `ws://ws.upody.com:7070/ws?user=${userId}`;
 
     this.display = new GameDisplay();
     this.userId = userId;
