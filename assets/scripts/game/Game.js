@@ -1,7 +1,7 @@
 // import * as PIXI from "pixi.js";
 import GameDisplay from "./GameDisplay";
 import Player from "@/assets/scripts/game/actors/Player";
-import NPC from "@/assets/scripts/game/actors/NPC";
+import { moveCharacters } from "@/assets/scripts/game/positions";
 import { keyboard } from "@/assets/scripts/game/keyboard";
 
 export const Game = {
@@ -27,28 +27,7 @@ export const Game = {
       if (this.loaded) {
         const positions = JSON.parse(event.data);
 
-        positions.data.forEach(position => {
-          const x = position.x;
-          const y = position.y;
-          const userId = position.user.id;
-          const username = position.user.username;
-          const animation = position.animation || "walk-down";
-
-          if (Game.userId == userId) {
-            return false;
-          }
-
-          if (!this.population[userId]) {
-            Game.logIt("Generate a new NPC:" + username);
-            this.population[userId] = new NPC(userId, username);
-          }
-
-          this.population[userId].sprite.x = x;
-          this.population[userId].sprite.y = y;
-          this.population[userId].animation = animation;
-
-          this.population[userId].setAnimation();
-        });
+        moveCharacters(positions);
       }
     };
   },
