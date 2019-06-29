@@ -1,6 +1,10 @@
 {
   "global": {
-    "disconnect": "Déconnexion"
+    "disconnect": "Déconnexion",
+    "debug_on": "Debug",
+    "debug_off": "Production",
+    "online_on": "Live",
+    "online_off": "Offline"
   },
   "chatbox": {
     "placeholder": "Votre message ici",

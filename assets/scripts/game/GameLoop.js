@@ -30,9 +30,11 @@ const sendPosition = () => {
 };
 
 const gameLoop = delta => {
-  // tickerTime += 1 + Game.display.app.ticker.deltaMS;
   tickerTime += 1 + delta;
-  console.log(delta);
+
+  if (Game.debugMode) {
+    console.log(`Delta: ${delta}`);
+  }
 
   // Every 1/100s
   if (tickerTime > 10) {

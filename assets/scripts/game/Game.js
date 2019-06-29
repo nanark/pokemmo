@@ -7,7 +7,8 @@ import { keyboard } from "@/assets/scripts/game/keyboard";
 export const Game = {
   logs: [],
   loaded: false,
-  online: false,
+  online: true,
+  debugMode: false,
   player: {},
   playerDirection: "down",
   population: [],
@@ -17,6 +18,18 @@ export const Game = {
     this.display = new GameDisplay();
     this.userId = userId;
     this.logIt("Initialize the game.");
+  },
+
+  setDebug(mode) {
+    const label = mode ? "debug mode" : "production mode";
+    Game.logIt(`Set to ${label}`);
+    this.debugMode = mode;
+  },
+
+  setOnline(mode) {
+    const label = mode ? "live" : "offline";
+    Game.logIt(`Set to ${label}`);
+    this.online = mode;
   },
 
   setWebsocket(ws) {
