@@ -4,10 +4,13 @@
       <UserAvatar :user="user" size="40px" />
     </div>
     <div class="right">
-      <button @click="switchOnlineMode(!onlineMode)">
+      <button class="toggle" @click="switchOnlineMode(!onlineMode)">
+        <span :class="onlineMode ? `toggle-live` : `toggle-offline`" />
         {{ onlineModeLabel }}
       </button>
-      <button @click="switchDebugMode(!debugMode)">{{ debugModeLabel }}</button>
+      <button class="toggle" @click="switchDebugMode(!debugMode)">
+        {{ debugModeLabel }}
+      </button>
       <button @click="disconnect">{{ $t("global.disconnect") }}</button>
     </div>
   </section>
@@ -81,5 +84,37 @@ export default {
 
 .right {
   padding: 10px;
+}
+
+.toggle {
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: $white;
+  cursor: pointer;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: 0.3s;
+
+  &:hover {
+    border: 1px solid rgba($white, 0.4);
+    border-radius: 4px;
+  }
+
+  span {
+    display: inline-block;
+    height: 10px;
+    margin-right: 5px;
+    width: 10px;
+
+    &.toggle-live {
+      background-color: green;
+    }
+
+    &.toggle-offline {
+      background-color: red;
+    }
+  }
 }
 </style>
