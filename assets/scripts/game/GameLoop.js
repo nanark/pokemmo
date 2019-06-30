@@ -81,12 +81,14 @@ const gameLoop = delta => {
 
 const movePlayer = delta => {
   let keyDown = false;
+  let vy = 0;
+  let vx = 0;
 
   if (Keyboard.isKeyDown("ArrowUp")) {
     if (!keyDown) {
       Game.player.go("up");
     }
-    Game.player.sprite.y += -4 - delta;
+    vy += -4;
     keyDown = true;
   }
 
@@ -94,7 +96,7 @@ const movePlayer = delta => {
     if (!keyDown) {
       Game.player.go("down");
     }
-    Game.player.sprite.y += 4 + delta;
+    vy += 4;
     keyDown = true;
   }
 
@@ -102,7 +104,7 @@ const movePlayer = delta => {
     if (!keyDown) {
       Game.player.go("left");
     }
-    Game.player.sprite.x += -4 - delta;
+    vx += -4;
     keyDown = true;
   }
 
@@ -110,15 +112,30 @@ const movePlayer = delta => {
     if (!keyDown) {
       Game.player.go("right");
     }
-    Game.player.sprite.x += 4 + delta;
+    vx += 4;
     keyDown = true;
   }
 
-  if (!keyDown) {
+  if (!keyDown || (vx == 0 && vy == 0)) {
     Game.player.stand();
+  } else {
+    Game.player.sprite.x += addDelta(vx, delta);
+    Game.player.sprite.y += addDelta(vy, delta);
   }
 
   Keyboard.update();
+};
+
+const addDelta = (value, delta) => {
+  if (value > 0) {
+    return value + delta;
+  }
+
+  if (value < 0) {
+    return value - delta;
+  }
+
+  return value;
 };
 
 // Loading all resources and add the gameloop in the ticker.
