@@ -30,15 +30,22 @@ const sendPosition = () => {
 
   if (isEqual(previousPosition, currentPosition)) {
     if (isMoving) {
+      sendingPosition();
+
       isMoving = false;
-    } else {
-      return false;
     }
+
+    return false;
   }
 
   previousPosition = currentPosition;
   isMoving = true;
 
+  // Sending via websocket
+  sendingPosition();
+};
+
+const sendingPosition = () => {
   const position = {
     namespace: "position",
     event_type: "movement",
@@ -48,8 +55,6 @@ const sendPosition = () => {
       animation: Game.player.animation
     }
   };
-
-  // Sending via websocket
   Game.ws.send(JSON.stringify(position));
 };
 
