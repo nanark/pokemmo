@@ -32,6 +32,7 @@ export const Game = {
     if (!mode) {
       this.population.forEach(character => {
         console.log("Destroy character");
+        console.log(Game.display.app.stage);
         Game.display.app.stage.removeChild(character);
       });
     }
@@ -61,5 +62,14 @@ export const Game = {
 
   setup() {
     Game.player = new Player();
+  },
+
+  disconnect() {
+    // Destroying all sprites
+    Game.display.app.stage.children.forEach(child => {
+      Game.display.app.stage.removeChild(child);
+    });
+
+    Game.display.app.destroy();
   }
 };
