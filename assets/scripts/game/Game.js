@@ -47,7 +47,7 @@ export const Game = {
     }
 
     this.ws.onmessage = event => {
-      if (this.loaded) {
+      if (this.loaded && this.online) {
         const positions = JSON.parse(event.data);
 
         moveCharacters(positions);
