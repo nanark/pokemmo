@@ -31,10 +31,9 @@ export const Game = {
     // Destroy the other characters
     if (!mode) {
       this.population.forEach(character => {
-        console.log("Destroy character");
-        console.log(Game.display.app.stage);
-        Game.display.app.stage.removeChild(character);
+        Game.display.app.stage.removeChild(character.sprite);
       });
+      this.population = [];
     }
 
     this.online = mode;
