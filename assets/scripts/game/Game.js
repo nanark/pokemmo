@@ -46,13 +46,13 @@ export const Game = {
       this.logIt("Opening Websocket for positions");
     }
 
-    this.ws.onmessage = event => {
+    this.ws.addEventListener("message", event => {
       if (this.loaded && this.online) {
         const positions = JSON.parse(event.data);
 
         moveCharacters(positions);
       }
-    };
+    });
   },
 
   logIt(message) {
