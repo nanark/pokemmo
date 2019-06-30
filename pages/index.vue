@@ -44,7 +44,7 @@ export default {
       this.$connect(`ws://ws.upody.com:7070/ws?user=${this.user.id}`, {
         store: this.$store,
         connectManually: true,
-        reconnection: true,
+        reconnection: false,
         format: "json",
         passToStoreHandler(eventName, event) {
           if (!eventName.startsWith("SOCKET_")) {

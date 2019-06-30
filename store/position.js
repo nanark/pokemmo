@@ -1,5 +1,3 @@
-// import Vue from "vue";
-
 export const state = () => ({
   x: 0,
   y: 0

@@ -1,4 +1,5 @@
 import Vue from "vue";
+import { Game } from "@/assets/scripts/game/Game";
 
 export const state = () => ({
   locales: ["en", "fr"],
@@ -69,6 +70,7 @@ export const mutations = {
   },
   SOCKET_ONERROR(state, event) {
     console.error(state, event);
+    Game.disconnect();
   },
   // default handler called for all methods
   SOCKET_ONMESSAGE(state, message) {
