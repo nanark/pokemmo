@@ -1,3 +1,4 @@
+import Keyboard from "pixi.js-keyboard";
 import { isEqual } from "lodash";
 import * as PIXI from "pixi.js";
 import { Game } from "@/assets/scripts/game/Game";
@@ -5,6 +6,7 @@ import { Game } from "@/assets/scripts/game/Game";
 let tickerTime = 0;
 let previousPosition = [0, 0];
 let previousPositionDebug = [0, 0];
+let isMoving = false;
 
 const displayDebug = delta => {
   const currentPosition = [Game.player.sprite.x, Game.player.sprite.y];
@@ -27,10 +29,15 @@ const sendPosition = () => {
   const currentPosition = [Game.player.sprite.x, Game.player.sprite.y];
 
   if (isEqual(previousPosition, currentPosition)) {
-    return false;
+    if (isMoving) {
+      isMoving = false;
+    } else {
+      return false;
+    }
   }
 
   previousPosition = currentPosition;
+  isMoving = true;
 
   const position = {
     namespace: "position",
@@ -50,7 +57,7 @@ const gameLoop = delta => {
   tickerTime += 1 + delta;
 
   // Every 1/100s
-  if (tickerTime > 10) {
+  if (tickerTime > 1) {
     tickerTime = 0;
 
     // Send the player position if he moved
@@ -64,10 +71,49 @@ const gameLoop = delta => {
   }
 
   // Moving the player on screen
-  const _vx = Game.player.sprite.vx;
-  const _vy = Game.player.sprite.vy;
-  Game.player.sprite.x += _vx;
-  Game.player.sprite.y += _vy;
+  movePlayer(delta);
+};
+
+const movePlayer = delta => {
+  let keyDown = false;
+
+  if (Keyboard.isKeyDown("ArrowUp")) {
+    if (!keyDown) {
+      Game.player.go("up");
+    }
+    Game.player.sprite.y += -4 - delta;
+    keyDown = true;
+  }
+
+  if (Keyboard.isKeyDown("ArrowDown")) {
+    if (!keyDown) {
+      Game.player.go("down");
+    }
+    Game.player.sprite.y += 4 + delta;
+    keyDown = true;
+  }
+
+  if (Keyboard.isKeyDown("ArrowLeft")) {
+    if (!keyDown) {
+      Game.player.go("left");
+    }
+    Game.player.sprite.x += -4 - delta;
+    keyDown = true;
+  }
+
+  if (Keyboard.isKeyDown("ArrowRight")) {
+    if (!keyDown) {
+      Game.player.go("right");
+    }
+    Game.player.sprite.x += 4 + delta;
+    keyDown = true;
+  }
+
+  if (!keyDown) {
+    Game.player.stand();
+  }
+
+  Keyboard.update();
 };
 
 // Loading all resources and add the gameloop in the ticker.

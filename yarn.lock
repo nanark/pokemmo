@@ -3114,6 +3114,11 @@ csso@^3.5.1:
   dependencies:
     css-tree "1.0.0-alpha.29"
 
+ctoa@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/ctoa/-/ctoa-1.0.6.tgz#67ba8c119d0ff9f66573092edc731eb7e051c809"
+  integrity sha512-7oKXF7R/E8LMPUmUDVZZ/clHK21NIFcmZh+2PaQXmUN6TDLyK8VMbcRaNjCrbUYFGREnQncZeJaiEkpNw6L9yA==
+
 cuint@^0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/cuint/-/cuint-0.2.2.tgz#408086d409550c2631155619e9fa7bcadc3b991b"
@@ -5759,6 +5764,13 @@ node-sass@^4.12.0:
     stdout-stream "^1.4.0"
     "true-case-path" "^1.0.2"
 
+nom-events@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/nom-events/-/nom-events-1.0.1.tgz#fe0fbbe2c4197178d680d9d29ef731f3bf555c3b"
+  integrity sha512-Uy4fhac6DFSbKVsX3pCu1HGsVrySMuiwzS+qpumQ1rZ7lplEa5pGS4hGHfAPXNSL80sYnX7P6m9LQ0vGtbuuwQ==
+  dependencies:
+    ctoa "^1.0.6"
+
 "nopt@2 || 3":
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/nopt/-/nopt-3.0.6.tgz#c6465dbf08abcd4db359317f79ac68a646b28ff9"
@@ -6220,6 +6232,13 @@ pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
   integrity sha1-clVrgM+g1IqXToDnckjoDtT3+HA=
+
+pixi.js-keyboard@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/pixi.js-keyboard/-/pixi.js-keyboard-1.0.9.tgz#054eb4c13700f9183904338c0f833b153b4a786b"
+  integrity sha512-QP5WCEIn1A2u9Oic8uK8BIcmtGlSaZTzJCU8qhDriSWpkYmVCnuzelRTKY/pcUfzXc/l+9vDNr4tlkSDkCFKrw==
+  dependencies:
+    nom-events "^1.0.1"
 
 pixi.js@^5.0.4:
   version "5.0.4"

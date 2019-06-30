@@ -39,6 +39,10 @@ export default class Character {
   }
 
   setAnimation(animation) {
+    if (animation === this.animation) {
+      return false;
+    }
+
     this.animation = animation;
     this.sprite.textures = this.buildTextures(animation);
     this.sprite.gotoAndPlay(1);
