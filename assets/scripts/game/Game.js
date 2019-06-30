@@ -65,11 +65,6 @@ export const Game = {
   },
 
   disconnect() {
-    // Destroying all sprites
-    Game.display.app.stage.children.forEach(child => {
-      Game.display.app.stage.removeChild(child);
-    });
-
     Game.display.app.destroy();
   }
 };
