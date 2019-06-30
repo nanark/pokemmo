@@ -18,7 +18,7 @@ export default class GameDisplay {
       autoDensity: true,
       height: windowHeight,
       powerPreference: "high-performance",
-      resolution: window.devicePixelRatio,
+      // resolution: window.devicePixelRatio,
       transparent: true,
       // backgroundColor: 0x061639,
       width: windowWidth
