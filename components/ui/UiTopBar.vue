@@ -50,7 +50,6 @@ export default {
   methods: {
     disconnect() {
       this.$emit("disconnect", true);
-      Game.disconnect();
     },
     switchDebugMode(mode) {
       this.debugMode = mode;

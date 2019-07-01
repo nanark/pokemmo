@@ -21,6 +21,7 @@ import UiChatbox from "@/components/ui/UiChatbox";
 import UiTopBar from "@/components/ui/UiTopBar";
 import ViewportWindow from "@/components/ViewportWindow";
 import UiLog from "@/components/ui/UiLog";
+import { Game } from "@/assets/scripts/game/Game";
 
 export default {
   components: {
@@ -41,6 +42,13 @@ export default {
   }),
   methods: {
     connect() {
+      // Purge game instance
+      Game.disconnect();
+
+      this.connectWebSocket();
+      this.status = "connected";
+    },
+    connectWebSocket() {
       this.$connect(`ws://ws.upody.com:7070/ws?user=${this.user.id}`, {
         store: this.$store,
         connectManually: true,
@@ -66,14 +74,15 @@ export default {
           this.store.commit(target, msg);
         }
       });
-      this.status = "connected";
     },
     disconnect() {
+      // Disconnect websocket
       this.$disconnect();
+
+      // Purge game instance
+      Game.disconnect();
+
       this.status = "disconnected";
-    },
-    changeLocale(lang) {
-      this.$store.dispatch("setLocale", lang);
     }
   }
 };

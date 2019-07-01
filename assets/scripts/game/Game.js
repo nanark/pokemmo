@@ -64,6 +64,8 @@ export const Game = {
   },
 
   disconnect() {
-    Game.display.app.destroy();
+    if (Game.display && Game.display.app.stage) {
+      Game.display.app.destroy();
+    }
   }
 };
