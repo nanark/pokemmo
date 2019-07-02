@@ -14,6 +14,7 @@ export default class Character {
     this.sprite.width = this.sprite.width * 4;
     this.sprite.height = this.sprite.height * 4;
     this.sprite.anchor.set(0.5, 0.5);
+    this.sprite.zIndex = 1;
 
     // Place it at the center
     const x = Game.display.app.renderer.width / 2;

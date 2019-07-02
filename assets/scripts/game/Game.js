@@ -15,10 +15,24 @@ export const Game = {
   ws: null,
   tileSize: 16,
   tileScale: 3,
+  mapUrl: "https://api.zeapps.eu/maps/v1/map/map.json",
 
   init(userId) {
     this.display = new GameDisplay();
     this.userId = userId;
+
+    this.mapContainer = new PIXI.Container();
+    this.unitsContainer = new PIXI.Container();
+    this.menuContainer = new PIXI.Container();
+
+    this.mapContainer.zIndex = 5;
+    this.unitsContainer.zIndex = 10;
+    this.menuContainer.zIndex = 20;
+
+    Game.display.app.stage.addChild(this.mapContainer);
+    Game.display.app.stage.addChild(this.menuContainer);
+    Game.display.app.stage.addChild(this.unitsContainer);
+
     this.logIt("Initialize the game.");
   },
 
@@ -64,11 +78,11 @@ export const Game = {
   },
 
   setup() {
-    Game.player = new Player();
-
-    axios.get("https://api.zeapps.eu/maps/v1/map/map.json").then(response => {
+    axios.get(this.mapUrl).then(response => {
       this.loadLevel(response.data.item);
     });
+
+    Game.player = new Player();
   },
 
   disconnect() {
@@ -78,7 +92,6 @@ export const Game = {
   },
 
   loadLevel(items) {
-    console.log(items);
     for (let item of items) {
       this.loadTiles(item);
     }
@@ -90,22 +103,26 @@ export const Game = {
     container.position.x = item.x * this.tileScale;
     container.position.y = item.y * this.tileScale;
     container.scale.set(this.tileScale);
+    container.zIndex = 0;
 
     for (let tile of item.tiles) {
-      const texture = PIXI.Loader.shared.resources[tile.tileset].texture;
+      const resource = PIXI.Loader.shared.resources[tile.tileset].texture;
 
-      const text = new PIXI.Texture(
-        texture,
-        new PIXI.Rectangle(tile.x, tile.y, 16, 16)
+      const texture = new PIXI.Texture(
+        resource,
+        new PIXI.Rectangle(tile.x, tile.y, this.tileSize, this.tileSize)
       );
-      const bunny = new PIXI.Sprite(text);
-      bunny.x = 0;
-      bunny.y = 0;
-      bunny.alpha = tile.opacity || 100;
-      bunny.width = 16;
-      bunny.height = 16;
-      container.addChild(bunny);
+
+      const sprite = new PIXI.Sprite(texture);
+      sprite.x = 0;
+      sprite.y = 0;
+      sprite.alpha = tile.opacity || 100;
+      sprite.width = this.tileSize;
+      sprite.height = this.tileSize;
+
+      container.addChild(sprite);
     }
-    Game.display.app.stage.addChild(container);
+
+    Game.mapContainer.addChild(container);
   }
 };

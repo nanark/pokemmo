@@ -6618,6 +6618,11 @@ pinkie@^2.0.0:
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
   integrity sha1-clVrgM+g1IqXToDnckjoDtT3+HA=
 
+pixi-plugin-bump@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/pixi-plugin-bump/-/pixi-plugin-bump-1.1.8.tgz#8f3be4389ab664a7f789058a376d57966287b9da"
+  integrity sha512-GKVUWUy3KrGZ8VYR/vs/APnN5Lm4QpKeeen7bNrgtW8JlSfkS/MMpKqa+wegRyjnFbyLlqGekfnmPLlaIVQGSw==
+
 pixi.js-keyboard@^1.0.9:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/pixi.js-keyboard/-/pixi.js-keyboard-1.0.9.tgz#054eb4c13700f9183904338c0f833b153b4a786b"

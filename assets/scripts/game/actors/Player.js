@@ -6,7 +6,7 @@ export default class Player extends Character {
     super("character", "face-down");
 
     // Add the player to the stage
-    Game.display.app.stage.addChild(this.sprite);
+    Game.unitsContainer.addChild(this.sprite);
   }
 
   go(direction) {
