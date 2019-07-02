@@ -148,20 +148,49 @@ export function loadResources() {
     }
   };
 
+  const darkdimension = {
+    name: "darkdimension.png",
+    url: "images/darkdimension.png",
+    onComplete() {
+      Game.logIt("Dark loaded.");
+    }
+  };
+
+  const snow = {
+    name: "snow.gif",
+    url: "images/snow.gif",
+    onComplete() {
+      Game.logIt("Snow loaded.");
+    }
+  };
+
+  const temple = {
+    name: "temple.png",
+    url: "images/temple.png",
+    onComplete() {
+      Game.logIt("Temple loaded.");
+    }
+  };
+
   // Reset all cache and shared sprites resources
   // Avoid error and warnings during hot reload.
   PIXI.Loader.shared.reset();
   PIXI.utils.clearTextureCache();
 
   // Loading required assets
-  PIXI.Loader.shared.add(characters).load(() => {
-    Game.logIt("Assets loaded.");
-    Game.loaded = true;
+  PIXI.Loader.shared
+    .add(characters)
+    .add(darkdimension)
+    .add(snow)
+    .add(temple)
+    .load(() => {
+      Game.logIt("Assets loaded.");
+      Game.loaded = true;
 
-    // Setup the game (load player etc.)
-    Game.setup();
+      // Setup the game (load player etc.)
+      Game.setup();
 
-    // Add a ticker
-    Game.display.app.ticker.add(delta => gameLoop(delta));
-  });
+      // Add a ticker
+      Game.display.app.ticker.add(delta => gameLoop(delta));
+    });
 }
