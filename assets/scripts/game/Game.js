@@ -11,6 +11,9 @@ export const Game = {
   debugMode: false,
   player: {},
   playerDirection: "down",
+  tilesArray: [],
+  texturesArray: {},
+  obstacles: [],
   population: [],
   ws: null,
   tileSize: 16,
@@ -104,6 +107,7 @@ export const Game = {
     container.position.y = item.y * this.tileScale;
     container.scale.set(this.tileScale);
     container.zIndex = 0;
+    container.cacheAsBitmap = true;
 
     for (let tile of item.tiles) {
       const resource = PIXI.Loader.shared.resources[tile.tileset].texture;
@@ -119,6 +123,10 @@ export const Game = {
       sprite.alpha = tile.opacity || 100;
       sprite.width = this.tileSize;
       sprite.height = this.tileSize;
+
+      // Add the sprite to the obstacles list
+      // Should be a property
+      this.obstacles.push(sprite);
 
       container.addChild(sprite);
     }

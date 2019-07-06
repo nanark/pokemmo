@@ -2,6 +2,7 @@ import Keyboard from "pixi.js-keyboard";
 import { isEqual } from "lodash";
 import * as PIXI from "pixi.js";
 import { Game } from "@/assets/scripts/game/Game";
+import { Bump } from "@/assets/scripts/libs/Bump";
 
 let tickerTime = 0;
 let previousPosition = [0, 0];
@@ -60,6 +61,11 @@ const sendingPosition = () => {
 
 const gameLoop = delta => {
   tickerTime += 1 + delta;
+
+  // if (tickerTime > 10) {
+  let b = new Bump();
+  b.hit(Game.player.sprite, Game.obstacles, true, true, true);
+  // }
 
   // Every 1/100s
   if (tickerTime > 1) {
