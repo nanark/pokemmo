@@ -16,11 +16,11 @@ export const moveCharacters = positions => {
       return false;
     }
 
-    if (Math.abs(oldX - x) > 5) {
+    if (Math.abs(oldX - x) > 7) {
       console.log(`Hey issue X ${Math.abs(oldX - x)}`);
     }
 
-    if (Math.abs(oldY - y) > 5) {
+    if (Math.abs(oldY - y) > 7) {
       console.log(`Hey issue Y ${Math.abs(oldY - y)}`);
     }
 
