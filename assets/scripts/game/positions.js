@@ -1,6 +1,9 @@
 import { Game } from "@/assets/scripts/game/Game";
 import NPC from "@/assets/scripts/game/actors/NPC";
 
+let oldX = 0;
+let oldY = 0;
+
 export const moveCharacters = positions => {
   positions.data.forEach(position => {
     const x = position.x;
@@ -12,6 +15,17 @@ export const moveCharacters = positions => {
     if (Game.userId == userId) {
       return false;
     }
+
+    if (Math.abs(oldX - x) > 5) {
+      console.log(`Hey issue X ${Math.abs(oldX - x)}`);
+    }
+
+    if (Math.abs(oldY - y) > 5) {
+      console.log(`Hey issue Y ${Math.abs(oldY - y)}`);
+    }
+
+    oldX = x;
+    oldY = y;
 
     if (!Game.population[userId]) {
       Game.logIt("Generate a new NPC:" + username);
