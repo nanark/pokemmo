@@ -30,8 +30,8 @@ y = 0
 
 for tileNumber in range(width * height):
     data = dict()
-    data['x'] = x * tileSize
-    data['y'] = y * tileSize
+    data['x'] = x
+    data['y'] = y
 
     x += 1
 
@@ -96,8 +96,8 @@ for tileNumber in range(width * height):
                         ) * tileset['columns']
                     )
 
-                    tiles['x'] = (column - 1) * tileSize
-                    tiles['y'] = (row - 1) * tileSize
+                    tiles['x'] = (column - 1)
+                    tiles['y'] = (row - 1)
 
             data['tiles'].append(tiles)
 

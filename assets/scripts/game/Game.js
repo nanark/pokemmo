@@ -21,7 +21,7 @@ export const Game = {
   tileSize: 16,
   tileScale: 3,
   // mapUrl: "https://api.zeapps.eu/maps/v1/map/map.json",
-  mapUrl: "https://api.zeapps.eu/maps/v1/map/medhi1.json",
+  // mapUrl: "https://api.zeapps.eu/maps/v1/map/medhi1.json",
 
   init(userId) {
     this.display = new GameDisplay();
@@ -106,8 +106,8 @@ export const Game = {
   loadTiles(item) {
     const container = new PIXI.Container();
 
-    container.position.x = item.x * this.tileScale;
-    container.position.y = item.y * this.tileScale;
+    container.position.x = item.x * this.tileScale * this.tileSize;
+    container.position.y = item.y * this.tileScale * this.tileSize;
     container.scale.set(this.tileScale);
     container.zIndex = 0;
 
@@ -121,7 +121,12 @@ export const Game = {
 
         this.texturesCache[ref] = new PIXI.Texture(
           resource,
-          new PIXI.Rectangle(tile.x, tile.y, this.tileSize, this.tileSize)
+          new PIXI.Rectangle(
+            tile.x * this.tileSize,
+            tile.y * this.tileSize,
+            this.tileSize,
+            this.tileSize
+          )
         );
       }
 
