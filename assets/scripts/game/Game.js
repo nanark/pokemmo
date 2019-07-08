@@ -1,8 +1,9 @@
 import * as PIXI from "pixi.js";
-import axios from "axios";
+// import axios from "axios";
 import GameDisplay from "./GameDisplay";
 import Player from "@/assets/scripts/game/actors/Player";
 import { moveCharacters } from "@/assets/scripts/game/positions";
+import { map } from "@/static/sources/map.js";
 
 export const Game = {
   logs: [],
@@ -12,13 +13,15 @@ export const Game = {
   player: {},
   playerDirection: "down",
   tilesArray: [],
-  texturesArray: {},
+  texturesCache: {},
+  spritesCache: {},
   obstacles: [],
   population: [],
   ws: null,
   tileSize: 16,
   tileScale: 3,
-  mapUrl: "https://api.zeapps.eu/maps/v1/map/map.json",
+  // mapUrl: "https://api.zeapps.eu/maps/v1/map/map.json",
+  mapUrl: "https://api.zeapps.eu/maps/v1/map/medhi1.json",
 
   init(userId) {
     this.display = new GameDisplay();
@@ -81,9 +84,9 @@ export const Game = {
   },
 
   setup() {
-    axios.get(this.mapUrl).then(response => {
-      this.loadLevel(response.data.item);
-    });
+    // axios.get(this.mapUrl).then(response => {
+    this.loadLevel(map);
+    // });
 
     Game.player = new Player();
   },
@@ -107,27 +110,38 @@ export const Game = {
     container.position.y = item.y * this.tileScale;
     container.scale.set(this.tileScale);
     container.zIndex = 0;
-    container.cacheAsBitmap = true;
 
     for (let tile of item.tiles) {
-      const resource = PIXI.Loader.shared.resources[tile.tileset].texture;
+      // Generate a ref key for caching
+      const ref = `${tile.x}_${tile.y}_${tile.tileset}`;
 
-      const texture = new PIXI.Texture(
-        resource,
-        new PIXI.Rectangle(tile.x, tile.y, this.tileSize, this.tileSize)
-      );
+      // Add a key in texturesCache if not available
+      if (!this.texturesCache[ref]) {
+        const resource = PIXI.Loader.shared.resources[tile.tileset].texture;
 
-      const sprite = new PIXI.Sprite(texture);
-      sprite.x = 0;
-      sprite.y = 0;
-      sprite.alpha = tile.opacity || 100;
+        this.texturesCache[ref] = new PIXI.Texture(
+          resource,
+          new PIXI.Rectangle(tile.x, tile.y, this.tileSize, this.tileSize)
+        );
+      }
+
+      // Create sprite
+      const sprite = new PIXI.Sprite(this.texturesCache[ref]);
+
       sprite.width = this.tileSize;
       sprite.height = this.tileSize;
+      sprite.alpha = tile.opacity || 100;
+      sprite.x = 0;
+      sprite.y = 0;
 
-      // Add the sprite to the obstacles list
-      // Should be a property
-      this.obstacles.push(sprite);
+      // Obstacle
+      if (tile.visible === false) {
+        // Add the sprite to the obstacles list
+        this.obstacles.push(sprite);
+        sprite.alpha = 0;
+      }
 
+      // Add the sprite to the container
       container.addChild(sprite);
     }
 

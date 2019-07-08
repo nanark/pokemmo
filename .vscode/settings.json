@@ -18,5 +18,7 @@
   "editor.tabCompletion": "on",
   "vetur.format.defaultFormatter.js": "vscode-typescript",
   "vetur.format.defaultFormatter.html": "js-beautify-html",
-  "javascript.format.insertSpaceBeforeFunctionParenthesis": true
+  "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+  "python.pythonPath": "/usr/local/bin/python3",
+  "python.linting.enabled": true
 }

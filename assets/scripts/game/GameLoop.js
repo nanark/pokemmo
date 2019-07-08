@@ -154,27 +154,11 @@ export function loadResources() {
     }
   };
 
-  const darkdimension = {
-    name: "darkdimension.png",
-    url: "images/darkdimension.png",
+  const magiscarf = {
+    name: "magiscarf.png",
+    url: "images/magiscarf.png",
     onComplete() {
-      Game.logIt("Dark loaded.");
-    }
-  };
-
-  const snow = {
-    name: "snow.gif",
-    url: "images/snow.gif",
-    onComplete() {
-      Game.logIt("Snow loaded.");
-    }
-  };
-
-  const temple = {
-    name: "temple.png",
-    url: "images/temple.png",
-    onComplete() {
-      Game.logIt("Temple loaded.");
+      Game.logIt("magiscarf loaded.");
     }
   };
 
@@ -186,9 +170,7 @@ export function loadResources() {
   // Loading required assets
   PIXI.Loader.shared
     .add(characters)
-    .add(darkdimension)
-    .add(snow)
-    .add(temple)
+    .add(magiscarf)
     .load(() => {
       Game.logIt("Assets loaded.");
       Game.loaded = true;
