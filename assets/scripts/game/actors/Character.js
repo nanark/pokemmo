@@ -1,5 +1,6 @@
-import { Game } from "@/assets/scripts/game/Game";
 import * as PIXI from "pixi.js";
+import { Game } from "@/assets/scripts/game/Game";
+import { tileToPixel } from "@/assets/scripts/game/utils";
 
 export default class Character {
   constructor(type, animation) {
@@ -22,7 +23,7 @@ export default class Character {
     // Place it at the center
     const x = 0;
     const y = 0;
-    this.setPosition(x, y);
+    this.setPositionTile(x, y);
 
     // Animation
     this.sprite.animationSpeed = 0.14;
@@ -52,13 +53,14 @@ export default class Character {
     this.sprite.gotoAndPlay(1);
   }
 
-  setPosition(x, y) {
+  setPositionTile(x, y) {
     this.position.x = x;
     this.position.y = y;
 
-    this.sprite.position.set(
-      x * Game.tileSize * Game.tileScale,
-      y * Game.tileSize * Game.tileScale
-    );
+    this.sprite.position.set(tileToPixel(x), tileToPixel(y));
+  }
+
+  setPositionPixel(x, y) {
+    this.sprite.position.set(x, y);
   }
 }

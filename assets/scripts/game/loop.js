@@ -7,41 +7,40 @@ import { Bump } from "@/assets/scripts/libs/Bump";
 
 let tickerTime = 0;
 let previousPosition = [0, 0];
-let isMoving = false;
+// let isMoving = false;
 
 // Send the player position if he moved
-const sendPosition = () => {
-  const currentPosition = [Game.player.sprite.x, Game.player.sprite.y];
+// const sendPosition = () => {
+//   // const currentPosition = [Game.player.sprite.x, Game.player.sprite.y];
+//   // if (isEqual(previousPosition, currentPosition)) {
+//   //   if (isMoving) {
+//   //     sendingPosition();
+//   //     isMoving = false;
+//   //   }
+//   //   return false;
+//   // }
+//   // previousPosition = currentPosition;
+//   // isMoving = true;
+//   // // Sending via websocket
+//   // sendingPosition();
+// };
 
-  if (isEqual(previousPosition, currentPosition)) {
-    if (isMoving) {
-      sendingPosition();
+// const sendingPosition = () => {
+//   const position = {
+//     namespace: "position",
+//     event_type: "movement",
+//     data: {
+//       x: ~~Game.player.sprite.x,
+//       y: ~~Game.player.sprite.y,
+//       animation: Game.player.animation
+//     }
+//   };
+//   Game.ws.send(JSON.stringify(position));
+// };
 
-      isMoving = false;
-    }
-
-    return false;
-  }
-
-  previousPosition = currentPosition;
-  isMoving = true;
-
-  // Sending via websocket
-  sendingPosition();
-};
-
-const sendingPosition = () => {
-  const position = {
-    namespace: "position",
-    event_type: "movement",
-    data: {
-      x: ~~Game.player.sprite.x,
-      y: ~~Game.player.sprite.y,
-      animation: Game.player.animation
-    }
-  };
-  Game.ws.send(JSON.stringify(position));
-};
+const stepsBetweenTiles = 8; // Number of ticks between 2 tiles
+let gotoPosition = {}; // Destination
+let stepsToDestination = 0;
 
 const gameloop = delta => {
   Game.stats.begin();
@@ -58,9 +57,9 @@ const gameloop = delta => {
     tickerTime = 0;
 
     // Send the player position if he moved
-    if (Game.online) {
-      sendPosition();
-    }
+    // if (Game.online) {
+    //   sendPosition();
+    // }
 
     if (Game.debugMode) {
       displayDebug(delta);
@@ -68,38 +67,112 @@ const gameloop = delta => {
   }
 
   // Moving the player on screen
+  scrollWithKeyboard(delta);
+
   movePlayer(delta);
 
-  if (Game.path.length > 0) {
-    const newPosition = Game.path.shift();
+  const currentPosition = [Game.player.sprite.x, Game.player.sprite.y];
 
-    Game.player.setPosition(newPosition[0], newPosition[1]);
+  if (isEqual(previousPosition, currentPosition)) {
+    Game.player.stand();
   }
+  previousPosition = currentPosition;
 
   Game.stats.end();
 };
 
 const movePlayer = delta => {
+  // Load a new path step if the speedTicker is at 0 (== animation done)
+  if (Game.path.length > 0 && stepsToDestination === 0) {
+    // Init the steps to arrive to destination (== speed)
+    stepsToDestination = stepsBetweenTiles;
+
+    // Fetch the next tile to go to
+    const newPosition = Game.path.shift();
+
+    // New destination for that step
+    gotoPosition = { x: newPosition[0], y: newPosition[1] };
+  }
+
+  // Set velocity
+  let vx = 0;
+  let vy = 0;
+
+  // Number of pixels to travel between 2 steps
+  const pixelsByStep = (Game.tileSize * Game.tileScale) / stepsBetweenTiles;
+
+  // If steps are still necessary and gotoPosition is available
+  if (
+    stepsToDestination > 0 &&
+    gotoPosition.x !== undefined &&
+    gotoPosition.y !== undefined
+  ) {
+    // Tiles to go to
+    const gotoX = gotoPosition.x;
+    const gotoY = gotoPosition.y;
+
+    // Set velocity based on difference between actual position and destination
+    if (gotoX > Game.player.position.x) {
+      vx += pixelsByStep + delta;
+    }
+    if (gotoY > Game.player.position.y) {
+      vy += pixelsByStep + delta;
+    }
+    if (gotoX < Game.player.position.x) {
+      vx -= pixelsByStep - delta;
+    }
+    if (gotoY < Game.player.position.y) {
+      vy -= pixelsByStep - delta;
+    }
+
+    // Set animation
+    if (vy < 0) {
+      Game.player.go("up");
+    } else if (vy > 0) {
+      Game.player.go("down");
+    } else if (vx > 0) {
+      Game.player.go("right");
+    } else if (vx < 0) {
+      Game.player.go("left");
+    }
+
+    // Move the sprite
+    Game.player.setPositionPixel(
+      Game.player.sprite.position.x + vx,
+      Game.player.sprite.position.y + vy
+    );
+
+    // One less step
+    stepsToDestination--;
+
+    // Set the player at the precise position to avoid gap due to decimal
+    if (stepsToDestination === 0) {
+      Game.player.setPositionTile(gotoPosition.x, gotoPosition.y);
+    }
+  }
+};
+
+const scrollWithKeyboard = delta => {
   let keyDown = false;
   let vy = 0;
   let vx = 0;
 
-  if (Keyboard.isKeyDown("ArrowUp")) {
+  if (Keyboard.isKeyDown("KeyW")) {
     vy += 4;
     keyDown = true;
   }
 
-  if (Keyboard.isKeyDown("ArrowDown")) {
+  if (Keyboard.isKeyDown("KeyS")) {
     vy += -4;
     keyDown = true;
   }
 
-  if (Keyboard.isKeyDown("ArrowLeft")) {
+  if (Keyboard.isKeyDown("KeyA")) {
     vx += 4;
     keyDown = true;
   }
 
-  if (Keyboard.isKeyDown("ArrowRight")) {
+  if (Keyboard.isKeyDown("KeyD")) {
     vx += -4;
     keyDown = true;
   }

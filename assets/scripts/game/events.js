@@ -46,7 +46,15 @@ export const setPlayerEventsHandler = () => {
       gridClone
     );
 
+    // To avoid the invalid array (missing first line)
+    // we regenerate a new array and remove the starting point
+    const pathClean = [];
+    for (let step of path) {
+      pathClean.push(step);
+    }
+    pathClean.shift();
+
     // Feed the path for the loop
-    Game.path = path;
+    Game.path = pathClean;
   };
 };
