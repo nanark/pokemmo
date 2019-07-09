@@ -20,8 +20,6 @@ export default class Character {
     this.sprite.zIndex = 1;
 
     // Place it at the center
-    // const x = Game.display.app.renderer.width / 2;
-    // const y = Game.display.app.renderer.height / 2;
     const x = 0;
     const y = 0;
     this.setPosition(x, y);
