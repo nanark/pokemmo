@@ -43,8 +43,7 @@ export const Game = {
 
     // Pathfinder
     this.finder = new PF.AStarFinder({
-      allowDiagonal: true,
-      dontCrossCorners: true
+      allowDiagonal: false
     });
 
     this.display = new GameDisplay();
