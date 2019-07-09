@@ -5,6 +5,7 @@ import GameDisplay from "./GameDisplay";
 import Player from "@/assets/scripts/game/actors/Player";
 import Stats from "stats.js";
 import { map } from "@/static/sources/map.js";
+import { logIt } from "@/assets/scripts/game/utils";
 import { moveCharacters } from "@/assets/scripts/game/positions";
 import { load as loadLevel } from "./levels";
 import { setPlayerEventsHandler } from "./events";
@@ -68,18 +69,18 @@ export const Game = {
 
     setPlayerEventsHandler();
 
-    this.logIt("Initialize the game.");
+    logIt("Initialize the game.");
   },
 
   setDebug(mode) {
     const label = mode ? "debug mode" : "production mode";
-    Game.logIt(`Set to ${label}`);
+    logIt(`Set to ${label}`);
     this.debugMode = mode;
   },
 
   setOnline(mode) {
     const label = mode ? "live" : "offline";
-    Game.logIt(`Set to ${label}`);
+    logIt(`Set to ${label}`);
 
     // Destroy the other characters
     if (!mode) {
@@ -96,7 +97,7 @@ export const Game = {
     this.ws = ws;
 
     if (ws.readyState === 1) {
-      this.logIt("Opening Websocket for positions");
+      logIt("Opening Websocket for positions");
     }
 
     this.ws.addEventListener("message", event => {
@@ -106,10 +107,6 @@ export const Game = {
         moveCharacters(positions);
       }
     });
-  },
-
-  logIt(message) {
-    this.logs.push({ date: Date.now(), message });
   },
 
   setup() {

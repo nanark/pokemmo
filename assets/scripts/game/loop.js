@@ -2,7 +2,7 @@ import Keyboard from "pixi.js-keyboard";
 import { isEqual } from "lodash";
 import * as PIXI from "pixi.js";
 import { Game } from "@/assets/scripts/game/Game";
-import { displayDebug } from "@/assets/scripts/game/utils";
+import { displayDebug, logIt } from "@/assets/scripts/game/utils";
 import { Bump } from "@/assets/scripts/libs/Bump";
 
 let tickerTime = 0;
@@ -43,7 +43,7 @@ const sendingPosition = () => {
   Game.ws.send(JSON.stringify(position));
 };
 
-const gameLoop = delta => {
+const gameloop = delta => {
   Game.stats.begin();
 
   tickerTime += 1 + delta;
@@ -140,7 +140,7 @@ export function loadResources() {
     name: "character",
     url: "packs/character.json",
     onComplete() {
-      Game.logIt("Character loaded.");
+      logIt("Character loaded.");
     }
   };
 
@@ -148,7 +148,7 @@ export function loadResources() {
     name: "magiscarf.png",
     url: "images/magiscarf.png",
     onComplete() {
-      Game.logIt("magiscarf loaded.");
+      logIt("magiscarf loaded.");
     }
   };
 
@@ -162,13 +162,13 @@ export function loadResources() {
     .add(characters)
     .add(magiscarf)
     .load(() => {
-      Game.logIt("Assets loaded.");
+      logIt("Assets loaded.");
       Game.loaded = true;
 
       // Setup the game (load player etc.)
       Game.setup();
 
       // Add a ticker
-      Game.display.app.ticker.add(delta => gameLoop(delta));
+      Game.display.app.ticker.add(delta => gameloop(delta));
     });
 }

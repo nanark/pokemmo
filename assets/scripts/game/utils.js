@@ -25,3 +25,7 @@ export const displayDebug = delta => {
     }px`
   );
 };
+
+export const logIt = message => {
+  Game.logs.push({ date: Date.now(), message });
+};

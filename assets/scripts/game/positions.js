@@ -1,5 +1,6 @@
-import { Game } from "@/assets/scripts/game/Game";
 import NPC from "@/assets/scripts/game/actors/NPC";
+import { Game } from "@/assets/scripts/game/Game";
+import { logIt } from "@/assets/scripts/game/utils";
 
 let oldNow = 0;
 
@@ -23,7 +24,7 @@ export const moveCharacters = positions => {
     }
 
     if (!Game.population[userId]) {
-      Game.logIt("Generate a new NPC:" + username);
+      logIt("Generate a new NPC:" + username);
       Game.population[userId] = new NPC(userId, username);
     }
 
