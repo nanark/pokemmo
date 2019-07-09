@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import PF from "pathfinding";
 import { Game } from "@/assets/scripts/game/Game";
+import { tileToPixel } from "@/assets/scripts/game/utils";
 
 export const load = items => {
   for (let item of items) {
@@ -13,8 +14,8 @@ export const load = items => {
 const loadTiles = item => {
   const container = new PIXI.Container();
 
-  container.position.x = item.x * Game.tileScale * Game.tileSize;
-  container.position.y = item.y * Game.tileScale * Game.tileSize;
+  container.position.x = tileToPixel(item.x);
+  container.position.y = tileToPixel(item.y);
   container.scale.set(Game.tileScale);
   container.zIndex = 0;
 
@@ -58,9 +59,8 @@ const loadTiles = item => {
     container.addChild(sprite);
   }
 
-  if (!Game.grid[item.y]) {
-    Game.grid[item.y] = [];
-  }
+  // Initialize row
+  if (!Game.grid[item.y]) Game.grid[item.y] = [];
 
   // Build the grid to init the pathfinder
   if (isObstacle) {
