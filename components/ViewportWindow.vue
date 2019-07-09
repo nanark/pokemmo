@@ -29,9 +29,7 @@ export default {
 
 <style lang="scss" scoped>
 .viewport {
-  background: url("/background.png");
-  background-size: cover;
-  color: $white;
+  background-color: $black;
   height: 100%;
   position: relative;
 }

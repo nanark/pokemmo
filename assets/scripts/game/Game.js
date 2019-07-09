@@ -4,6 +4,7 @@ import GameDisplay from "./GameDisplay";
 import Player from "@/assets/scripts/game/actors/Player";
 import { moveCharacters } from "@/assets/scripts/game/positions";
 import { map } from "@/static/sources/map.js";
+import Stats from "stats.js";
 
 export const Game = {
   logs: [],
@@ -24,20 +25,36 @@ export const Game = {
   // mapUrl: "https://api.zeapps.eu/maps/v1/map/medhi1.json",
 
   init(userId) {
+    // Display stats
+    this.stats = new Stats();
+    this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    this.stats.dom.style.position = "absolute";
+    this.stats.dom.style.top = "60px";
+    this.stats.dom.style.left = "auto";
+    this.stats.dom.style.right = "10px";
+    document.body.appendChild(this.stats.dom);
+
     this.display = new GameDisplay();
     this.userId = userId;
+
+    this.globalContainer = new PIXI.Container();
 
     this.mapContainer = new PIXI.Container();
     this.unitsContainer = new PIXI.Container();
     this.menuContainer = new PIXI.Container();
 
     this.mapContainer.zIndex = 5;
+    this.mapContainer.interactive = true;
     this.unitsContainer.zIndex = 10;
     this.menuContainer.zIndex = 20;
 
-    Game.display.app.stage.addChild(this.mapContainer);
-    Game.display.app.stage.addChild(this.menuContainer);
-    Game.display.app.stage.addChild(this.unitsContainer);
+    this.globalContainer.addChild(this.mapContainer);
+    this.globalContainer.addChild(this.menuContainer);
+    this.globalContainer.addChild(this.unitsContainer);
+
+    Game.display.app.stage.addChild(this.globalContainer);
+
+    this.configEventHandlers();
 
     this.logIt("Initialize the game.");
   },
@@ -151,5 +168,29 @@ export const Game = {
     }
 
     Game.mapContainer.addChild(container);
+  },
+
+  configEventHandlers() {
+    Game.mapContainer.mousemove = Game.mapContainer.touchmove = () => {
+      // const mouseOverPoint = {
+      //   x: event.data.global.x - this.player.position.x,
+      //   y: event.data.global.y - this.player.position.y
+      // };
+      // console.log(event.data.global);
+      // const mouseoverTileCoords = this.mapGlobalCoordinatesToGame(
+      //   mouseOverPoint
+      // );
+      // console.log(mouseOverPoint);
+      // console.log(mouseoverTileCoords);
+      // const xValue =
+      //   (mouseoverTileCoords.x - mouseoverTileCoords.y) * this.tileSize;
+      // const yValue =
+      //   ((mouseoverTileCoords.x >= mouseoverTileCoords.y
+      //     ? mouseoverTileCoords.x
+      //     : mouseoverTileCoords.y) -
+      //     Math.abs(mouseoverTileCoords.x - mouseoverTileCoords.y) / 2) *
+      //   this.tileSize;
+      // this.drawRectangle(this.mouseoverGraphics, xValue, yValue, 0xffffff);
+    };
   }
 };

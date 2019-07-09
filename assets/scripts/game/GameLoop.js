@@ -60,6 +60,8 @@ const sendingPosition = () => {
 };
 
 const gameLoop = delta => {
+  Game.stats.begin();
+
   tickerTime += 1 + delta;
 
   // if (tickerTime > 10) {
@@ -83,6 +85,8 @@ const gameLoop = delta => {
 
   // Moving the player on screen
   movePlayer(delta);
+
+  Game.stats.end();
 };
 
 const movePlayer = delta => {
@@ -91,42 +95,38 @@ const movePlayer = delta => {
   let vx = 0;
 
   if (Keyboard.isKeyDown("ArrowUp")) {
-    if (!keyDown) {
-      Game.player.go("up");
-    }
-    vy += -4;
-    keyDown = true;
-  }
-
-  if (Keyboard.isKeyDown("ArrowDown")) {
-    if (!keyDown) {
-      Game.player.go("down");
-    }
     vy += 4;
     keyDown = true;
   }
 
-  if (Keyboard.isKeyDown("ArrowLeft")) {
-    if (!keyDown) {
-      Game.player.go("left");
-    }
-    vx += -4;
+  if (Keyboard.isKeyDown("ArrowDown")) {
+    vy += -4;
     keyDown = true;
   }
 
-  if (Keyboard.isKeyDown("ArrowRight")) {
-    if (!keyDown) {
-      Game.player.go("right");
-    }
+  if (Keyboard.isKeyDown("ArrowLeft")) {
     vx += 4;
     keyDown = true;
   }
 
-  if (!keyDown || (vx == 0 && vy == 0)) {
-    Game.player.stand();
-  } else {
-    Game.player.sprite.x += addDelta(vx, delta);
-    Game.player.sprite.y += addDelta(vy, delta);
+  if (Keyboard.isKeyDown("ArrowRight")) {
+    vx += -4;
+    keyDown = true;
+  }
+
+  if (keyDown) {
+    const newX = Game.globalContainer.position.x + addDelta(vx, delta);
+    const newY = Game.globalContainer.position.y + addDelta(vy, delta);
+    const maxX = ~~(Game.globalContainer.width - Math.abs(newX));
+    const maxY = ~~(Game.globalContainer.height - Math.abs(newY));
+
+    if (newX < 0 && maxX >= window.innerWidth) {
+      Game.globalContainer.position.x = newX;
+    }
+
+    if (newY < 0 && maxY >= window.innerHeight) {
+      Game.globalContainer.position.y = newY;
+    }
   }
 
   Keyboard.update();

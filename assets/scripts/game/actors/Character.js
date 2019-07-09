@@ -5,20 +5,23 @@ export default class Character {
   constructor(type, animation) {
     this.type = type;
     this.animation = animation;
+    this.position = PIXI.Point();
 
     const sheet = this.buildTextures(this.animation);
 
     this.sprite = new PIXI.AnimatedSprite(sheet);
 
     // Scale
-    this.sprite.width = this.sprite.width * 4;
-    this.sprite.height = this.sprite.height * 4;
+    this.sprite.width = this.sprite.width * Game.tileScale;
+    this.sprite.height = this.sprite.height * Game.tileScale;
     this.sprite.anchor.set(0.5, 0.5);
     this.sprite.zIndex = 1;
 
     // Place it at the center
-    const x = Game.display.app.renderer.width / 2;
-    const y = Game.display.app.renderer.height / 2;
+    // const x = Game.display.app.renderer.width / 2;
+    // const y = Game.display.app.renderer.height / 2;
+    const x = 1 * Game.tileScale * Game.tileSize;
+    const y = 1 * Game.tileScale * Game.tileSize;
     this.setPosition(x, y);
 
     // Animation
