@@ -72,8 +72,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.ui-chatbox {
+  pointer-events: none;
+}
+
 .container {
-  background-color: rgba($black, 0.4);
+  background-color: rgba($black, 0.2);
   border-radius: 3px;
   display: flex;
   flex-direction: column;
@@ -103,6 +107,7 @@ export default {
   color: $white;
   opacity: 0.2;
   padding: 10px;
+  pointer-events: auto;
   transition: 0.25s;
 }
 </style>

@@ -2,28 +2,12 @@ import Keyboard from "pixi.js-keyboard";
 import { isEqual } from "lodash";
 import * as PIXI from "pixi.js";
 import { Game } from "@/assets/scripts/game/Game";
+import { displayDebug } from "@/assets/scripts/game/utils";
 import { Bump } from "@/assets/scripts/libs/Bump";
 
 let tickerTime = 0;
 let previousPosition = [0, 0];
-let previousPositionDebug = [0, 0];
 let isMoving = false;
-
-const displayDebug = delta => {
-  const currentPosition = [Game.player.sprite.x, Game.player.sprite.y];
-  const differencePosition = [
-    Math.abs(~~(currentPosition[0] - previousPositionDebug[0])),
-    Math.abs(~~(currentPosition[1] - previousPositionDebug[1]))
-  ];
-
-  previousPositionDebug = currentPosition;
-
-  console.log(
-    `Delta: ${delta} - Movement: ${differencePosition[0]}x${
-      differencePosition[1]
-    }px`
-  );
-};
 
 // Send the player position if he moved
 const sendPosition = () => {

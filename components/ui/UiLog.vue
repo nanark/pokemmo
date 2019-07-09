@@ -39,13 +39,9 @@ export default {
   font-size: 13px;
   height: 100%;
   list-style-type: none;
-  opacity: 0;
+  opacity: 0.9;
   padding: 10px 20px;
-  transition: 0.2s;
+  pointer-events: none;
   width: 300px;
-
-  &:hover {
-    opacity: 1;
-  }
 }
 </style>
