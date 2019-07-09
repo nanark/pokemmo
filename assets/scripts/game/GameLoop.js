@@ -86,6 +86,12 @@ const gameLoop = delta => {
   // Moving the player on screen
   movePlayer(delta);
 
+  if (Game.path.length > 0) {
+    const newPosition = Game.path.shift();
+
+    Game.player.setPosition(newPosition[0], newPosition[1]);
+  }
+
   Game.stats.end();
 };
 

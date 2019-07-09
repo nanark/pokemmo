@@ -5,7 +5,9 @@ export default class Character {
   constructor(type, animation) {
     this.type = type;
     this.animation = animation;
-    this.position = PIXI.Point();
+    this.position = {};
+    this.position.x = 0;
+    this.position.y = 0;
 
     const sheet = this.buildTextures(this.animation);
 
@@ -14,14 +16,14 @@ export default class Character {
     // Scale
     this.sprite.width = this.sprite.width * Game.tileScale;
     this.sprite.height = this.sprite.height * Game.tileScale;
-    this.sprite.anchor.set(0.5, 0.5);
+    this.sprite.anchor.set(0, 0);
     this.sprite.zIndex = 1;
 
     // Place it at the center
     // const x = Game.display.app.renderer.width / 2;
     // const y = Game.display.app.renderer.height / 2;
-    const x = 1 * Game.tileScale * Game.tileSize;
-    const y = 1 * Game.tileScale * Game.tileSize;
+    const x = 0;
+    const y = 0;
     this.setPosition(x, y);
 
     // Animation
@@ -53,6 +55,12 @@ export default class Character {
   }
 
   setPosition(x, y) {
-    this.sprite.position.set(x, y);
+    this.position.x = x;
+    this.position.y = y;
+
+    this.sprite.position.set(
+      x * Game.tileSize * Game.tileScale,
+      y * Game.tileSize * Game.tileScale
+    );
   }
 }

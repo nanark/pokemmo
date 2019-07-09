@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import PF from "pathfinding";
 // import axios from "axios";
 import GameDisplay from "./GameDisplay";
 import Player from "@/assets/scripts/game/actors/Player";
@@ -17,6 +18,9 @@ export const Game = {
   texturesCache: {},
   spritesCache: {},
   obstacles: [],
+  grid: [],
+  pathGrid: null,
+  path: [],
   population: [],
   ws: null,
   tileSize: 16,
@@ -26,13 +30,21 @@ export const Game = {
 
   init(userId) {
     // Display stats
-    this.stats = new Stats();
-    this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    this.stats.dom.style.position = "absolute";
-    this.stats.dom.style.top = "60px";
-    this.stats.dom.style.left = "auto";
-    this.stats.dom.style.right = "10px";
-    document.body.appendChild(this.stats.dom);
+    this.displayStats();
+
+    // Cursor
+    const tilePixelSize = Game.tileSize * Game.tileScale;
+    this.cursor = new PIXI.Graphics();
+    this.cursor.lineStyle(0);
+    this.cursor.beginFill(0xffff0b, 0.2);
+    this.cursor.drawRect(0, 0, tilePixelSize, tilePixelSize);
+    this.cursor.endFill();
+
+    // Pathfinder
+    this.finder = new PF.AStarFinder({
+      allowDiagonal: true,
+      dontCrossCorners: true
+    });
 
     this.display = new GameDisplay();
     this.userId = userId;
@@ -118,6 +130,8 @@ export const Game = {
     for (let item of items) {
       this.loadTiles(item);
     }
+
+    this.pathGrid = new PF.Grid(this.grid);
   },
 
   loadTiles(item) {
@@ -127,6 +141,8 @@ export const Game = {
     container.position.y = item.y * this.tileScale * this.tileSize;
     container.scale.set(this.tileScale);
     container.zIndex = 0;
+
+    let isObstacle = false;
 
     for (let tile of item.tiles) {
       // Generate a ref key for caching
@@ -159,38 +175,83 @@ export const Game = {
       // Obstacle
       if (tile.visible === false) {
         // Add the sprite to the obstacles list
-        this.obstacles.push(sprite);
+        // this.obstacles.push(sprite);
         sprite.alpha = 0;
+        isObstacle = true;
       }
 
       // Add the sprite to the container
       container.addChild(sprite);
     }
 
+    if (!this.grid[item.y]) {
+      this.grid[item.y] = [];
+    }
+
+    // Obstacle
+    if (isObstacle) {
+      this.grid[item.y].push(1);
+    } else {
+      this.grid[item.y].push(0);
+    }
+
     Game.mapContainer.addChild(container);
   },
 
   configEventHandlers() {
-    Game.mapContainer.mousemove = Game.mapContainer.touchmove = () => {
-      // const mouseOverPoint = {
-      //   x: event.data.global.x - this.player.position.x,
-      //   y: event.data.global.y - this.player.position.y
-      // };
-      // console.log(event.data.global);
-      // const mouseoverTileCoords = this.mapGlobalCoordinatesToGame(
-      //   mouseOverPoint
-      // );
-      // console.log(mouseOverPoint);
-      // console.log(mouseoverTileCoords);
-      // const xValue =
-      //   (mouseoverTileCoords.x - mouseoverTileCoords.y) * this.tileSize;
-      // const yValue =
-      //   ((mouseoverTileCoords.x >= mouseoverTileCoords.y
-      //     ? mouseoverTileCoords.x
-      //     : mouseoverTileCoords.y) -
-      //     Math.abs(mouseoverTileCoords.x - mouseoverTileCoords.y) / 2) *
-      //   this.tileSize;
-      // this.drawRectangle(this.mouseoverGraphics, xValue, yValue, 0xffffff);
+    Game.mapContainer.mousemove = Game.mapContainer.touchmove = event => {
+      const mouseX =
+        event.data.global.x + Math.abs(Game.globalContainer.position.x);
+      const mouseY =
+        event.data.global.y + Math.abs(Game.globalContainer.position.y);
+
+      const tileX = Math.ceil(mouseX / this.tileSize / this.tileScale) - 1;
+      const tileY = Math.ceil(mouseY / this.tileSize / this.tileScale) - 1;
+
+      Game.globalContainer.removeChild(this.cursor);
+      this.cursor.x = tileX * Game.tileSize * Game.tileScale;
+      this.cursor.y = tileY * Game.tileSize * Game.tileScale;
+      Game.globalContainer.addChild(this.cursor);
     };
+
+    Game.mapContainer.mousedown = Game.mapContainer.touchmove = event => {
+      const mouseX =
+        event.data.global.x + Math.abs(Game.globalContainer.position.x);
+      const mouseY =
+        event.data.global.y + Math.abs(Game.globalContainer.position.y);
+
+      const tileX = Math.ceil(mouseX / this.tileSize / this.tileScale) - 1;
+      const tileY = Math.ceil(mouseY / this.tileSize / this.tileScale) - 1;
+
+      Game.globalContainer.removeChild(this.cursor);
+      this.cursor.x = tileX * Game.tileSize * Game.tileScale;
+      this.cursor.y = tileY * Game.tileSize * Game.tileScale;
+      Game.globalContainer.addChild(this.cursor);
+
+      // Clone the grid so you can use it later
+      // Pathfinding destroys it afer use
+      const gridClone = this.pathGrid.clone();
+
+      const path = this.finder.findPath(
+        Game.player.position.x,
+        Game.player.position.y,
+        tileX,
+        tileY,
+        gridClone
+      );
+
+      this.path = path;
+    };
+  },
+
+  // Display stats panel in the corner
+  displayStats() {
+    this.stats = new Stats();
+    this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    this.stats.dom.style.position = "absolute";
+    this.stats.dom.style.top = "60px";
+    this.stats.dom.style.left = "auto";
+    this.stats.dom.style.right = "10px";
+    document.body.appendChild(this.stats.dom);
   }
 };
