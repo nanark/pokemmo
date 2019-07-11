@@ -33,19 +33,22 @@ import { logIt } from "@/assets/scripts/game/utils";
 // };
 
 export const pace = {
-  msBetweenFrames: 0,
-  msToReachTile: 150,
+  // Set in gameloop.
   distanceBetweenTiles: 0,
   distanceEachMs: 0,
-  msLeft: 0,
+  msBetweenFrames: 0,
+  msToReachTile: 0,
+
+  // Buffers
   msElapsedBuffer: 0,
-  debug: 0
+  msLeft: 0
 };
 
 const gameloop = delta => {
   Game.stats.begin();
 
   // Set metrics for calculations
+  pace.msToReachTile = Game.player.msBetweenTiles;
   pace.msBetweenFrames = 1000 / Game.FPS;
   pace.distanceBetweenTiles = Game.tileSize * Game.tileScale;
   pace.distanceEachMs = pace.distanceBetweenTiles / pace.msToReachTile;

@@ -55,8 +55,10 @@ export const setPlayerEventsHandler = () => {
     // * steps in the path
     // * fill msLeft to the default msToReachTile
     // All 3 will be resetted at the destination.
-    Game.player.isWalking = true;
-    Game.player.path = path;
-    pace.msLeft = pace.msToReachTile;
+    if (path.length > 0) {
+      Game.player.isWalking = true;
+      Game.player.path = path;
+      pace.msLeft = pace.msToReachTile;
+    }
   };
 };
