@@ -5,29 +5,29 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 export default class GameDisplay {
   player = null;
+  width = 0;
+  heigth = 0;
 
   constructor() {
     this.scale = 1.0;
 
-    let windowWidth = document.getElementById("viewport").offsetWidth;
-    let windowHeight = document.getElementById("viewport").offsetHeight;
+    this.setDimensions();
 
     // Creating the application
     this.app = new PIXI.Application({
       antialias: false,
       autoDensity: true,
-      height: windowHeight,
+      height: this.height,
       powerPreference: "high-performance",
       // resolution: window.devicePixelRatio,
       transparent: true,
       // backgroundColor: 0x061639,
-      width: windowWidth
+      width: this.width
     });
 
     const resize = () => {
-      windowWidth = document.getElementById("viewport").offsetWidth;
-      windowHeight = document.getElementById("viewport").offsetHeight;
-      this.app.renderer.resize(windowWidth, windowHeight);
+      this.setDimensions();
+      this.app.renderer.resize(this.width, this.height);
     };
 
     addEventListener("resize", resize);
@@ -39,5 +39,10 @@ export default class GameDisplay {
 
     // Load resources and start loop
     loadResources();
+  }
+
+  setDimensions() {
+    this.width = document.getElementById("viewport").offsetWidth;
+    this.height = document.getElementById("viewport").offsetHeight;
   }
 }

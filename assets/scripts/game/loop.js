@@ -155,6 +155,8 @@ const moving = () => {
     default:
       break;
   }
+
+  scrollWithCharacter(direction, distance);
 };
 
 const whichDirection = () => {
@@ -184,6 +186,58 @@ const whichDirection = () => {
   if (pace.msLeft === 0) pace.msLeft = pace.msToReachTile;
 
   return direction;
+};
+
+const scrollWithCharacter = (direction, distance) => {
+  const container = Game.globalContainer;
+  const spritePosition = Game.player.sprite.position;
+  const display = Game.display;
+
+  console.log(`sprite ${spritePosition.y}`);
+  console.log(`container ${container.position.y}`);
+  console.log(`scale ${(Game.tileScale * Game.tileSize) / 2}`);
+
+  const halfCharacter = (Game.tileScale * Game.tileSize) / 2;
+
+  const spriteScreenPositionX =
+    spritePosition.x + container.position.x + halfCharacter;
+
+  const spriteScreenPositionY =
+    spritePosition.y + container.position.y + halfCharacter;
+
+  const boundRight = spritePosition.x + halfCharacter + display.width / 2;
+  const boundBottom = spritePosition.y + halfCharacter + display.height / 2;
+
+  if (spriteScreenPositionX > display.width / 2 || container.position.x < 0) {
+    if (boundRight < container.width) {
+      switch (direction) {
+        case "left":
+          container.x += distance;
+          break;
+        case "right":
+          container.x -= distance;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  if (spriteScreenPositionY > display.height / 2 || container.position.y < 0) {
+    if (boundBottom < container.height) {
+      switch (direction) {
+        case "up":
+          container.y += distance;
+          break;
+        case "down":
+          container.y -= distance;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  console.log(direction);
 };
 
 // const scrollWithKeyboard = delta => {
