@@ -2,6 +2,9 @@ import Character from "./Character";
 import { Game } from "@/assets/scripts/game/Game";
 
 export default class Player extends Character {
+  isWalking = false;
+  path = [];
+
   constructor() {
     super("character", "face-down");
 

@@ -9,8 +9,8 @@ export default class GameDisplay {
   constructor() {
     this.scale = 1.0;
 
-    let windowWidth = window.innerWidth;
-    let windowHeight = window.innerHeight;
+    let windowWidth = document.getElementById("viewport").offsetWidth;
+    let windowHeight = document.getElementById("viewport").offsetHeight;
 
     // Creating the application
     this.app = new PIXI.Application({
@@ -25,8 +25,8 @@ export default class GameDisplay {
     });
 
     const resize = () => {
-      windowWidth = window.innerWidth;
-      windowHeight = window.innerHeight;
+      windowWidth = document.getElementById("viewport").offsetWidth;
+      windowHeight = document.getElementById("viewport").offsetHeight;
       this.app.renderer.resize(windowWidth, windowHeight);
     };
 

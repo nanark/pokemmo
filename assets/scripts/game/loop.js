@@ -1,13 +1,7 @@
-import Keyboard from "pixi.js-keyboard";
-import { isEqual } from "lodash";
+// import Keyboard from "pixi.js-keyboard";
 import * as PIXI from "pixi.js";
 import { Game } from "@/assets/scripts/game/Game";
-import { displayDebug, logIt } from "@/assets/scripts/game/utils";
-import { Bump } from "@/assets/scripts/libs/Bump";
-
-let tickerTime = 0;
-let previousPosition = [0, 0];
-// let isMoving = false;
+import { logIt } from "@/assets/scripts/game/utils";
 
 // Send the player position if he moved
 // const sendPosition = () => {
@@ -38,174 +32,215 @@ let previousPosition = [0, 0];
 //   Game.ws.send(JSON.stringify(position));
 // };
 
-const stepsBetweenTiles = 8; // Number of ticks between 2 tiles
-let gotoPosition = {}; // Destination
-let stepsToDestination = 0;
+export const pace = {
+  msBetweenFrames: 0,
+  msToReachTile: 150,
+  distanceBetweenTiles: 0,
+  distanceEachMs: 0,
+  msLeft: 0,
+  msElapsedBuffer: 0,
+  debug: 0
+};
 
 const gameloop = delta => {
   Game.stats.begin();
 
-  tickerTime += 1 + delta;
+  // Set metrics for calculations
+  pace.msBetweenFrames = 1000 / Game.FPS;
+  pace.distanceBetweenTiles = Game.tileSize * Game.tileScale;
+  pace.distanceEachMs = pace.distanceBetweenTiles / pace.msToReachTile;
 
-  // if (tickerTime > 10) {
-  let b = new Bump();
-  b.hit(Game.player.sprite, Game.obstacles, true, true, true);
-  // }
+  // Set the time elapsed between frames
+  const msElapsed = pace.msBetweenFrames + delta;
 
-  // Every 1/100s
-  if (tickerTime > 1) {
-    tickerTime = 0;
+  // Move the player if isWalking is true
+  if (Game.player.isWalking) moveloop(msElapsed);
 
-    // Send the player position if he moved
-    // if (Game.online) {
-    //   sendPosition();
-    // }
-
-    if (Game.debugMode) {
-      displayDebug(delta);
-    }
+  // If path is over and no msLeft, the player has stopped.
+  // Set isWalking to false
+  if (Game.player.path.length === 0 && pace.msLeft === 0) {
+    Game.player.isWalking = false;
   }
-
-  // Moving the player on screen
-  scrollWithKeyboard(delta);
-
-  movePlayer(delta);
-
-  const currentPosition = [Game.player.sprite.x, Game.player.sprite.y];
-
-  if (isEqual(previousPosition, currentPosition)) {
-    Game.player.stand();
-  }
-  previousPosition = currentPosition;
 
   Game.stats.end();
 };
 
-const movePlayer = delta => {
-  // Load a new path step if the speedTicker is at 0 (== animation done)
-  if (Game.path.length > 0 && stepsToDestination === 0) {
-    // Init the steps to arrive to destination (== speed)
-    stepsToDestination = stepsBetweenTiles;
+// Moving loop for the character.
+// Based on time elapsed routine.
+const moveloop = msElapsed => {
+  // Set the buffer for that frame.
+  // The loop will go on until that buffer is empty.
+  pace.msElapsedBuffer = msElapsed;
 
-    // Fetch the next tile to go to
-    const newPosition = Game.path.shift();
+  while (pace.msElapsedBuffer > 0) {
+    // Move the character until msElapsedBuffer or msLeft is empty.
+    moving();
 
-    // New destination for that step
-    gotoPosition = { x: newPosition[0], y: newPosition[1] };
+    // The current step is done, set the position based on tile
+    // to avoid position with decimals.
+    // Fetch the new step if available. If not, stop the animation
+    // and break the loop.
+    if (pace.msLeft === 0) {
+      // Set the position with integers.
+      const currentTile = Game.player.path[0];
+      Game.player.setPositionTile(currentTile[0], currentTile[1]);
+
+      // Step is done, remove from path.
+      Game.player.path.shift();
+
+      // No more step available.
+      if (Game.player.path.length === 0) {
+        Game.player.stand();
+        break;
+      }
+    }
+  }
+};
+
+// Moving the player.
+const moving = () => {
+  // Where to head.
+  const direction = whichDirection();
+
+  // No movement left, exit function and all ms values.
+  if (!direction) {
+    pace.msElapsedBuffer = 0;
+    pace.msLeft = 0;
+    return false;
   }
 
-  // Set velocity
-  let vx = 0;
-  let vy = 0;
+  // Pixels left to travel for that step.
+  let distance = 0;
 
-  // Number of pixels to travel between 2 steps
-  const pixelsByStep = (Game.tileSize * Game.tileScale) / stepsBetweenTiles;
+  // The movement requires more time than available for that frame:
+  // * substract that time from msLeft
+  // * set the distance based on msElapsedBuffer
+  // * empty msElapsedBuffer
+  if (pace.msLeft >= pace.msElapsedBuffer) {
+    pace.msLeft -= pace.msElapsedBuffer;
+    distance = pace.msElapsedBuffer * pace.distanceEachMs;
+    pace.msElapsedBuffer = 0;
 
-  // If steps are still necessary and gotoPosition is available
-  if (
-    stepsToDestination > 0 &&
-    gotoPosition.x !== undefined &&
-    gotoPosition.y !== undefined
-  ) {
-    // Tiles to go to
-    const gotoX = gotoPosition.x;
-    const gotoY = gotoPosition.y;
+    // The movement last less time than available for that frame:
+    // * set the distance based on msLeft
+    // * substract msLeft from msElapsedBuffer
+    // * empty msLeft
+  } else {
+    distance = pace.msLeft * pace.distanceEachMs;
+    pace.msElapsedBuffer -= pace.msLeft;
+    pace.msLeft = 0;
+  }
 
-    // Set velocity based on difference between actual position and destination
-    if (gotoX > Game.player.position.x) {
-      vx += pixelsByStep + delta;
-    }
-    if (gotoY > Game.player.position.y) {
-      vy += pixelsByStep + delta;
-    }
-    if (gotoX < Game.player.position.x) {
-      vx -= pixelsByStep - delta;
-    }
-    if (gotoY < Game.player.position.y) {
-      vy -= pixelsByStep - delta;
-    }
-
-    // Set animation
-    if (vy < 0) {
+  // Moving the sprite based on the step direction
+  switch (direction) {
+    case "up":
+      Game.player.sprite.y -= distance;
       Game.player.go("up");
-    } else if (vy > 0) {
+      break;
+    case "down":
+      Game.player.sprite.y += distance;
       Game.player.go("down");
-    } else if (vx > 0) {
-      Game.player.go("right");
-    } else if (vx < 0) {
+      break;
+    case "left":
+      Game.player.sprite.x -= distance;
       Game.player.go("left");
-    }
-
-    // Move the sprite
-    Game.player.setPositionPixel(
-      Game.player.sprite.position.x + vx,
-      Game.player.sprite.position.y + vy
-    );
-
-    // One less step
-    stepsToDestination--;
-
-    // Set the player at the precise position to avoid gap due to decimal
-    if (stepsToDestination === 0) {
-      Game.player.setPositionTile(gotoPosition.x, gotoPosition.y);
-    }
+      break;
+    case "right":
+      Game.player.sprite.x += distance;
+      Game.player.go("right");
+      break;
+    default:
+      break;
   }
 };
 
-const scrollWithKeyboard = delta => {
-  let keyDown = false;
-  let vy = 0;
-  let vx = 0;
+const whichDirection = () => {
+  const path = Game.player.path;
 
-  if (Keyboard.isKeyDown("KeyW")) {
-    vy += 4;
-    keyDown = true;
-  }
+  // If path is empty, exit
+  if (path.length === 0) return false;
 
-  if (Keyboard.isKeyDown("KeyS")) {
-    vy += -4;
-    keyDown = true;
-  }
+  // Fetch the first step in the path
+  const gotoPosition = path[0];
 
-  if (Keyboard.isKeyDown("KeyA")) {
-    vx += 4;
-    keyDown = true;
-  }
+  // Tiles to go to
+  const gotoX = gotoPosition[0];
+  const gotoY = gotoPosition[1];
 
-  if (Keyboard.isKeyDown("KeyD")) {
-    vx += -4;
-    keyDown = true;
-  }
+  // Set direction
+  let direction;
+  if (gotoY > Game.player.position.y) direction = "down";
+  if (gotoY < Game.player.position.y) direction = "up";
+  if (gotoX > Game.player.position.x) direction = "right";
+  if (gotoX < Game.player.position.x) direction = "left";
 
-  if (keyDown) {
-    const newX = Game.globalContainer.position.x + addDelta(vx, delta);
-    const newY = Game.globalContainer.position.y + addDelta(vy, delta);
-    const maxX = ~~(Game.globalContainer.width - Math.abs(newX));
-    const maxY = ~~(Game.globalContainer.height - Math.abs(newY));
+  // No direction defined, exit
+  if (!direction) return false;
 
-    if (newX < 0 && maxX >= window.innerWidth) {
-      Game.globalContainer.position.x = newX;
-    }
+  // This is a new move, set an initial msLeft
+  if (pace.msLeft === 0) pace.msLeft = pace.msToReachTile;
 
-    if (newY < 0 && maxY >= window.innerHeight) {
-      Game.globalContainer.position.y = newY;
-    }
-  }
-
-  Keyboard.update();
+  return direction;
 };
 
-const addDelta = (value, delta) => {
-  if (value > 0) {
-    return value + delta;
-  }
+// const scrollWithKeyboard = delta => {
+//   const toto = true;
+//   if (toto) {
+//     return false;
+//   }
+//   let keyDown = false;
+//   let vy = 0;
+//   let vx = 0;
 
-  if (value < 0) {
-    return value - delta;
-  }
+//   if (Keyboard.isKeyDown("KeyW")) {
+//     vy += 4;
+//     keyDown = true;
+//   }
 
-  return value;
-};
+//   if (Keyboard.isKeyDown("KeyS")) {
+//     vy += -4;
+//     keyDown = true;
+//   }
+
+//   if (Keyboard.isKeyDown("KeyA")) {
+//     vx += 4;
+//     keyDown = true;
+//   }
+
+//   if (Keyboard.isKeyDown("KeyD")) {
+//     vx += -4;
+//     keyDown = true;
+//   }
+
+//   if (keyDown) {
+//     const newX = Game.globalContainer.position.x + addDelta(vx, delta);
+//     const newY = Game.globalContainer.position.y + addDelta(vy, delta);
+//     const maxX = ~~(Game.globalContainer.width - Math.abs(newX));
+//     const maxY = ~~(Game.globalContainer.height - Math.abs(newY));
+
+//     if (newX < 0 && maxX >= window.innerWidth) {
+//       Game.globalContainer.position.x = newX;
+//     }
+
+//     if (newY < 0 && maxY >= window.innerHeight) {
+//       Game.globalContainer.position.y = newY;
+//     }
+//   }
+
+//   Keyboard.update();
+// };
+
+// const addDelta = (value, delta) => {
+//   if (value > 0) {
+//     return value + delta;
+//   }
+
+//   if (value < 0) {
+//     return value - delta;
+//   }
+
+//   return value;
+// };
 
 // Loading all resources and add the gameloop in the ticker.
 export function loadResources() {
@@ -241,7 +276,8 @@ export function loadResources() {
       // Setup the game (load player etc.)
       Game.setup();
 
-      // Add a ticker
+      // Add a tickerTime
+      Game.display.app.ticker.maxFPS = Game.FPS;
       Game.display.app.ticker.add(delta => gameloop(delta));
     });
 }

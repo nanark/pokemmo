@@ -12,6 +12,7 @@ import { setPlayerEventsHandler } from "./events";
 
 export const Game = {
   logs: [],
+  FPS: 60,
   loaded: false,
   online: false,
   debugMode: false,
@@ -21,7 +22,6 @@ export const Game = {
   obstacles: [],
   grid: [],
   pathGrid: null,
-  path: [],
   population: [],
   ws: null,
   tileSize: 16,

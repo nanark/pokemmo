@@ -1,5 +1,6 @@
 import { Game } from "@/assets/scripts/game/Game";
 import { pixelToTile, tileToPixel } from "@/assets/scripts/game/utils";
+import { pace } from "@/assets/scripts/game/loop";
 
 const targetTile = event => {
   // Shortcut
@@ -46,15 +47,16 @@ export const setPlayerEventsHandler = () => {
       gridClone
     );
 
-    // To avoid the invalid array (missing first line)
-    // we regenerate a new array and remove the starting point
-    const pathClean = [];
-    for (let step of path) {
-      pathClean.push(step);
-    }
-    pathClean.shift();
+    // Remove origin from path
+    path.shift();
 
-    // Feed the path for the loop
-    Game.path = pathClean;
+    // Starting the movement needs 3 flags:
+    // * isWalking to true
+    // * steps in the path
+    // * fill msLeft to the default msToReachTile
+    // All 3 will be resetted at the destination.
+    Game.player.isWalking = true;
+    Game.player.path = path;
+    pace.msLeft = pace.msToReachTile;
   };
 };
