@@ -9,6 +9,7 @@ import { logIt } from "@/assets/scripts/game/utils";
 import { moveCharacters } from "@/assets/scripts/game/positions";
 import { load as loadLevel } from "./levels";
 import { setPlayerEventsHandler } from "./events";
+import { cursor } from "./cursor";
 
 export const Game = {
   logs: [],
@@ -34,12 +35,8 @@ export const Game = {
     this.displayStats();
 
     // Cursor
-    const tilePixelSize = Game.tileSize * Game.tileScale;
-    this.cursor = new PIXI.Graphics();
-    this.cursor.lineStyle(0);
-    this.cursor.beginFill(0xffff0b, 0.2);
-    this.cursor.drawRect(0, 0, tilePixelSize, tilePixelSize);
-    this.cursor.endFill();
+    this.cursor = cursor("hover");
+    this.cursorClick = cursor("click");
 
     // Pathfinder
     this.finder = new PF.AStarFinder({
@@ -52,6 +49,7 @@ export const Game = {
     this.globalContainer = new PIXI.Container();
 
     this.mapContainer = new PIXI.Container();
+    this.cursorContainer = new PIXI.Container();
     this.unitsContainer = new PIXI.Container();
     this.menuContainer = new PIXI.Container();
 
@@ -62,6 +60,7 @@ export const Game = {
 
     this.globalContainer.addChild(this.mapContainer);
     this.globalContainer.addChild(this.menuContainer);
+    this.globalContainer.addChild(this.cursorContainer);
     this.globalContainer.addChild(this.unitsContainer);
 
     Game.display.app.stage.addChild(this.globalContainer);

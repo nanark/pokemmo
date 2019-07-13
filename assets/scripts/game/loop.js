@@ -93,6 +93,7 @@ const moveloop = msElapsed => {
 
       // No more step available.
       if (Game.player.path.length === 0) {
+        Game.cursorContainer.removeChild(Game.cursorClick);
         Game.player.stand();
         break;
       }
@@ -204,15 +205,6 @@ const scrollWithCharacter = (direction, distance) => {
   const boundRight = spritePosition.x + halfCharacter + display.width / 2;
   const boundBottom = spritePosition.y + halfCharacter + display.height / 2;
 
-  // console.log(`sprite ${spritePosition.x}`);
-  // console.log(`container ${container.position.x}`);
-  // console.log(
-  //   `spriteScreenPositionX ${spriteScreenPositionX} > ${display.width / 2}`
-  // );
-  // console.log(`c1 ${spriteScreenPositionX > display.width / 2}`);
-  // console.log(`c2 ${container.position.x < 0}`);
-  // console.log(`--------------------------------------------`);
-
   if (spriteScreenPositionX > display.width / 2 || container.position.x < 0) {
     if (boundRight < container.width) {
       switch (direction) {
@@ -245,8 +237,6 @@ const scrollWithCharacter = (direction, distance) => {
 
     if (container.y > 0) container.y = 0;
   }
-
-  // console.log(direction);
 };
 
 // const scrollWithKeyboard = delta => {

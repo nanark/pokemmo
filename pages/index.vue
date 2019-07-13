@@ -1,6 +1,6 @@
 <template>
   <section id="container">
-    <template v-if="socket.isConnected">
+    <template v-if="user">
       <UiTopBar @disconnect="disconnect" />
       <div id="viewportContainer">
         <UiChatbox id="chatbox" />
