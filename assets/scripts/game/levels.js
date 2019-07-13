@@ -71,3 +71,14 @@ const loadTiles = item => {
 
   Game.mapContainer.addChild(container);
 };
+
+export const detectObstacle = (x, y) => {
+  const nodes = Game.pathGrid.nodes;
+  let isObstacle = false;
+
+  if (nodes[y][x]) {
+    isObstacle = nodes[y][x].walkable;
+  }
+
+  return !isObstacle;
+};

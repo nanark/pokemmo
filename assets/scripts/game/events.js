@@ -1,6 +1,7 @@
 import { Game } from "@/assets/scripts/game/Game";
 import { pixelToTile, tileToPixel } from "@/assets/scripts/game/utils";
 import { pace } from "@/assets/scripts/game/loop";
+import { detectObstacle } from "@/assets/scripts/game/levels";
 
 const targetTile = event => {
   // Shortcut
@@ -13,12 +14,17 @@ const targetTile = event => {
   const tileX = Math.ceil(pixelToTile(mouseX)) - 1;
   const tileY = Math.ceil(pixelToTile(mouseY)) - 1;
 
-  cursorContainer.removeChild(Game.cursor);
-  Game.cursor.x = tileToPixel(tileX);
-  Game.cursor.y = tileToPixel(tileY);
-  cursorContainer.addChild(Game.cursor);
+  const isObstacle = detectObstacle(tileX, tileY);
 
-  return { tileX, tileY };
+  cursorContainer.removeChild(Game.cursor);
+
+  if (!isObstacle) {
+    Game.cursor.x = tileToPixel(tileX);
+    Game.cursor.y = tileToPixel(tileY);
+    cursorContainer.addChild(Game.cursor);
+  }
+
+  return { tileX, tileY, isObstacle };
 };
 
 export const setPlayerEventsHandler = () => {
@@ -36,7 +42,7 @@ export const setPlayerEventsHandler = () => {
   // Click the map:
   //===========================================================================
   mapContainer.mousedown = mapContainer.touchmove = event => {
-    const { tileX, tileY } = targetTile(event);
+    const { tileX, tileY, isObstacle } = targetTile(event);
     const cursorContainer = Game.cursorContainer;
 
     //=========================================================================
@@ -76,9 +82,13 @@ export const setPlayerEventsHandler = () => {
       if (pace.msLeft === 0) pace.msLeft = pace.msToReachTile;
     }
 
+    // Placing the cursor
     cursorContainer.removeChild(Game.cursorClick);
-    Game.cursorClick.x = tileToPixel(tileX);
-    Game.cursorClick.y = tileToPixel(tileY);
-    cursorContainer.addChild(Game.cursorClick);
+
+    if (!isObstacle) {
+      Game.cursorClick.x = tileToPixel(tileX);
+      Game.cursorClick.y = tileToPixel(tileY);
+      cursorContainer.addChild(Game.cursorClick);
+    }
   };
 };
