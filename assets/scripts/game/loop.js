@@ -193,20 +193,25 @@ const scrollWithCharacter = (direction, distance) => {
   const spritePosition = Game.player.sprite.position;
   const display = Game.display;
 
-  console.log(`sprite ${spritePosition.y}`);
-  console.log(`container ${container.position.y}`);
-  console.log(`scale ${(Game.tileScale * Game.tileSize) / 2}`);
-
   const halfCharacter = (Game.tileScale * Game.tileSize) / 2;
 
   const spriteScreenPositionX =
-    spritePosition.x + container.position.x + halfCharacter;
+    spritePosition.x - container.position.x + halfCharacter;
 
   const spriteScreenPositionY =
-    spritePosition.y + container.position.y + halfCharacter;
+    spritePosition.y - container.position.y + halfCharacter;
 
   const boundRight = spritePosition.x + halfCharacter + display.width / 2;
   const boundBottom = spritePosition.y + halfCharacter + display.height / 2;
+
+  // console.log(`sprite ${spritePosition.x}`);
+  // console.log(`container ${container.position.x}`);
+  // console.log(
+  //   `spriteScreenPositionX ${spriteScreenPositionX} > ${display.width / 2}`
+  // );
+  // console.log(`c1 ${spriteScreenPositionX > display.width / 2}`);
+  // console.log(`c2 ${container.position.x < 0}`);
+  // console.log(`--------------------------------------------`);
 
   if (spriteScreenPositionX > display.width / 2 || container.position.x < 0) {
     if (boundRight < container.width) {
@@ -221,6 +226,8 @@ const scrollWithCharacter = (direction, distance) => {
           break;
       }
     }
+
+    if (container.x > 0) container.x = 0;
   }
   if (spriteScreenPositionY > display.height / 2 || container.position.y < 0) {
     if (boundBottom < container.height) {
@@ -235,9 +242,11 @@ const scrollWithCharacter = (direction, distance) => {
           break;
       }
     }
+
+    if (container.y > 0) container.y = 0;
   }
 
-  console.log(direction);
+  // console.log(direction);
 };
 
 // const scrollWithKeyboard = delta => {

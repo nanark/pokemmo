@@ -33,19 +33,28 @@ export const setPlayerEventsHandler = () => {
   mapContainer.mousedown = mapContainer.touchmove = event => {
     const { tileX, tileY } = targetTile(event);
 
+    //=========================================================================
     // Moving the player, Pathfinding:
-
+    //=========================================================================
     // Clone the grid so you can use it later
     // Pathfinding destroys it afer use
     const gridClone = Game.pathGrid.clone();
 
-    const path = Game.finder.findPath(
-      Game.player.position.x,
-      Game.player.position.y,
-      tileX,
-      tileY,
-      gridClone
-    );
+    // Fetch the next tile if available
+    Game.player.path = Game.player.path.slice(0, 1);
+
+    let x, y;
+    // The character is moving, start from the next tile
+    if (Game.player.path.length > 0) {
+      x = Game.player.path[0][0];
+      y = Game.player.path[0][1];
+      // No path available, start from the character position
+    } else {
+      x = Game.player.position.x;
+      y = Game.player.position.y;
+    }
+
+    const path = Game.finder.findPath(x, y, tileX, tileY, gridClone);
 
     // Remove origin from path
     path.shift();
@@ -57,8 +66,8 @@ export const setPlayerEventsHandler = () => {
     // All 3 will be resetted at the destination.
     if (path.length > 0) {
       Game.player.isWalking = true;
-      Game.player.path = path;
-      pace.msLeft = pace.msToReachTile;
+      if (Game.player.path) Game.player.path = Game.player.path.concat(path);
+      if (pace.msLeft === 0) pace.msLeft = pace.msToReachTile;
     }
   };
 };
