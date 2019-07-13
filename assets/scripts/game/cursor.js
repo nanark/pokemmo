@@ -19,7 +19,6 @@ export const cursor = mode => {
     case "click":
       cursor.lineStyle(3, colorBlueDenim, 0.5);
       cursor.drawRoundedRect(0, 0, tilePixelSize, tilePixelSize, 15);
-      cursor.endFill();
       break;
     default:
       break;
