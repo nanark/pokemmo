@@ -46,8 +46,12 @@ module.exports = {
     "@/plugins/vue_chat_scroll",
     "@/plugins/websocket"
   ],
-  modules: ["@nuxtjs/style-resources"],
+  modules: ["@nuxtjs/style-resources", "@nuxtjs/axios"],
   styleResources: {
     scss: ["~/assets/styles/partials/_index.scss"]
+  },
+
+  axios: {
+    // proxyHeaders: false
   }
 };

@@ -20,6 +20,9 @@ export default {
   name: "WelcomeUsers",
   components: { UserAvatar },
   computed: mapState(["users"]),
+  created() {
+    this.$store.dispatch("getUsers");
+  },
   methods: {
     userClicked(id) {
       this.$store.dispatch("setUser", id);

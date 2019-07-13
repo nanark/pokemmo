@@ -18,9 +18,9 @@
 import { mapState } from "vuex";
 import SignIn from "@/components/welcome/WelcomeSignIn";
 import UiChatbox from "@/components/ui/UiChatbox";
+import UiLog from "@/components/ui/UiLog";
 import UiTopBar from "@/components/ui/UiTopBar";
 import ViewportWindow from "@/components/ViewportWindow";
-import UiLog from "@/components/ui/UiLog";
 import { Game } from "@/assets/scripts/game/Game";
 
 export default {

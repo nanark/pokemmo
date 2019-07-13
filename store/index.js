@@ -10,47 +10,16 @@ export const state = () => ({
     message: "",
     reconnectError: false
   },
-  users: [
-    {
-      id: 1,
-      username: "nanark",
-      avatar:
-        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/054.png"
-    },
-    {
-      id: 2,
-      username: "jcbedier",
-      avatar:
-        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/094.png"
-    },
-    {
-      id: 3,
-      username: "Mehdi",
-      avatar:
-        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/143.png"
-    },
-    {
-      id: 4,
-      username: "Jasmine",
-      avatar:
-        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/012.png"
-    },
-    {
-      id: 5,
-      username: "Olivier",
-      avatar:
-        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/010.png"
-    },
-    {
-      id: 6,
-      username: "Fred",
-      avatar:
-        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/027.png"
-    }
-  ]
+  users: []
 });
 
 export const mutations = {
+  SET_USERS(state, users) {
+    // Sort the users by id
+    state.users = users.sort((a, b) => {
+      return a.id - b.id;
+    });
+  },
   SET_USER(state, userId) {
     state.user = state.users.find(user => {
       return user.id === userId;
@@ -88,5 +57,9 @@ export const mutations = {
 export const actions = {
   setUser: function(context, userId) {
     context.commit("SET_USER", userId);
+  },
+  async getUsers({ commit }) {
+    const users = await this.$axios.$get("https://api.zeapps.eu/users/online");
+    commit("SET_USERS", users);
   }
 };

@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
 import PF from "pathfinding";
-// import axios from "axios";
 import GameDisplay from "./GameDisplay";
 import Player from "@/assets/scripts/game/actors/Player";
 import Stats from "stats.js";
@@ -27,7 +26,6 @@ export const Game = {
   ws: null,
   tileSize: 16,
   tileScale: 3,
-  // mapUrl: "https://api.zeapps.eu/maps/v1/map/map.json",
   // mapUrl: "https://api.zeapps.eu/maps/v1/map/medhi1.json",
 
   init(userId) {
