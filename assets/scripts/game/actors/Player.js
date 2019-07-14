@@ -13,15 +13,4 @@ export default class Player extends Character {
     Game.display.viewport.follow(this.sprite, { speed: 40 });
     Game.display.viewport.plugins.pause("follow");
   }
-
-  go(direction) {
-    const animation = `walk-${direction}`;
-    this.setAnimation(animation);
-    Game.display.playerDirection = direction;
-  }
-
-  stand() {
-    const animation = `face-${Game.display.playerDirection}`;
-    this.setAnimation(animation);
-  }
 }

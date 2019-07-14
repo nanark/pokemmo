@@ -42,13 +42,15 @@ const gameloop = delta => {
   const msElapsed = Game.msBetweenFrames + delta;
 
   // Move the player if isWalking is true
-  if (_player.isWalking) moveloop(msElapsed);
+  if (_player.isWalking) moveloop(_player, msElapsed);
 
-  // If path is over and no msLeft, the player has stopped.
-  // Set isWalking to false
+  // If path is over and no msLeft, the player has stopped:
+  // * Set isWalking to false
+  // * Pause the follow mode for the viewport
   if (_player.path.length === 0 && _player.msLeft === 0) {
     _player.isWalking = false;
 
+    // Stop following the player, activate the free scroll
     _viewport.plugins.pause("follow");
   }
 
@@ -59,34 +61,33 @@ const gameloop = delta => {
 
 // Moving loop for the character.
 // Based on time elapsed routine.
-const moveloop = msElapsed => {
+const moveloop = (character, msElapsed) => {
   const _display = Game.display;
-  const _player = Game.display.player;
 
   // Set the buffer for that frame.
   // The loop will go on until that buffer is empty.
-  _player.msElapsedBuffer = msElapsed;
+  character.msElapsedBuffer = msElapsed;
 
-  while (_player.msElapsedBuffer > 0) {
+  while (character.msElapsedBuffer > 0) {
     // Move the character until msElapsedBuffer or msLeft is empty.
-    moving();
+    moving(character);
 
     // The current step is done, set the position based on tile
     // to avoid position with decimals.
     // Fetch the new step if available. If not, stop the animation
     // and break the loop.
-    if (_player.msLeft === 0) {
+    if (character.msLeft === 0) {
       // Set the position with integers.
-      const currentTile = _player.path[0];
-      _player.setPositionTile(currentTile[0], currentTile[1]);
+      const currentTile = character.path[0];
+      character.setPositionTile(currentTile[0], currentTile[1]);
 
       // Step is done, remove from path.
-      _player.path.shift();
+      character.path.shift();
 
       // No more step available.
-      if (_player.path.length === 0) {
+      if (character.path.length === 0) {
         _display.cursorContainer.removeChild(Game.cursorClick);
-        _player.stand();
+        character.stand();
         break;
       }
     }
@@ -94,16 +95,14 @@ const moveloop = msElapsed => {
 };
 
 // Moving the player.
-const moving = () => {
-  const _player = Game.display.player;
-
+const moving = character => {
   // Where to head.
-  const direction = whichDirection();
+  const direction = whichDirection(character);
 
   // No movement left, exit function and all ms values.
   if (!direction) {
-    _player.msElapsedBuffer = 0;
-    _player.msLeft = 0;
+    character.msElapsedBuffer = 0;
+    character.msLeft = 0;
     return false;
   }
 
@@ -114,47 +113,46 @@ const moving = () => {
   // * substract that time from msLeft
   // * set the distance based on msElapsedBuffer
   // * empty msElapsedBuffer
-  if (_player.msLeft >= _player.msElapsedBuffer) {
-    _player.msLeft -= _player.msElapsedBuffer;
-    distance = _player.msElapsedBuffer * _player.distanceEachMs;
-    _player.msElapsedBuffer = 0;
+  if (character.msLeft >= character.msElapsedBuffer) {
+    character.msLeft -= character.msElapsedBuffer;
+    distance = character.msElapsedBuffer * character.distanceEachMs;
+    character.msElapsedBuffer = 0;
 
     // The movement last less time than available for that frame:
     // * set the distance based on msLeft
     // * substract msLeft from msElapsedBuffer
     // * empty msLeft
   } else {
-    distance = _player.msLeft * _player.distanceEachMs;
-    _player.msElapsedBuffer -= _player.msLeft;
-    _player.msLeft = 0;
+    distance = character.msLeft * character.distanceEachMs;
+    character.msElapsedBuffer -= character.msLeft;
+    character.msLeft = 0;
   }
 
   // Moving the sprite based on the step direction
   switch (direction) {
     case "up":
-      _player.sprite.y -= distance;
-      _player.go("up");
+      character.sprite.y -= distance;
+      character.go("up");
       break;
     case "down":
-      _player.sprite.y += distance;
-      _player.go("down");
+      character.sprite.y += distance;
+      character.go("down");
       break;
     case "left":
-      _player.sprite.x -= distance;
-      _player.go("left");
+      character.sprite.x -= distance;
+      character.go("left");
       break;
     case "right":
-      _player.sprite.x += distance;
-      _player.go("right");
+      character.sprite.x += distance;
+      character.go("right");
       break;
     default:
       break;
   }
 };
 
-const whichDirection = () => {
-  const _player = Game.display.player;
-  const _path = _player.path;
+const whichDirection = character => {
+  const _path = character.path;
 
   // If path is empty, exit
   if (_path.length === 0) return false;
@@ -168,16 +166,16 @@ const whichDirection = () => {
 
   // Set direction
   let direction;
-  if (gotoY > _player.position.y) direction = "down";
-  if (gotoY < _player.position.y) direction = "up";
-  if (gotoX > _player.position.x) direction = "right";
-  if (gotoX < _player.position.x) direction = "left";
+  if (gotoY > character.position.y) direction = "down";
+  if (gotoY < character.position.y) direction = "up";
+  if (gotoX > character.position.x) direction = "right";
+  if (gotoX < character.position.x) direction = "left";
 
   // No direction defined, exit
   if (!direction) return false;
 
   // This is a new move, set an initial msLeft
-  if (_player.msLeft === 0) _player.msLeft = _player.msToReachTile;
+  if (character.msLeft === 0) character.msLeft = character.msToReachTile;
 
   return direction;
 };

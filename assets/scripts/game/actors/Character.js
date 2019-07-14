@@ -64,6 +64,17 @@ export default class Character {
     this.sprite.gotoAndPlay(1);
   }
 
+  go(direction) {
+    const animation = `walk-${direction}`;
+    this.setAnimation(animation);
+    Game.display.playerDirection = direction;
+  }
+
+  stand() {
+    const animation = `face-${Game.display.playerDirection}`;
+    this.setAnimation(animation);
+  }
+
   setPositionTile(x, y) {
     this.position.x = x;
     this.position.y = y;
@@ -75,10 +86,10 @@ export default class Character {
     this.sprite.position.set(x, y);
   }
 
+  //=========================================================================
+  // Moving the player, Pathfinding:
+  //=========================================================================
   setPathTo(destinationX, destinationY) {
-    //=========================================================================
-    // Moving the player, Pathfinding:
-    //=========================================================================
     // Clone the grid so you can use it later
     // Pathfinding destroys it afer use
     const gridClone = Game.pathGrid.clone();
