@@ -1,4 +1,4 @@
-import { Game } from "@/assets/scripts/game/Game";
+import { Game } from "./Game";
 
 let previousPositionDebug = [0, 0];
 
@@ -11,7 +11,10 @@ export const tileToPixel = value => {
 };
 
 export const displayDebug = delta => {
-  const currentPosition = [Game.player.sprite.x, Game.player.sprite.y];
+  const currentPosition = [
+    Game.display.player.sprite.x,
+    Game.display.player.sprite.y
+  ];
   const differencePosition = [
     Math.abs(~~(currentPosition[0] - previousPositionDebug[0])),
     Math.abs(~~(currentPosition[1] - previousPositionDebug[1]))

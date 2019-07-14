@@ -1,4 +1,3 @@
-import * as PIXI from "pixi.js";
 import PF from "pathfinding";
 import GameDisplay from "./GameDisplay";
 import Player from "@/assets/scripts/game/actors/Player";
@@ -16,8 +15,6 @@ export const Game = {
   loaded: false,
   online: false,
   debugMode: false,
-  player: {},
-  playerDirection: "down",
   texturesCache: {},
   obstacles: [],
   grid: [],
@@ -43,25 +40,6 @@ export const Game = {
 
     this.display = new GameDisplay();
     this.userId = userId;
-
-    this.globalContainer = new PIXI.Container();
-
-    this.mapContainer = new PIXI.Container();
-    this.cursorContainer = new PIXI.Container();
-    this.unitsContainer = new PIXI.Container();
-    this.menuContainer = new PIXI.Container();
-
-    this.mapContainer.zIndex = 5;
-    this.mapContainer.interactive = true;
-    this.unitsContainer.zIndex = 10;
-    this.menuContainer.zIndex = 20;
-
-    this.globalContainer.addChild(this.mapContainer);
-    this.globalContainer.addChild(this.menuContainer);
-    this.globalContainer.addChild(this.cursorContainer);
-    this.globalContainer.addChild(this.unitsContainer);
-
-    Game.display.app.stage.addChild(this.globalContainer);
 
     setPlayerEventsHandler();
 
@@ -110,7 +88,7 @@ export const Game = {
     loadLevel(map);
     // });
 
-    Game.player = new Player();
+    Game.display.player = new Player();
   },
 
   disconnect() {

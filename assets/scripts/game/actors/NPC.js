@@ -1,5 +1,5 @@
 import Character from "./Character";
-import { Game } from "@/assets/scripts/game/Game";
+import { Game } from "../Game";
 
 export default class NPC extends Character {
   constructor(userId, username) {
@@ -9,6 +9,6 @@ export default class NPC extends Character {
     this.username = username;
 
     // Add the player to the stage
-    Game.unitsContainer.addChild(this.sprite);
+    Game.display.unitsContainer.addChild(this.sprite);
   }
 }

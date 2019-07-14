@@ -9,6 +9,12 @@ export const load = items => {
   }
 
   Game.pathGrid = new PF.Grid(Game.grid);
+
+  // Set the dimensions for the viewport scrolling (PIXI-viewport)
+  const worldWidth = Game.pathGrid.width;
+  const worldHeight = Game.pathGrid.height;
+  Game.display.viewport.worldWidth = tileToPixel(worldWidth);
+  Game.display.viewport.worldHeight = tileToPixel(worldHeight);
 };
 
 const loadTiles = item => {
@@ -69,16 +75,22 @@ const loadTiles = item => {
     Game.grid[item.y].push(0);
   }
 
-  Game.mapContainer.addChild(container);
+  Game.display.mapContainer.addChild(container);
 };
 
+// Detect from the pathGrid if the tile is an obstacle.
+// Return true if pathGrid or nodes are missing.
+// It happens when the map is not fully loaded yet.
 export const detectObstacle = (x, y) => {
-  const nodes = Game.pathGrid.nodes;
-  let isObstacle = false;
+  const pathGrid = Game.pathGrid;
+  if (!pathGrid) return true;
 
-  if (nodes[y][x]) {
-    isObstacle = nodes[y][x].walkable;
-  }
+  const nodes = pathGrid.nodes;
+  if (!nodes) return true;
+
+  if (!nodes[y][x]) return true;
+
+  const isObstacle = nodes[y][x].walkable;
 
   return !isObstacle;
 };

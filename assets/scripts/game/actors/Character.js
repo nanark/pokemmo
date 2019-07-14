@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Game } from "@/assets/scripts/game/Game";
-import { tileToPixel } from "@/assets/scripts/game/utils";
+import { Game } from "../Game";
+import { tileToPixel } from "../utils";
 
 export default class Character {
   constructor(type, animation) {

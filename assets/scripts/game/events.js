@@ -1,15 +1,15 @@
-import { Game } from "@/assets/scripts/game/Game";
-import { pixelToTile, tileToPixel } from "@/assets/scripts/game/utils";
-import { pace } from "@/assets/scripts/game/loop";
-import { detectObstacle } from "@/assets/scripts/game/levels";
+import { Game } from "./Game";
+import { pixelToTile, tileToPixel } from "./utils";
+import { pace } from "./loop";
+import { detectObstacle } from "./levels";
 
 const targetTile = event => {
   // Shortcut
-  const globalContainer = Game.globalContainer;
-  const cursorContainer = Game.cursorContainer;
+  const viewport = Game.display.viewport;
+  const cursorContainer = Game.display.cursorContainer;
 
-  const mouseX = event.data.global.x + Math.abs(globalContainer.position.x);
-  const mouseY = event.data.global.y + Math.abs(globalContainer.position.y);
+  const mouseX = event.data.global.x + Math.abs(viewport.position.x);
+  const mouseY = event.data.global.y + Math.abs(viewport.position.y);
 
   const tileX = Math.ceil(pixelToTile(mouseX)) - 1;
   const tileY = Math.ceil(pixelToTile(mouseY)) - 1;
@@ -29,7 +29,7 @@ const targetTile = event => {
 
 export const setPlayerEventsHandler = () => {
   // Shortcut
-  const mapContainer = Game.mapContainer;
+  const mapContainer = Game.display.mapContainer;
 
   //===========================================================================
   // Hover the map:
@@ -43,7 +43,7 @@ export const setPlayerEventsHandler = () => {
   //===========================================================================
   mapContainer.mousedown = mapContainer.touchmove = event => {
     const { tileX, tileY, isObstacle } = targetTile(event);
-    const cursorContainer = Game.cursorContainer;
+    const cursorContainer = Game.display.cursorContainer;
 
     //=========================================================================
     // Moving the player, Pathfinding:
@@ -53,17 +53,17 @@ export const setPlayerEventsHandler = () => {
     const gridClone = Game.pathGrid.clone();
 
     // Fetch the next tile if available
-    Game.player.path = Game.player.path.slice(0, 1);
+    Game.display.player.path = Game.display.player.path.slice(0, 1);
 
     let x, y;
     // The character is moving, start from the next tile
-    if (Game.player.path.length > 0) {
-      x = Game.player.path[0][0];
-      y = Game.player.path[0][1];
+    if (Game.display.player.path.length > 0) {
+      x = Game.display.player.path[0][0];
+      y = Game.display.player.path[0][1];
       // No path available, start from the character position
     } else {
-      x = Game.player.position.x;
-      y = Game.player.position.y;
+      x = Game.display.player.position.x;
+      y = Game.display.player.position.y;
     }
 
     const path = Game.finder.findPath(x, y, tileX, tileY, gridClone);
@@ -77,8 +77,9 @@ export const setPlayerEventsHandler = () => {
     // * fill msLeft to the default msToReachTile
     // All 3 will be resetted at the destination.
     if (path.length > 0) {
-      Game.player.isWalking = true;
-      if (Game.player.path) Game.player.path = Game.player.path.concat(path);
+      Game.display.player.isWalking = true;
+      if (Game.display.player.path)
+        Game.display.player.path = Game.display.player.path.concat(path);
       if (pace.msLeft === 0) pace.msLeft = pace.msToReachTile;
     }
 
@@ -89,6 +90,9 @@ export const setPlayerEventsHandler = () => {
       Game.cursorClick.x = tileToPixel(tileX);
       Game.cursorClick.y = tileToPixel(tileY);
       cursorContainer.addChild(Game.cursorClick);
+
+      // Follow the player while moving
+      Game.display.viewport.plugins.resume("follow");
     }
   };
 };
