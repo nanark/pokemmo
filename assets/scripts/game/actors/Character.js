@@ -6,6 +6,7 @@ export default class Character {
   constructor(type, animation) {
     this.type = type;
     this.animation = animation;
+    this.direction = "down";
     this.position = {};
     this.position.x = 0;
     this.position.y = 0;
@@ -17,34 +18,33 @@ export default class Character {
     this.msToReachTile = 150;
     this.distanceEachMs = Game.tileDistance / this.msToReachTile;
 
-    // Buffers
+    // Movement Buffers
     this.msElapsedBuffer = 0;
     this.msLeft = 0;
 
+    // Building the animations
     const sheet = this.buildTextures(this.animation);
-
     this.sprite = new PIXI.AnimatedSprite(sheet);
+    this.sprite.animationSpeed = 0.14;
+    this.sprite.play();
 
     // Scale
     this.sprite.width = this.sprite.width * Game.tileScale;
     this.sprite.height = this.sprite.height * Game.tileScale;
-    this.sprite.anchor.set(0, 0);
+    this.sprite.anchor.set(0, 0); // Corner top-left
     this.sprite.zIndex = 1;
 
-    // Place it at the center
+    // Place it at the top left corner
     const x = 0;
     const y = 0;
     this.setPositionTile(x, y);
-
-    // Animation
-    this.sprite.animationSpeed = 0.14;
-    this.sprite.play();
   }
 
   buildTextures(animation) {
     const spritesheet = PIXI.Loader.shared.resources[this.type].spritesheet;
     let sheet;
 
+    // If this is an animation or a texture
     if (spritesheet.animations[animation]) {
       sheet = spritesheet.animations[animation];
     } else {
@@ -67,14 +67,15 @@ export default class Character {
   go(direction) {
     const animation = `walk-${direction}`;
     this.setAnimation(animation);
-    Game.display.playerDirection = direction;
+    this.direction = direction;
   }
 
   stand() {
-    const animation = `face-${Game.display.playerDirection}`;
+    const animation = `face-${this.direction}`;
     this.setAnimation(animation);
   }
 
+  // Place the character on this tile and set position in pixel
   setPositionTile(x, y) {
     this.position.x = x;
     this.position.y = y;
@@ -82,6 +83,7 @@ export default class Character {
     this.sprite.position.set(tileToPixel(x), tileToPixel(y));
   }
 
+  // Place the character at this position in pixels
   setPositionPixel(x, y) {
     this.sprite.position.set(x, y);
   }

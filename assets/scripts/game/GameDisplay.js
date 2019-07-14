@@ -6,7 +6,6 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 export default class GameDisplay {
   player = {};
-  playerDirection = "down";
   width = 0;
   heigth = 0;
 
