@@ -2,25 +2,29 @@ import { Game } from "./Game";
 import { pixelToTile, tileToPixel } from "./utils";
 import { detectObstacle } from "./levels";
 
+// Catch the mouse event and convert the position into a tile
+// and obstacle bool
 const targetTile = event => {
-  // Shortcut
-  const viewport = Game.display.viewport;
-  const cursorContainer = Game.display.cursorContainer;
+  const _viewportPosition = Game.display.viewport.position;
+  const _cursorContainer = Game.display.cursorContainer;
+  const _cursor = Game.display.cursor;
 
-  const mouseX = event.data.global.x + Math.abs(viewport.position.x);
-  const mouseY = event.data.global.y + Math.abs(viewport.position.y);
+  const data = event.data.global;
+  const mouseX = data.x + Math.abs(_viewportPosition.x);
+  const mouseY = data.y + Math.abs(_viewportPosition.y);
 
   const tileX = Math.ceil(pixelToTile(mouseX)) - 1;
   const tileY = Math.ceil(pixelToTile(mouseY)) - 1;
 
   const isObstacle = detectObstacle(tileX, tileY);
 
-  cursorContainer.removeChild(Game.cursor);
+  // Handle the cursor
+  _cursorContainer.removeChild(_cursor);
 
   if (!isObstacle) {
-    Game.cursor.x = tileToPixel(tileX);
-    Game.cursor.y = tileToPixel(tileY);
-    cursorContainer.addChild(Game.cursor);
+    _cursor.x = tileToPixel(tileX);
+    _cursor.y = tileToPixel(tileY);
+    _cursorContainer.addChild(_cursor);
   }
 
   return { tileX, tileY, isObstacle };
@@ -28,36 +32,38 @@ const targetTile = event => {
 
 export const setPlayerEventsHandler = () => {
   // Shortcut
-  const mapContainer = Game.display.mapContainer;
+  const _map = Game.display.mapContainer;
 
   //===========================================================================
   // Hover the map:
   //===========================================================================
-  mapContainer.mousemove = mapContainer.touchmove = event => {
+  _map.mousemove = _map.touchmove = event => {
     targetTile(event);
   };
 
   //===========================================================================
   // Click the map:
   //===========================================================================
-  mapContainer.mousedown = mapContainer.touchmove = event => {
+  _map.mousedown = _map.touchmove = event => {
     const { tileX, tileY, isObstacle } = targetTile(event);
-    const cursorContainer = Game.display.cursorContainer;
+    const _cursorContainer = Game.display.cursorContainer;
+    const _cursor = Game.cursorClick;
     const _player = Game.display.player;
+    const _viewport = Game.display.viewport;
 
     // Construct the path
     _player.setPathTo(tileX, tileY);
 
-    // Placing the cursor
-    cursorContainer.removeChild(Game.cursorClick);
+    // Handle the cursor
+    _cursorContainer.removeChild(_cursor);
 
     if (!isObstacle) {
-      Game.cursorClick.x = tileToPixel(tileX);
-      Game.cursorClick.y = tileToPixel(tileY);
-      cursorContainer.addChild(Game.cursorClick);
+      _cursor.x = tileToPixel(tileX);
+      _cursor.y = tileToPixel(tileY);
+      _cursorContainer.addChild(_cursor);
 
       // Follow the player while moving
-      Game.display.viewport.plugins.resume("follow");
+      _viewport.plugins.resume("follow");
     }
   };
 };
