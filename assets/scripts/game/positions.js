@@ -2,33 +2,24 @@ import NPC from "@/assets/scripts/game/actors/NPC";
 import { Game } from "@/assets/scripts/game/Game";
 import { logIt } from "@/assets/scripts/game/utils";
 
-let oldNow = 0;
-
-export const moveCharacters = positions => {
-  positions.data.forEach(position => {
-    const now = Date.now();
-    const diff = now - oldNow;
-    if (diff > 40) {
-      console.log(now - oldNow);
-    }
-    oldNow = now;
-
-    const x = position.x;
-    const y = position.y;
-    const userId = position.user.id;
-    const username = position.user.username;
-    const animation = position.animation || "walk-down";
-
-    if (Game.userId == userId) {
-      return false;
-    }
-
-    if (!Game.population[userId]) {
-      logIt("Generate a new NPC:" + username);
-      Game.population[userId] = new NPC(userId, username);
-    }
-
-    Game.population[userId].setPosition(x, y);
-    Game.population[userId].setAnimation(animation);
+export const moveCharacters = data => {
+  const goto = data;
+  const x = goto.x;
+  const y = goto.y;
+  const user = Game.users.find(i => {
+    return i.id == goto.user_id;
   });
+
+  if (Game.user.id == user.id) {
+    return false;
+  }
+
+  if (!Game.population.has(user.id)) {
+    logIt("Generate a new NPC:" + user.username);
+    Game.population.set(user.id, new NPC(user));
+  }
+
+  Game.population.get(user.id).setPathTo(x, y);
+
+  // Game.population[user.id].setAnimation(animation);
 };

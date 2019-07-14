@@ -11,22 +11,26 @@ import { cursor } from "./cursor";
 
 export const Game = {
   logs: [],
+  users: [], // Temp
   FPS: 60,
   loaded: false,
-  online: false,
+  online: true,
   debugMode: false,
   texturesCache: {},
   obstacles: [],
   grid: [],
   pathGrid: null,
-  population: [],
+  population: new Map(),
   ws: null,
   tileSize: 16,
   tileScale: 3,
 
-  init(user) {
+  init(user, users) {
     // Display stats
     this.displayStats();
+
+    // Temp
+    this.users = users;
 
     // Movement values
     this.msBetweenFrames = 1000 / this.FPS;
@@ -65,7 +69,7 @@ export const Game = {
       this.population.forEach(character => {
         Game.display.app.stage.removeChild(character.container);
       });
-      this.population = [];
+      this.population = new Map();
     }
 
     this.online = mode;
@@ -80,9 +84,12 @@ export const Game = {
 
     this.ws.addEventListener("message", event => {
       if (this.loaded && this.online) {
-        const positions = JSON.parse(event.data);
+        const message = JSON.parse(event.data);
+        const namespace = message.namespace;
 
-        moveCharacters(positions);
+        if (namespace === "position") {
+          moveCharacters(message.data);
+        }
       }
     });
   },

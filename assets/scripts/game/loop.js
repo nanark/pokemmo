@@ -25,6 +25,21 @@ const gameloop = delta => {
     _viewport.plugins.pause("follow");
   }
 
+  // Moving the population
+  if (Game.population.size > 0) {
+    for (let npc of Game.population.values()) {
+      // Move the player if isWalking is true
+      if (npc.isWalking) moveloop(npc, msElapsed);
+
+      // If path is over and no msLeft, the player has stopped:
+      // * Set isWalking to false
+      // * Pause the follow mode for the viewport
+      if (npc.path.length === 0 && npc.msLeft === 0) {
+        npc.isWalking = false;
+      }
+    }
+  }
+
   scrollWithKeyboard(delta);
 
   Game.stats.end();
