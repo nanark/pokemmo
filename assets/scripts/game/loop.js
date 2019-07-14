@@ -4,6 +4,8 @@ import { Game } from "./Game";
 import { logIt } from "./utils";
 
 const gameloop = delta => {
+  // Dynamic travel
+  Game.msBetweenFrames = 1000 / Game.display.app.ticker.FPS;
   const _viewport = Game.display.viewport;
   const _player = Game.display.player;
 

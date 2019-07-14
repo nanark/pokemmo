@@ -19,7 +19,6 @@ export const moveCharacters = data => {
     Game.population.set(user.id, new NPC(user));
   }
 
+  // Set the new destination
   Game.population.get(user.id).setPathTo(x, y);
-
-  // Game.population[user.id].setAnimation(animation);
 };
