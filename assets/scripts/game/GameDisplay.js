@@ -35,12 +35,18 @@ export default class GameDisplay {
       screenHeight: this.height,
       // the interaction module is important for wheel to work properly
       // when renderer.view is placed or scaled
-      left: 0,
       interaction: this.app.renderer.plugins.interaction
     })
       .drag()
       .clamp({ direction: "all" })
       .mouseEdges({ distance: 100, speed: 15, linear: true });
+
+    this.viewport.on("moved", data => {
+      // The player force scroll, pause the follow mode
+      if (data.type === "mouse-edges") {
+        this.viewport.plugins.pause("follow");
+      }
+    });
 
     // We use different containers as Z-layers
     this.mapContainer = new PIXI.Container();
