@@ -30,10 +30,7 @@ Each message must declare a namespace attribute and a data object.
   "namespace": "chat",
   "event_type": "message",
   "data": {
-    "user": {
-      "id": "xRTEx452h",
-      "username": "Graouh"
-    },
+    "user_id": "xRTEx452h",
     "message": "😂 Lol c'est super drôle ma gueule !"
   }
 }
@@ -48,9 +45,8 @@ Each message must declare a namespace attribute and a data object.
   "namespace": "position",
   "event_type": "movement",
   "data": {
-    "x": 143,
-    "y": 120,
-    "animation": "walk-down"
+    "x": 13,
+    "y": 1
   }
 }
 ```
@@ -62,13 +58,9 @@ Each message must declare a namespace attribute and a data object.
   "event_type": "movement",
   "data": [
     {
-      "user": {
-        "id": "xRTEx452h",
-        "username": "Graouh"
-      },
-      "x": 143,
-      "y": 120,
-      "animation": "walk-down"
+      "user_id": "xRTEx452h",
+      "x": 13,
+      "y": 1
     }
   ]
 }
