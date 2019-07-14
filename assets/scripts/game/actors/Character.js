@@ -9,7 +9,17 @@ export default class Character {
     this.position = {};
     this.position.x = 0;
     this.position.y = 0;
-    this.msBetweenTiles = 150;
+
+    // Movement variables
+    this.isWalking = false;
+    this.path = [];
+    this.msBetweenFrames = 1000 / Game.FPS;
+    this.msToReachTile = 150;
+    this.distanceEachMs = Game.tileDistance / this.msToReachTile;
+
+    // Buffers
+    this.msElapsedBuffer = 0;
+    this.msLeft = 0;
 
     const sheet = this.buildTextures(this.animation);
 
@@ -63,5 +73,51 @@ export default class Character {
 
   setPositionPixel(x, y) {
     this.sprite.position.set(x, y);
+  }
+
+  setPathTo(destinationX, destinationY) {
+    //=========================================================================
+    // Moving the player, Pathfinding:
+    //=========================================================================
+    // Clone the grid so you can use it later
+    // Pathfinding destroys it afer use
+    const gridClone = Game.pathGrid.clone();
+
+    // Fetch the next tile if available
+    this.path = this.path.slice(0, 1);
+
+    let x, y;
+
+    // The character is moving, start from the next tile
+    if (this.path.length > 0) {
+      x = this.path[0][0];
+      y = this.path[0][1];
+      // No path available, start from the character position
+    } else {
+      x = this.position.x;
+      y = this.position.y;
+    }
+
+    const path = Game.finder.findPath(
+      x,
+      y,
+      destinationX,
+      destinationY,
+      gridClone
+    );
+
+    // Remove origin from path
+    path.shift();
+
+    // Starting the movement needs 3 flags:
+    // * isWalking to true
+    // * steps in the path
+    // * fill msLeft to the default msToReachTile
+    // All 3 will be resetted at the destination.
+    if (path.length > 0) {
+      this.isWalking = true;
+      if (this.path) this.path = this.path.concat(path);
+      if (this.msLeft === 0) this.msLeft = this.msToReachTile;
+    }
   }
 }

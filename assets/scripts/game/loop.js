@@ -32,39 +32,21 @@ import { logIt } from "./utils";
 //   Game.ws.send(JSON.stringify(position));
 // };
 
-export const pace = {
-  // Set in gameloop.
-  distanceBetweenTiles: 0,
-  distanceEachMs: 0,
-  msBetweenFrames: 0,
-  msToReachTile: 0,
-
-  // Buffers
-  msElapsedBuffer: 0,
-  msLeft: 0
-};
-
 const gameloop = delta => {
   const _viewport = Game.display.viewport;
   const _player = Game.display.player;
 
   Game.stats.begin();
 
-  // Set metrics for calculations
-  pace.msToReachTile = _player.msBetweenTiles;
-  pace.msBetweenFrames = 1000 / Game.FPS;
-  pace.distanceBetweenTiles = Game.tileSize * Game.tileScale;
-  pace.distanceEachMs = pace.distanceBetweenTiles / pace.msToReachTile;
-
   // Set the time elapsed between frames
-  const msElapsed = pace.msBetweenFrames + delta;
+  const msElapsed = Game.msBetweenFrames + delta;
 
   // Move the player if isWalking is true
   if (_player.isWalking) moveloop(msElapsed);
 
   // If path is over and no msLeft, the player has stopped.
   // Set isWalking to false
-  if (_player.path.length === 0 && pace.msLeft === 0) {
+  if (_player.path.length === 0 && _player.msLeft === 0) {
     _player.isWalking = false;
 
     _viewport.plugins.pause("follow");
@@ -83,9 +65,9 @@ const moveloop = msElapsed => {
 
   // Set the buffer for that frame.
   // The loop will go on until that buffer is empty.
-  pace.msElapsedBuffer = msElapsed;
+  _player.msElapsedBuffer = msElapsed;
 
-  while (pace.msElapsedBuffer > 0) {
+  while (_player.msElapsedBuffer > 0) {
     // Move the character until msElapsedBuffer or msLeft is empty.
     moving();
 
@@ -93,7 +75,7 @@ const moveloop = msElapsed => {
     // to avoid position with decimals.
     // Fetch the new step if available. If not, stop the animation
     // and break the loop.
-    if (pace.msLeft === 0) {
+    if (_player.msLeft === 0) {
       // Set the position with integers.
       const currentTile = _player.path[0];
       _player.setPositionTile(currentTile[0], currentTile[1]);
@@ -120,8 +102,8 @@ const moving = () => {
 
   // No movement left, exit function and all ms values.
   if (!direction) {
-    pace.msElapsedBuffer = 0;
-    pace.msLeft = 0;
+    _player.msElapsedBuffer = 0;
+    _player.msLeft = 0;
     return false;
   }
 
@@ -132,19 +114,19 @@ const moving = () => {
   // * substract that time from msLeft
   // * set the distance based on msElapsedBuffer
   // * empty msElapsedBuffer
-  if (pace.msLeft >= pace.msElapsedBuffer) {
-    pace.msLeft -= pace.msElapsedBuffer;
-    distance = pace.msElapsedBuffer * pace.distanceEachMs;
-    pace.msElapsedBuffer = 0;
+  if (_player.msLeft >= _player.msElapsedBuffer) {
+    _player.msLeft -= _player.msElapsedBuffer;
+    distance = _player.msElapsedBuffer * _player.distanceEachMs;
+    _player.msElapsedBuffer = 0;
 
     // The movement last less time than available for that frame:
     // * set the distance based on msLeft
     // * substract msLeft from msElapsedBuffer
     // * empty msLeft
   } else {
-    distance = pace.msLeft * pace.distanceEachMs;
-    pace.msElapsedBuffer -= pace.msLeft;
-    pace.msLeft = 0;
+    distance = _player.msLeft * _player.distanceEachMs;
+    _player.msElapsedBuffer -= _player.msLeft;
+    _player.msLeft = 0;
   }
 
   // Moving the sprite based on the step direction
@@ -195,7 +177,7 @@ const whichDirection = () => {
   if (!direction) return false;
 
   // This is a new move, set an initial msLeft
-  if (pace.msLeft === 0) pace.msLeft = pace.msToReachTile;
+  if (_player.msLeft === 0) _player.msLeft = _player.msToReachTile;
 
   return direction;
 };

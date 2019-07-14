@@ -23,11 +23,14 @@ export const Game = {
   ws: null,
   tileSize: 16,
   tileScale: 3,
-  // mapUrl: "https://api.zeapps.eu/maps/v1/map/medhi1.json",
 
   init(userId) {
     // Display stats
     this.displayStats();
+
+    // Movement values
+    this.msBetweenFrames = 1000 / this.FPS;
+    this.tileDistance = this.tileSize * this.tileScale;
 
     // Cursor
     this.cursor = cursor("hover");

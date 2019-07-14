@@ -1,6 +1,5 @@
 import { Game } from "./Game";
 import { pixelToTile, tileToPixel } from "./utils";
-import { pace } from "./loop";
 import { detectObstacle } from "./levels";
 
 const targetTile = event => {
@@ -44,44 +43,10 @@ export const setPlayerEventsHandler = () => {
   mapContainer.mousedown = mapContainer.touchmove = event => {
     const { tileX, tileY, isObstacle } = targetTile(event);
     const cursorContainer = Game.display.cursorContainer;
+    const _player = Game.display.player;
 
-    //=========================================================================
-    // Moving the player, Pathfinding:
-    //=========================================================================
-    // Clone the grid so you can use it later
-    // Pathfinding destroys it afer use
-    const gridClone = Game.pathGrid.clone();
-
-    // Fetch the next tile if available
-    Game.display.player.path = Game.display.player.path.slice(0, 1);
-
-    let x, y;
-    // The character is moving, start from the next tile
-    if (Game.display.player.path.length > 0) {
-      x = Game.display.player.path[0][0];
-      y = Game.display.player.path[0][1];
-      // No path available, start from the character position
-    } else {
-      x = Game.display.player.position.x;
-      y = Game.display.player.position.y;
-    }
-
-    const path = Game.finder.findPath(x, y, tileX, tileY, gridClone);
-
-    // Remove origin from path
-    path.shift();
-
-    // Starting the movement needs 3 flags:
-    // * isWalking to true
-    // * steps in the path
-    // * fill msLeft to the default msToReachTile
-    // All 3 will be resetted at the destination.
-    if (path.length > 0) {
-      Game.display.player.isWalking = true;
-      if (Game.display.player.path)
-        Game.display.player.path = Game.display.player.path.concat(path);
-      if (pace.msLeft === 0) pace.msLeft = pace.msToReachTile;
-    }
+    // Construct the path
+    _player.setPathTo(tileX, tileY);
 
     // Placing the cursor
     cursorContainer.removeChild(Game.cursorClick);
