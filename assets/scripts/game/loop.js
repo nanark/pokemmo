@@ -3,35 +3,6 @@ import * as PIXI from "pixi.js";
 import { Game } from "./Game";
 import { logIt } from "./utils";
 
-// Send the player position if he moved
-// const sendPosition = () => {
-//   // const currentPosition = [Game.display.player.sprite.x, Game.display.player.sprite.y];
-//   // if (isEqual(previousPosition, currentPosition)) {
-//   //   if (isMoving) {
-//   //     sendingPosition();
-//   //     isMoving = false;
-//   //   }
-//   //   return false;
-//   // }
-//   // previousPosition = currentPosition;
-//   // isMoving = true;
-//   // // Sending via websocket
-//   // sendingPosition();
-// };
-
-// const sendingPosition = () => {
-//   const position = {
-//     namespace: "position",
-//     event_type: "movement",
-//     data: {
-//       x: ~~Game.display.player.sprite.x,
-//       y: ~~Game.display.player.sprite.y,
-//       animation: Game.display.player.animation
-//     }
-//   };
-//   Game.ws.send(JSON.stringify(position));
-// };
-
 const gameloop = delta => {
   const _viewport = Game.display.viewport;
   const _player = Game.display.player;

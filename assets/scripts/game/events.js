@@ -2,6 +2,16 @@ import { Game } from "./Game";
 import { pixelToTile, tileToPixel } from "./utils";
 import { detectObstacle } from "./levels";
 
+// Send the player destination
+const sendPosition = (x, y) => {
+  const position = {
+    namespace: "position",
+    event_type: "movement",
+    data: { x, y }
+  };
+  Game.ws.send(JSON.stringify(position));
+};
+
 // Catch the mouse event and convert the position into a tile
 // and obstacle bool
 const targetTile = event => {
@@ -53,6 +63,7 @@ export const setPlayerEventsHandler = () => {
 
     // Construct the path
     _player.setPathTo(tileX, tileY);
+    sendPosition(tileX, tileY);
 
     // Handle the cursor
     _cursorContainer.removeChild(_cursor);
