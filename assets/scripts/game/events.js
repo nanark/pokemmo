@@ -7,7 +7,7 @@ import { detectObstacle } from "./levels";
 const targetTile = event => {
   const _viewportPosition = Game.display.viewport.position;
   const _cursorContainer = Game.display.cursorContainer;
-  const _cursor = Game.display.cursor;
+  const _cursor = Game.cursor;
 
   const data = event.data.global;
   const mouseX = data.x + Math.abs(_viewportPosition.x);
