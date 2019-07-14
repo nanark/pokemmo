@@ -3,8 +3,10 @@ import { Game } from "../Game";
 import { tileToPixel } from "../utils";
 
 export default class Character {
-  constructor(type, animation) {
+  constructor(type, animation, user) {
     this.type = type;
+    this.id = user.id;
+    this.username = user.username;
     this.animation = animation;
     this.direction = "down";
     this.position = {};
@@ -27,11 +29,21 @@ export default class Character {
     const sheet = this.buildTextures(this.animation);
     this.container = new PIXI.Container();
 
+    // Text
+    this.layers.label = new PIXI.Text(this.username, {
+      fontFamily: "Arial",
+      fontSize: 14,
+      fill: 0xffffff,
+      align: "center"
+    });
+
+    // Sprite
     this.layers.sprite = new PIXI.AnimatedSprite(sheet);
     this.layers.sprite.animationSpeed = 0.14;
     this.layers.sprite.play();
 
     this.container.addChild(this.layers.sprite);
+    this.container.addChild(this.layers.label);
 
     // Scale
     this.layers.sprite.width = this.layers.sprite.width * Game.tileScale;

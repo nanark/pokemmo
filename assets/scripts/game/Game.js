@@ -24,7 +24,7 @@ export const Game = {
   tileSize: 16,
   tileScale: 3,
 
-  init(userId) {
+  init(user) {
     // Display stats
     this.displayStats();
 
@@ -42,7 +42,8 @@ export const Game = {
     });
 
     this.display = new GameDisplay();
-    this.userId = userId;
+    this.user = user;
+    this.userId = user.id;
 
     setPlayerEventsHandler();
 
@@ -91,7 +92,7 @@ export const Game = {
     loadLevel(map);
     // });
 
-    Game.display.player = new Player();
+    Game.display.player = new Player(this.user);
   },
 
   disconnect() {

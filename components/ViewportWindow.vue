@@ -17,7 +17,7 @@ export default {
   },
   mounted() {
     // Init the Game object
-    Game.init(this.user.id);
+    Game.init(this.user);
     Game.setWebsocket(this.$socket);
 
     // Bind it to the DOM

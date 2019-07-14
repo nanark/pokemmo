@@ -2,15 +2,18 @@ import Character from "./Character";
 import { Game } from "../Game";
 
 export default class Player extends Character {
-  constructor() {
-    super("character", "face-down");
+  constructor(name) {
+    super("character", "face-down", name);
+
+    const _display = Game.display;
+    const _viewport = Game.display.viewport;
 
     // Add the player to the stage
-    Game.display.unitsContainer.addChild(this.container);
+    _display.unitsContainer.addChild(this.container);
 
     // Prepare the follow plugin for the viewport.
     // Pause it to enable it only when the character is moving.
-    Game.display.viewport.follow(this.container, { speed: 40 });
-    Game.display.viewport.plugins.pause("follow");
+    _viewport.follow(this.container, { speed: 40 });
+    _viewport.plugins.pause("follow");
   }
 }

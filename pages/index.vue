@@ -38,6 +38,7 @@ export default {
   },
   computed: mapState({
     user: state => state.user,
+    users: state => state.users,
     socket: state => state.socket
   }),
   methods: {
