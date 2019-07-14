@@ -33,7 +33,6 @@ export const Game = {
     this.users = users;
 
     // Movement values
-    this.msBetweenFrames = 1000 / this.FPS;
     this.tileDistance = this.tileSize * this.tileScale;
 
     // Cursor
@@ -99,7 +98,15 @@ export const Game = {
     loadLevel(map);
     // });
 
-    Game.display.player = new Player(this.user);
+    const player = new Player(this.user);
+
+    // Temp: Set the player in the map
+    player.setPositionTile(30, 24);
+    Game.display.viewport.moveCenter(
+      player.container.position.x,
+      player.container.position.y
+    );
+    Game.display.player = player;
   },
 
   disconnect() {

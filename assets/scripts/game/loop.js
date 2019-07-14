@@ -4,15 +4,14 @@ import { Game } from "./Game";
 import { logIt } from "./utils";
 
 const gameloop = delta => {
-  // Dynamic travel
-  Game.msBetweenFrames = 1000 / Game.display.app.ticker.FPS;
   const _viewport = Game.display.viewport;
   const _player = Game.display.player;
 
   Game.stats.begin();
 
   // Set the time elapsed between frames
-  const msElapsed = Game.msBetweenFrames + delta;
+  const msBetweenFrames = 1000 / Game.display.app.ticker.FPS;
+  const msElapsed = msBetweenFrames + delta;
 
   // Move the player if isWalking is true
   if (_player.isWalking) moveloop(_player, msElapsed);
