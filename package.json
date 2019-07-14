@@ -18,7 +18,6 @@
     "firebase": "^6.1.1",
     "nuxt": "^2.0.0",
     "pathfinding": "^0.4.18",
-    "pixi-plugin-bump": "^1.1.8",
     "pixi-viewport": "^4.0.1",
     "pixi.js": "^5.0.4",
     "pixi.js-keyboard": "^1.0.9",

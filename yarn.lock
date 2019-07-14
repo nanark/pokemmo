@@ -6440,11 +6440,6 @@ pinkie@^2.0.0:
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
   integrity sha1-clVrgM+g1IqXToDnckjoDtT3+HA=
 
-pixi-plugin-bump@^1.1.8:
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/pixi-plugin-bump/-/pixi-plugin-bump-1.1.8.tgz#8f3be4389ab664a7f789058a376d57966287b9da"
-  integrity sha512-GKVUWUy3KrGZ8VYR/vs/APnN5Lm4QpKeeen7bNrgtW8JlSfkS/MMpKqa+wegRyjnFbyLlqGekfnmPLlaIVQGSw==
-
 pixi-viewport@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/pixi-viewport/-/pixi-viewport-4.0.1.tgz#6214d693a13c4094e1f6f8bcc3977861195f87f4"
