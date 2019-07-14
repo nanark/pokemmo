@@ -9,6 +9,6 @@ export default class NPC extends Character {
     this.username = username;
 
     // Add the player to the stage
-    Game.display.unitsContainer.addChild(this.sprite);
+    Game.display.unitsContainer.addChild(this.container);
   }
 }

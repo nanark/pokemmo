@@ -12,8 +12,8 @@ export const tileToPixel = value => {
 
 export const displayDebug = delta => {
   const currentPosition = [
-    Game.display.player.sprite.x,
-    Game.display.player.sprite.y
+    Game.display.player.container.x,
+    Game.display.player.container.y
   ];
   const differencePosition = [
     Math.abs(~~(currentPosition[0] - previousPositionDebug[0])),

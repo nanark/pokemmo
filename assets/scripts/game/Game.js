@@ -62,7 +62,7 @@ export const Game = {
     // Destroy the other characters
     if (!mode) {
       this.population.forEach(character => {
-        Game.display.app.stage.removeChild(character.sprite);
+        Game.display.app.stage.removeChild(character.container);
       });
       this.population = [];
     }

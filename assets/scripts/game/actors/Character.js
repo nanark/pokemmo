@@ -10,6 +10,7 @@ export default class Character {
     this.position = {};
     this.position.x = 0;
     this.position.y = 0;
+    this.layers = {};
 
     // Movement variables
     this.isWalking = false;
@@ -24,15 +25,19 @@ export default class Character {
 
     // Building the animations
     const sheet = this.buildTextures(this.animation);
-    this.sprite = new PIXI.AnimatedSprite(sheet);
-    this.sprite.animationSpeed = 0.14;
-    this.sprite.play();
+    this.container = new PIXI.Container();
+
+    this.layers.sprite = new PIXI.AnimatedSprite(sheet);
+    this.layers.sprite.animationSpeed = 0.14;
+    this.layers.sprite.play();
+
+    this.container.addChild(this.layers.sprite);
 
     // Scale
-    this.sprite.width = this.sprite.width * Game.tileScale;
-    this.sprite.height = this.sprite.height * Game.tileScale;
-    this.sprite.anchor.set(0, 0); // Corner top-left
-    this.sprite.zIndex = 1;
+    this.layers.sprite.width = this.layers.sprite.width * Game.tileScale;
+    this.layers.sprite.height = this.layers.sprite.height * Game.tileScale;
+    this.layers.sprite.anchor.set(0, 0); // Corner top-left
+    this.layers.sprite.zIndex = 1;
 
     // Place it at the top left corner
     const x = 0;
@@ -60,8 +65,8 @@ export default class Character {
     }
 
     this.animation = animation;
-    this.sprite.textures = this.buildTextures(animation);
-    this.sprite.gotoAndPlay(1);
+    this.layers.sprite.textures = this.buildTextures(animation);
+    this.layers.sprite.gotoAndPlay(1);
   }
 
   go(direction) {
@@ -80,12 +85,12 @@ export default class Character {
     this.position.x = x;
     this.position.y = y;
 
-    this.sprite.position.set(tileToPixel(x), tileToPixel(y));
+    this.container.position.set(tileToPixel(x), tileToPixel(y));
   }
 
   // Place the character at this position in pixels
   setPositionPixel(x, y) {
-    this.sprite.position.set(x, y);
+    this.container.position.set(x, y);
   }
 
   //=========================================================================

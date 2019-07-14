@@ -72,7 +72,10 @@ export default class GameDisplay {
       // Resize the viewport params too and place the player at the center
       this.viewport.screenWidth = this.width;
       this.viewport.screenHeight = this.height;
-      this.viewport.moveCenter(this.player.sprite.x, this.player.sprite.y);
+      this.viewport.moveCenter(
+        this.player.container.x,
+        this.player.container.y
+      );
     };
 
     addEventListener("resize", resize);

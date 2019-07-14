@@ -96,6 +96,8 @@ const moveloop = (character, msElapsed) => {
 
 // Moving the player.
 const moving = character => {
+  const _sprite = character.container;
+
   // Where to head.
   const direction = whichDirection(character);
 
@@ -131,19 +133,19 @@ const moving = character => {
   // Moving the sprite based on the step direction
   switch (direction) {
     case "up":
-      character.sprite.y -= distance;
+      _sprite.y -= distance;
       character.go("up");
       break;
     case "down":
-      character.sprite.y += distance;
+      _sprite.y += distance;
       character.go("down");
       break;
     case "left":
-      character.sprite.x -= distance;
+      _sprite.x -= distance;
       character.go("left");
       break;
     case "right":
-      character.sprite.x += distance;
+      _sprite.x += distance;
       character.go("right");
       break;
     default:
