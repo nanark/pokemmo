@@ -4,17 +4,22 @@ import { Game } from "@/assets/scripts/game/Game";
 import { tileToPixel } from "@/assets/scripts/game/utils";
 
 export const load = items => {
+  const _viewport = Game.display.viewport;
+
   for (let item of items) {
     loadTiles(item);
   }
 
-  Game.pathGrid = new PF.Grid(Game.grid);
+  const pathGrid = new PF.Grid(Game.grid);
 
   // Set the dimensions for the viewport scrolling (PIXI-viewport)
-  const worldWidth = Game.pathGrid.width;
-  const worldHeight = Game.pathGrid.height;
-  Game.display.viewport.worldWidth = tileToPixel(worldWidth);
-  Game.display.viewport.worldHeight = tileToPixel(worldHeight);
+  const worldWidth = pathGrid.width;
+  const worldHeight = pathGrid.height;
+  _viewport.worldWidth = tileToPixel(worldWidth);
+  _viewport.worldHeight = tileToPixel(worldHeight);
+
+  // Set the global pathGrid
+  Game.pathGrid = pathGrid;
 };
 
 const loadTiles = item => {
@@ -82,12 +87,13 @@ const loadTiles = item => {
 // Return true if pathGrid or nodes are missing.
 // It happens when the map is not fully loaded yet.
 export const detectObstacle = (x, y) => {
-  const pathGrid = Game.pathGrid;
-  if (!pathGrid) return true;
+  const _pathGrid = Game.pathGrid;
+  if (!_pathGrid) return true;
 
-  const nodes = pathGrid.nodes;
+  const nodes = _pathGrid.nodes;
   if (!nodes) return true;
 
+  if (!nodes[y]) return true;
   if (!nodes[y][x]) return true;
 
   const isObstacle = nodes[y][x].walkable;
