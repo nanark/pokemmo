@@ -1,4 +1,4 @@
-// import Keyboard from "pixi.js-keyboard";
+import Keyboard from "pixi.js-keyboard";
 import * as PIXI from "pixi.js";
 import { Game } from "./Game";
 import { logIt } from "./utils";
@@ -45,10 +45,13 @@ export const pace = {
 };
 
 const gameloop = delta => {
+  const viewport = Game.display.viewport;
+  const player = Game.display.player;
+
   Game.stats.begin();
 
   // Set metrics for calculations
-  pace.msToReachTile = Game.display.player.msBetweenTiles;
+  pace.msToReachTile = player.msBetweenTiles;
   pace.msBetweenFrames = 1000 / Game.FPS;
   pace.distanceBetweenTiles = Game.tileSize * Game.tileScale;
   pace.distanceEachMs = pace.distanceBetweenTiles / pace.msToReachTile;
@@ -57,15 +60,17 @@ const gameloop = delta => {
   const msElapsed = pace.msBetweenFrames + delta;
 
   // Move the player if isWalking is true
-  if (Game.display.player.isWalking) moveloop(msElapsed);
+  if (player.isWalking) moveloop(msElapsed);
 
   // If path is over and no msLeft, the player has stopped.
   // Set isWalking to false
-  if (Game.display.player.path.length === 0 && pace.msLeft === 0) {
-    Game.display.player.isWalking = false;
+  if (player.path.length === 0 && pace.msLeft === 0) {
+    player.isWalking = false;
 
-    Game.display.viewport.plugins.pause("follow");
+    viewport.plugins.pause("follow");
   }
+
+  scrollWithKeyboard(delta);
 
   Game.stats.end();
 };
@@ -73,6 +78,9 @@ const gameloop = delta => {
 // Moving loop for the character.
 // Based on time elapsed routine.
 const moveloop = msElapsed => {
+  const display = Game.display;
+  const player = Game.display.player;
+
   // Set the buffer for that frame.
   // The loop will go on until that buffer is empty.
   pace.msElapsedBuffer = msElapsed;
@@ -87,16 +95,16 @@ const moveloop = msElapsed => {
     // and break the loop.
     if (pace.msLeft === 0) {
       // Set the position with integers.
-      const currentTile = Game.display.player.path[0];
-      Game.display.player.setPositionTile(currentTile[0], currentTile[1]);
+      const currentTile = player.path[0];
+      player.setPositionTile(currentTile[0], currentTile[1]);
 
       // Step is done, remove from path.
-      Game.display.player.path.shift();
+      player.path.shift();
 
       // No more step available.
-      if (Game.display.player.path.length === 0) {
-        Game.display.cursorContainer.removeChild(Game.cursorClick);
-        Game.display.player.stand();
+      if (player.path.length === 0) {
+        display.cursorContainer.removeChild(Game.cursorClick);
+        player.stand();
         break;
       }
     }
@@ -105,6 +113,8 @@ const moveloop = msElapsed => {
 
 // Moving the player.
 const moving = () => {
+  const player = Game.display.player;
+
   // Where to head.
   const direction = whichDirection();
 
@@ -140,20 +150,20 @@ const moving = () => {
   // Moving the sprite based on the step direction
   switch (direction) {
     case "up":
-      Game.display.player.sprite.y -= distance;
-      Game.display.player.go("up");
+      player.sprite.y -= distance;
+      player.go("up");
       break;
     case "down":
-      Game.display.player.sprite.y += distance;
-      Game.display.player.go("down");
+      player.sprite.y += distance;
+      player.go("down");
       break;
     case "left":
-      Game.display.player.sprite.x -= distance;
-      Game.display.player.go("left");
+      player.sprite.x -= distance;
+      player.go("left");
       break;
     case "right":
-      Game.display.player.sprite.x += distance;
-      Game.display.player.go("right");
+      player.sprite.x += distance;
+      player.go("right");
       break;
     default:
       break;
@@ -161,7 +171,8 @@ const moving = () => {
 };
 
 const whichDirection = () => {
-  const path = Game.display.player.path;
+  const player = Game.display.player;
+  const path = player.path;
 
   // If path is empty, exit
   if (path.length === 0) return false;
@@ -175,10 +186,10 @@ const whichDirection = () => {
 
   // Set direction
   let direction;
-  if (gotoY > Game.display.player.position.y) direction = "down";
-  if (gotoY < Game.display.player.position.y) direction = "up";
-  if (gotoX > Game.display.player.position.x) direction = "right";
-  if (gotoX < Game.display.player.position.x) direction = "left";
+  if (gotoY > player.position.y) direction = "down";
+  if (gotoY < player.position.y) direction = "up";
+  if (gotoX > player.position.x) direction = "right";
+  if (gotoX < player.position.x) direction = "left";
 
   // No direction defined, exit
   if (!direction) return false;
@@ -189,64 +200,63 @@ const whichDirection = () => {
   return direction;
 };
 
-// const scrollWithKeyboard = delta => {
-//   const toto = true;
-//   if (toto) {
-//     return false;
-//   }
-//   let keyDown = false;
-//   let vy = 0;
-//   let vx = 0;
+const scrollWithKeyboard = delta => {
+  const viewport = Game.display.viewport;
 
-//   if (Keyboard.isKeyDown("KeyW")) {
-//     vy += 4;
-//     keyDown = true;
-//   }
+  const scrollSpeed = 10;
+  let keyDown = false;
+  let vy = 0;
+  let vx = 0;
 
-//   if (Keyboard.isKeyDown("KeyS")) {
-//     vy += -4;
-//     keyDown = true;
-//   }
+  if (Keyboard.isKeyDown("ArrowUp", "KeyW")) {
+    vy += scrollSpeed;
+    keyDown = true;
+  }
 
-//   if (Keyboard.isKeyDown("KeyA")) {
-//     vx += 4;
-//     keyDown = true;
-//   }
+  if (Keyboard.isKeyDown("ArrowDown", "KeyS")) {
+    vy -= scrollSpeed;
+    keyDown = true;
+  }
 
-//   if (Keyboard.isKeyDown("KeyD")) {
-//     vx += -4;
-//     keyDown = true;
-//   }
+  if (Keyboard.isKeyDown("ArrowLeft", "KeyA")) {
+    vx += scrollSpeed;
+    keyDown = true;
+  }
 
-//   if (keyDown) {
-//     const newX = Game.viewport.position.x + addDelta(vx, delta);
-//     const newY = Game.viewport.position.y + addDelta(vy, delta);
-//     const maxX = ~~(Game.viewport.width - Math.abs(newX));
-//     const maxY = ~~(Game.viewport.height - Math.abs(newY));
+  if (Keyboard.isKeyDown("ArrowRight", "KeyD")) {
+    vx -= scrollSpeed;
+    keyDown = true;
+  }
 
-//     if (newX < 0 && maxX >= window.innerWidth) {
-//       Game.viewport.position.x = newX;
-//     }
+  if (keyDown) {
+    const newX = viewport.position.x + addDelta(vx, delta);
+    const newY = viewport.position.y + addDelta(vy, delta);
+    const maxX = ~~(viewport.width - Math.abs(newX));
+    const maxY = ~~(viewport.height - Math.abs(newY));
 
-//     if (newY < 0 && maxY >= window.innerHeight) {
-//       Game.viewport.position.y = newY;
-//     }
-//   }
+    if (newX < 0 && maxX >= window.innerWidth) {
+      viewport.position.x = newX;
+    }
 
-//   Keyboard.update();
-// };
+    if (newY < 0 && maxY >= window.innerHeight) {
+      viewport.position.y = newY;
+    }
+  }
 
-// const addDelta = (value, delta) => {
-//   if (value > 0) {
-//     return value + delta;
-//   }
+  Keyboard.update();
+};
 
-//   if (value < 0) {
-//     return value - delta;
-//   }
+const addDelta = (value, delta) => {
+  if (value > 0) {
+    return value + delta;
+  }
 
-//   return value;
-// };
+  if (value < 0) {
+    return value - delta;
+  }
+
+  return value;
+};
 
 // Loading all resources and add the gameloop in the ticker.
 export function loadResources() {
