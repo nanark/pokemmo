@@ -20,8 +20,8 @@ const targetTile = event => {
   const _cursor = Game.cursor;
 
   const data = event.data.global;
-  const mouseX = data.x + Math.abs(_viewportPosition.x);
-  const mouseY = data.y + Math.abs(_viewportPosition.y);
+  const mouseX = data.x - _viewportPosition.x;
+  const mouseY = data.y - _viewportPosition.y;
 
   const tileX = Math.ceil(pixelToTile(mouseX)) - 1;
   const tileY = Math.ceil(pixelToTile(mouseY)) - 1;
