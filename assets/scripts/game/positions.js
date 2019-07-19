@@ -1,6 +1,6 @@
-import NPC from "@/assets/scripts/game/actors/NPC";
-import { Game } from "@/assets/scripts/game/Game";
-import { logIt } from "@/assets/scripts/game/utils";
+import NPC from "./actors/NPC";
+import { Game } from "./Game";
+import { logIt } from "./utils";
 
 export const moveCharacters = data => {
   const goto = data;

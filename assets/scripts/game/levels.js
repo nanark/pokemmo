@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import PF from "pathfinding";
-import { Game } from "@/assets/scripts/game/Game";
-import { tileToPixel } from "@/assets/scripts/game/utils";
+import { Game } from "./Game";
+import { tileToPixel } from "./utils";
 import { getTexture } from "./textures";
 
 const grid = [];

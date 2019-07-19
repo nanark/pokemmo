@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Game } from "@/assets/scripts/game/Game";
+import { Game } from "./Game";
 
 const colorYellow = 0xffff0b;
 const colorBlueDenim = 0x1857c3;

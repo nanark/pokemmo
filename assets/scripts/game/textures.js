@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Game } from "@/assets/scripts/game/Game";
+import { Game } from "./Game";
 
 const texturesCache = [];
 

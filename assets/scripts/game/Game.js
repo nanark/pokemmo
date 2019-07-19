@@ -1,10 +1,10 @@
 import PF from "pathfinding";
 import GameDisplay from "./GameDisplay";
-import Player from "@/assets/scripts/game/actors/Player";
+import Player from "./actors/Player";
 import Stats from "stats.js";
 import { map } from "@/static/sources/map.js";
-import { logIt } from "@/assets/scripts/game/utils";
-import { moveCharacters } from "@/assets/scripts/game/positions";
+import { logIt } from "./utils";
+import { moveCharacters } from "./positions";
 import { load as loadLevel } from "./levels";
 import { setPlayerEventsHandler } from "./events";
 import { cursor } from "./cursor";
