@@ -23,18 +23,27 @@ export const load = items => {
 };
 
 const loadTiles = item => {
-  const container = new PIXI.Container();
-
-  container.position.x = tileToPixel(item.x);
-  container.position.y = tileToPixel(item.y);
-  container.scale.set(Game.tileScale);
-  container.zIndex = 0;
-
   let isObstacle = false;
+
+  //===========================================================================
+  // Generate tile
+  //===========================================================================
+  const tileObject = new PIXI.Graphics();
+
+  // Define its properties
+  tileObject.position.x = tileToPixel(item.x);
+  tileObject.position.y = tileToPixel(item.y);
+  tileObject.scale.set(Game.tileScale);
 
   for (let tile of item.tiles) {
     // Generate a ref key for caching
     const ref = `${tile.x}_${tile.y}_${tile.tileset}`;
+
+    // Obstacle
+    if (tile.visible === false) {
+      isObstacle = true;
+      break;
+    }
 
     // Add a key in texturesCache if not available
     if (!Game.texturesCache[ref]) {
@@ -51,25 +60,18 @@ const loadTiles = item => {
       );
     }
 
-    // Create sprite
-    const sprite = new PIXI.Sprite(Game.texturesCache[ref]);
+    const alpha = tile.opacity || 100;
 
-    sprite.width = Game.tileSize;
-    sprite.height = Game.tileSize;
-    sprite.alpha = tile.opacity || 100;
-    sprite.x = 0;
-    sprite.y = 0;
-
-    // Obstacle
-    if (tile.visible === false) {
-      sprite.alpha = 0;
-      isObstacle = true;
-    }
-
-    // Add the sprite to the container
-    container.addChild(sprite);
+    tileObject.beginTextureFill(Game.texturesCache[ref], 0xffffff, alpha);
+    tileObject.drawRect(0, 0, Game.tileSize, Game.tileSize);
   }
 
+  // Add the tile to the map
+  Game.display.mapContainer.addChild(tileObject);
+
+  //===========================================================================
+  // Generate grid
+  //===========================================================================
   // Initialize row
   if (!Game.grid[item.y]) Game.grid[item.y] = [];
 
@@ -79,8 +81,6 @@ const loadTiles = item => {
   } else {
     Game.grid[item.y].push(0);
   }
-
-  Game.display.mapContainer.addChild(container);
 };
 
 // Detect from the pathGrid if the tile is an obstacle.
