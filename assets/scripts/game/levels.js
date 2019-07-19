@@ -2,6 +2,10 @@ import * as PIXI from "pixi.js";
 import PF from "pathfinding";
 import { Game } from "@/assets/scripts/game/Game";
 import { tileToPixel } from "@/assets/scripts/game/utils";
+import { getTexture } from "./textures";
+
+const grid = [];
+export let pathGrid = null;
 
 export const load = items => {
   const _viewport = Game.display.viewport;
@@ -10,16 +14,13 @@ export const load = items => {
     loadTiles(item);
   }
 
-  const pathGrid = new PF.Grid(Game.grid);
+  pathGrid = new PF.Grid(grid);
 
   // Set the dimensions for the viewport scrolling (PIXI-viewport)
   const worldWidth = pathGrid.width;
   const worldHeight = pathGrid.height;
   _viewport.worldWidth = tileToPixel(worldWidth);
   _viewport.worldHeight = tileToPixel(worldHeight);
-
-  // Set the global pathGrid
-  Game.pathGrid = pathGrid;
 };
 
 const loadTiles = item => {
@@ -36,9 +37,6 @@ const loadTiles = item => {
   tileObject.scale.set(Game.tileScale);
 
   for (let tile of item.tiles) {
-    // Generate a ref key for caching
-    const ref = `${tile.x}_${tile.y}_${tile.tileset}`;
-
     // Obstacle
     if (tile.visible === false) {
       isObstacle = true;
@@ -46,23 +44,11 @@ const loadTiles = item => {
     }
 
     // Add a key in texturesCache if not available
-    if (!Game.texturesCache[ref]) {
-      const resource = PIXI.Loader.shared.resources[tile.tileset].texture;
-
-      Game.texturesCache[ref] = new PIXI.Texture(
-        resource,
-        new PIXI.Rectangle(
-          tile.x * Game.tileSize,
-          tile.y * Game.tileSize,
-          Game.tileSize,
-          Game.tileSize
-        )
-      );
-    }
+    const texture = getTexture(tile);
 
     const alpha = tile.opacity || 100;
 
-    tileObject.beginTextureFill(Game.texturesCache[ref], 0xffffff, alpha);
+    tileObject.beginTextureFill(texture, 0xffffff, alpha);
     tileObject.drawRect(0, 0, Game.tileSize, Game.tileSize);
   }
 
@@ -73,13 +59,13 @@ const loadTiles = item => {
   // Generate grid
   //===========================================================================
   // Initialize row
-  if (!Game.grid[item.y]) Game.grid[item.y] = [];
+  if (!grid[item.y]) grid[item.y] = [];
 
   // Build the grid to init the pathfinder
   if (isObstacle) {
-    Game.grid[item.y].push(1);
+    grid[item.y].push(1);
   } else {
-    Game.grid[item.y].push(0);
+    grid[item.y].push(0);
   }
 };
 
@@ -87,10 +73,9 @@ const loadTiles = item => {
 // Return true if pathGrid or nodes are missing.
 // It happens when the map is not fully loaded yet.
 export const detectObstacle = (x, y) => {
-  const _pathGrid = Game.pathGrid;
-  if (!_pathGrid) return true;
+  if (!pathGrid) return true;
 
-  const nodes = _pathGrid.nodes;
+  const nodes = pathGrid.nodes;
   if (!nodes) return true;
 
   if (!nodes[y]) return true;
