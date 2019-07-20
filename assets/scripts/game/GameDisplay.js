@@ -32,13 +32,20 @@ export default class GameDisplay {
     this.viewport = new Viewport({
       screenWidth: this.width,
       screenHeight: this.height,
-      // the interaction module is important for wheel to work properly
-      // when renderer.view is placed or scaled
-      interaction: this.app.renderer.plugins.interaction
+      interaction: this.app.renderer.plugins.interaction // Pixi-viewport
     })
       .drag()
       .clamp({ direction: "all" })
-      .mouseEdges({ distance: 100, speed: 15, linear: true });
+      .mouseEdges({
+        // Distance parameter is based on window.innerHeight / innerWidth
+        // Must add 50px to the bottom value
+        top: 50,
+        bottom: 100,
+        left: 50,
+        right: 50,
+        speed: 15,
+        linear: true
+      });
 
     this.viewport.on("moved", data => {
       // The player force scroll, pause the follow mode
@@ -72,10 +79,15 @@ export default class GameDisplay {
       // Resize the viewport params too and place the player at the center
       this.viewport.screenWidth = this.width;
       this.viewport.screenHeight = this.height;
+
+      // Set the player at the center
       this.viewport.moveCenter(
         this.player.container.x,
         this.player.container.y
       );
+
+      // Set new size for viewport features (mouseEdges...)
+      this.viewport.resize(this.width, this.height);
     };
 
     addEventListener("resize", resize);
