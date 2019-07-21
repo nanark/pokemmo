@@ -4,7 +4,6 @@
       <UiTopBar @disconnect="disconnect" />
       <div id="viewportContainer">
         <UiChatbox id="chatbox" />
-        <UiLog id="log" />
         <ViewportWindow id="viewport" :user="user"> </ViewportWindow>
       </div>
     </template>
@@ -18,7 +17,6 @@
 import { mapState } from "vuex";
 import SignIn from "@/components/welcome/WelcomeSignIn";
 import UiChatbox from "@/components/ui/UiChatbox";
-import UiLog from "@/components/ui/UiLog";
 import UiTopBar from "@/components/ui/UiTopBar";
 import ViewportWindow from "@/components/ViewportWindow";
 import { Game } from "@/assets/scripts/game/Game";
@@ -27,7 +25,6 @@ export default {
   components: {
     SignIn,
     UiChatbox,
-    UiLog,
     UiTopBar,
     ViewportWindow
   },
@@ -77,13 +74,6 @@ export default {
 #chatbox {
   bottom: 10px;
   left: 10px;
-  position: absolute;
-  z-index: 3;
-}
-
-#log {
-  bottom: 0;
-  right: 0;
   position: absolute;
   z-index: 3;
 }
