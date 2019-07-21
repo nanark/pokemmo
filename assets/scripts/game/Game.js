@@ -6,7 +6,7 @@ import { map } from "@/static/sources/map.js";
 import { logIt } from "./utils";
 import { moveCharacters } from "./positions";
 import { load as loadLevel } from "./levels";
-import { setPlayerEventsHandler } from "./events";
+import { handlePlayerEvents } from "./events";
 import { cursor } from "./cursor";
 
 export const Game = {
@@ -44,7 +44,7 @@ export const Game = {
     this.user = user;
     this.userId = user.id;
 
-    setPlayerEventsHandler();
+    handlePlayerEvents();
 
     logIt("Initialize the game.");
   },

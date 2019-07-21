@@ -4,7 +4,6 @@ import { Game } from "./Game";
 import { logIt } from "./utils";
 
 const gameloop = delta => {
-  const _viewport = Game.display.viewport;
   const _player = Game.display.player;
 
   Game.stats.begin();
@@ -21,9 +20,10 @@ const gameloop = delta => {
   // * Pause the follow mode for the viewport
   if (_player.path.length === 0 && _player.msLeft === 0) {
     _player.isWalking = false;
+  }
 
-    // Stop following the player, activate the free scroll
-    _viewport.plugins.pause("follow");
+  if (!hasKeyDirectionDown() && !_player.isWalking) {
+    _player.stand();
   }
 
   // Moving the population
@@ -41,7 +41,9 @@ const gameloop = delta => {
     }
   }
 
-  scrollWithKeyboard(delta);
+  if (hasKeyDirectionDown()) {
+    walkWithKeyboard();
+  }
 
   Game.stats.end();
 };
@@ -74,7 +76,9 @@ const moveloop = (character, msElapsed) => {
       // No more step available.
       if (character.path.length === 0) {
         _display.cursorContainer.removeChild(Game.cursorClick);
-        character.stand();
+        if (!hasKeyDirectionDown()) {
+          character.stand();
+        }
         break;
       }
     }
@@ -169,56 +173,75 @@ const whichDirection = character => {
   return direction;
 };
 
-const scrollWithKeyboard = delta => {
-  const _viewport = Game.display.viewport;
+const hasKeyDirectionDown = () => {
+  if (Keyboard.isKeyDown("ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight")) {
+    return true;
+  }
+  return false;
+};
 
-  const scrollSpeed = 10;
+const arrows = ["up", "down", "left", "right"];
+
+const walkWithKeyboard = () => {
+  const _player = Game.display.player;
+
+  if (_player.isWalking && _player.msLeft) {
+    return;
+  }
+
   let keyDown = false;
-  let vy = 0;
   let vx = 0;
+  let vy = 0;
 
-  if (Keyboard.isKeyDown("ArrowUp", "KeyW")) {
-    vy += scrollSpeed;
-    keyDown = true;
-  }
+  const keyboard = {
+    up: {
+      key: "ArrowUp",
+      x: 0,
+      y: -1,
+      direction: "up"
+    },
+    down: {
+      key: "ArrowDown",
+      x: 0,
+      y: 1,
+      direction: "down"
+    },
+    left: {
+      key: "ArrowLeft",
+      x: -1,
+      y: 0,
+      direction: "left"
+    },
+    right: {
+      key: "ArrowRight",
+      x: 1,
+      y: 0,
+      direction: "right"
+    }
+  };
 
-  if (Keyboard.isKeyDown("ArrowDown", "KeyS")) {
-    vy -= scrollSpeed;
-    keyDown = true;
-  }
+  for (const [index, arrow] of arrows.slice(0).entries()) {
+    const key = keyboard[arrow].key;
+    const direction = keyboard[arrow].direction;
+    const x = keyboard[arrow].x;
+    const y = keyboard[arrow].y;
 
-  if (Keyboard.isKeyDown("ArrowLeft", "KeyA")) {
-    vx += scrollSpeed;
-    keyDown = true;
-  }
+    if (Keyboard.isKeyDown(key)) {
+      _player.go(direction);
+      vx += x;
+      vy += y;
+      keyDown = true;
 
-  if (Keyboard.isKeyDown("ArrowRight", "KeyD")) {
-    vx -= scrollSpeed;
-    keyDown = true;
+      arrows.push(arrows.splice(index, 1)[0]);
+      break;
+    }
   }
 
   if (keyDown) {
-    const newX = _viewport.position.x + addDelta(vx, delta);
-    const newY = _viewport.position.y + addDelta(vy, delta);
-    const maxX = ~~(_viewport.width - Math.abs(newX));
-    const maxY = ~~(_viewport.height - Math.abs(newY));
-
-    if (newX < 0 && maxX >= window.innerWidth) {
-      _viewport.position.x = newX;
-    }
-
-    if (newY < 0 && maxY >= window.innerHeight) {
-      _viewport.position.y = newY;
-    }
+    _player.relativeMove(vx, vy);
   }
 
   Keyboard.update();
-};
-
-const addDelta = (value, delta) => {
-  if (value > 0) return value + delta;
-  if (value < 0) return value - delta;
-  return value;
 };
 
 // Loading all resources and add the gameloop in the ticker.

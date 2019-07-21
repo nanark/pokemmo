@@ -21,8 +21,7 @@ export default class GameDisplay {
       antialias: false,
       autoDensity: true,
       height: this.height,
-      powerPreference: "high-performance",
-      transparent: true,
+      transparent: false,
       width: this.width
     });
 
@@ -33,26 +32,7 @@ export default class GameDisplay {
       screenWidth: this.width,
       screenHeight: this.height,
       interaction: this.app.renderer.plugins.interaction // Pixi-viewport
-    })
-      .drag()
-      .clamp({ direction: "all" })
-      .mouseEdges({
-        // Distance parameter is based on window.innerHeight / innerWidth
-        // Must add 50px to the bottom value
-        top: 50,
-        bottom: 100,
-        left: 50,
-        right: 50,
-        speed: 15,
-        linear: true
-      });
-
-    this.viewport.on("moved", data => {
-      // The player force scroll, pause the follow mode
-      if (data.type === "mouse-edges") {
-        this.viewport.plugins.pause("follow");
-      }
-    });
+    }).clamp({ direction: "all" });
 
     // We use different containers as Z-layers
     this.mapContainer = new PIXI.Container();

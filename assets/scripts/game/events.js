@@ -2,16 +2,6 @@ import { Game } from "./Game";
 import { pixelToTile, tileToPixel } from "./utils";
 import { detectObstacle } from "./levels";
 
-// Send the player destination
-const sendPosition = (x, y) => {
-  const position = {
-    namespace: "position",
-    event_type: "movement",
-    data: { x, y }
-  };
-  Game.ws.send(JSON.stringify(position));
-};
-
 // Catch the mouse event and convert the position into a tile
 // and obstacle bool
 const targetTile = event => {
@@ -40,7 +30,7 @@ const targetTile = event => {
   return { tileX, tileY, isObstacle };
 };
 
-export const setPlayerEventsHandler = () => {
+export const handlePlayerEvents = () => {
   // Shortcut
   const _map = Game.display.mapContainer;
 
@@ -59,11 +49,9 @@ export const setPlayerEventsHandler = () => {
     const _cursorContainer = Game.display.cursorContainer;
     const _cursor = Game.cursorClick;
     const _player = Game.display.player;
-    const _viewport = Game.display.viewport;
 
-    // Construct the path
-    _player.setPathTo(tileX, tileY);
-    sendPosition(tileX, tileY);
+    // Move the player
+    _player.move(tileX, tileY);
 
     // Handle the cursor
     _cursorContainer.removeChild(_cursor);
@@ -72,9 +60,6 @@ export const setPlayerEventsHandler = () => {
       _cursor.x = tileToPixel(tileX);
       _cursor.y = tileToPixel(tileY);
       _cursorContainer.addChild(_cursor);
-
-      // Follow the player while moving
-      _viewport.plugins.resume("follow");
     }
   };
 };

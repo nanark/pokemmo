@@ -81,7 +81,7 @@ export const detectObstacle = (x, y) => {
   if (!nodes[y]) return true;
   if (!nodes[y][x]) return true;
 
-  const isObstacle = nodes[y][x].walkable;
+  const isWalkable = nodes[y][x].walkable;
 
-  return !isObstacle;
+  return !isWalkable;
 };

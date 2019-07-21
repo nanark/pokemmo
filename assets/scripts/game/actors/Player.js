@@ -14,6 +14,5 @@ export default class Player extends Character {
     // Prepare the follow plugin for the viewport.
     // Pause it to enable it only when the character is moving.
     _viewport.follow(this.container, { speed: 40 });
-    _viewport.plugins.pause("follow");
   }
 }

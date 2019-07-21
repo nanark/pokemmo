@@ -2,6 +2,8 @@ import * as PIXI from "pixi.js";
 import { Game } from "../Game";
 import { tileToPixel } from "../utils";
 import { pathGrid } from "../levels";
+import { sendPosition } from "../connection";
+import { detectObstacle } from "../levels";
 
 export default class Character {
   constructor(type, animation, user) {
@@ -18,7 +20,7 @@ export default class Character {
     // Movement variables
     this.isWalking = false;
     this.path = [];
-    this.msToReachTile = 150;
+    this.msToReachTile = 200;
     this.distanceEachMs = Game.tileDistance / this.msToReachTile;
 
     // Movement Buffers
@@ -79,6 +81,23 @@ export default class Character {
     this.animation = animation;
     this.layers.sprite.textures = this.buildTextures(animation);
     this.layers.sprite.gotoAndPlay(1);
+  }
+
+  relativeMove(x, y) {
+    const tileX = this.position.x + x;
+    const tileY = this.position.y + y;
+
+    const isObstacle = detectObstacle(tileX, tileY);
+
+    if (!isObstacle) {
+      this.setPathTo(tileX, tileY);
+      sendPosition(tileX, tileY);
+    }
+  }
+
+  move(tileX, tileY) {
+    this.setPathTo(tileX, tileY);
+    sendPosition(tileX, tileY);
   }
 
   go(direction) {
