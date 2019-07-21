@@ -21,6 +21,7 @@ export const Game = {
   ws: null,
   tileSize: 16,
   tileScale: 3,
+  spawningTile: { x: 30, y: 24 },
 
   init(user, users) {
     // Display stats
@@ -99,7 +100,7 @@ export const Game = {
     const player = new Player(this.user);
 
     // Temp: Set the player in the map
-    player.setPositionTile(30, 24);
+    player.setPositionTile(this.spawningTile.x, this.spawningTile.y);
     Game.display.viewport.moveCenter(
       player.container.position.x,
       player.container.position.y

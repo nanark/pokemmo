@@ -50,13 +50,11 @@ export default class Character {
     // Scale
     this.layers.sprite.width = this.layers.sprite.width * Game.tileScale;
     this.layers.sprite.height = this.layers.sprite.height * Game.tileScale;
-    this.layers.sprite.anchor.set(0.5, 0.5); // Corner top-left
+    this.layers.sprite.anchor.set(0.5, 0.5); // Center
     this.layers.sprite.zIndex = 1;
 
     // Place it at the top left corner
-    const x = 0;
-    const y = 0;
-    this.setPositionTile(x, y);
+    this.setPositionTile(Game.spawningTile.x, Game.spawningTile.y);
   }
 
   buildTextures(animation) {
