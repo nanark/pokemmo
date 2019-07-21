@@ -8,6 +8,7 @@ import { moveCharacters } from "./positions";
 import { load as loadLevel } from "./levels";
 import { handlePlayerEvents } from "./events";
 import { cursor } from "./cursor";
+import { handleKeyboardEvents } from "./controls";
 
 export const Game = {
   logs: [],
@@ -45,6 +46,7 @@ export const Game = {
     this.userId = user.id;
 
     handlePlayerEvents();
+    handleKeyboardEvents();
 
     logIt("Initialize the game.");
   },

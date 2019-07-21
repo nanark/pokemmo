@@ -2,6 +2,7 @@ import Keyboard from "pixi.js-keyboard";
 import * as PIXI from "pixi.js";
 import { Game } from "./Game";
 import { logIt } from "./utils";
+import { pressedControlDirections, isControlKeyPressed } from "./controls";
 
 const gameloop = delta => {
   const _player = Game.display.player;
@@ -22,9 +23,8 @@ const gameloop = delta => {
     _player.isWalking = false;
   }
 
-  if (!hasKeyDirectionDown() && !_player.isWalking) {
-    _player.stand();
-  }
+  // Stop the animation
+  if (!_player.isWalking && !isControlKeyPressed()) _player.stand();
 
   // Moving the population
   if (Game.population.size > 0) {
@@ -41,10 +41,9 @@ const gameloop = delta => {
     }
   }
 
-  if (hasKeyDirectionDown()) {
-    walkWithKeyboard();
-  }
+  if (isControlKeyPressed()) walkWithKeyboard();
 
+  Keyboard.update();
   Game.stats.end();
 };
 
@@ -76,9 +75,10 @@ const moveloop = (character, msElapsed) => {
       // No more step available.
       if (character.path.length === 0) {
         _display.cursorContainer.removeChild(Game.cursorClick);
-        if (!hasKeyDirectionDown()) {
-          character.stand();
-        }
+
+        // Stop the animation if no control is pressed.
+        // Use to keep the animation if the character walks against an obstacle.
+        if (!isControlKeyPressed()) character.stand();
         break;
       }
     }
@@ -173,75 +173,15 @@ const whichDirection = character => {
   return direction;
 };
 
-const hasKeyDirectionDown = () => {
-  if (Keyboard.isKeyDown("ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight")) {
-    return true;
-  }
-  return false;
-};
-
-const arrows = ["up", "down", "left", "right"];
-
 const walkWithKeyboard = () => {
   const _player = Game.display.player;
 
-  if (_player.isWalking && _player.msLeft) {
-    return;
-  }
+  if (_player.isWalking && _player.msLeft) return;
 
-  let keyDown = false;
-  let vx = 0;
-  let vy = 0;
+  const { x, y, direction } = pressedControlDirections();
 
-  const keyboard = {
-    up: {
-      key: "ArrowUp",
-      x: 0,
-      y: -1,
-      direction: "up"
-    },
-    down: {
-      key: "ArrowDown",
-      x: 0,
-      y: 1,
-      direction: "down"
-    },
-    left: {
-      key: "ArrowLeft",
-      x: -1,
-      y: 0,
-      direction: "left"
-    },
-    right: {
-      key: "ArrowRight",
-      x: 1,
-      y: 0,
-      direction: "right"
-    }
-  };
-
-  for (const [index, arrow] of arrows.slice(0).entries()) {
-    const key = keyboard[arrow].key;
-    const direction = keyboard[arrow].direction;
-    const x = keyboard[arrow].x;
-    const y = keyboard[arrow].y;
-
-    if (Keyboard.isKeyDown(key)) {
-      _player.go(direction);
-      vx += x;
-      vy += y;
-      keyDown = true;
-
-      arrows.push(arrows.splice(index, 1)[0]);
-      break;
-    }
-  }
-
-  if (keyDown) {
-    _player.relativeMove(vx, vy);
-  }
-
-  Keyboard.update();
+  _player.go(direction);
+  _player.relativeMove(x, y);
 };
 
 // Loading all resources and add the gameloop in the ticker.
