@@ -38,7 +38,6 @@ export default {
   },
   computed: mapState({
     user: state => state.user,
-    users: state => state.users,
     socket: state => state.socket
   }),
   methods: {
@@ -50,31 +49,7 @@ export default {
       this.status = "connected";
     },
     connectWebSocket() {
-      this.$connect(`ws://ws.upody.com:7070/ws?user=${this.user.id}`, {
-        store: this.$store,
-        connectManually: true,
-        reconnection: false,
-        format: "json",
-        passToStoreHandler(eventName, event) {
-          if (!eventName.startsWith("SOCKET_")) {
-            return;
-          }
-
-          // let method = "commit";
-          let target = eventName.toUpperCase();
-          let msg = event;
-
-          if (this.format === "json" && msg.data) {
-            msg = JSON.parse(msg.data);
-
-            if (msg.namespace) {
-              target = `${msg.namespace}/${target}`;
-            }
-          }
-
-          this.store.commit(target, msg);
-        }
-      });
+      this.$connect(`ws://ws.upody.com:7070/ws?user=${this.user.id}`);
     },
     disconnect() {
       // Disconnect websocket
