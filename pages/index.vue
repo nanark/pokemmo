@@ -49,7 +49,7 @@ export default {
       this.status = "connected";
     },
     connectWebSocket() {
-      this.$connect(`ws://ws.upody.com:7070/ws?user=${this.user.id}`);
+      this.$connect(`wss://wss.zeapps.eu/ws?user=${this.user.id}`);
     },
     disconnect() {
       // Disconnect websocket
