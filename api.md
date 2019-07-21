@@ -1,5 +1,10 @@
 # Signup
-## Endpoint POST https://api.zeapps.eu/user/signup   
+## Endpoint
+### Url:
+```
+POST https://api.zeapps.eu/user/signup
+```
+### Body:
 ```json
 {
 "email": "moi2@moi.com",
@@ -7,7 +12,7 @@
 "pseudo": "jc"
 } 
 ```
-## Response`
+### Response:
 ```json
 {
     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkX2F0IjoxNTYzNzM5MDMwLCJ1dWlkIjoid2pVQmhUTGQ1ZVVzU3FIclIyRzk3RSJ9.-RJ7DYPc9JarkD5Pxkg3tmjowS93KukZ4u0tBoMc3fA",
@@ -18,18 +23,24 @@
 
 accessToken is the JWT you'll have to add in incoming header: 
 
+```
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkX2F0IjoxNTYzNzM5MDMwLCJ1dWlkIjoid2pVQmhUTGQ1ZVVzU3FIclIyRzk3RSJ9.-RJ7DYPc9JarkD5Pxkg3tmjowS93KukZ4u0tBoMc3fA
+```
 
 # Signin
-## Endpoint POST https://api.zeapps.eu/user/signin
+## Endpoint
+### Url:
+```
+POST https://api.zeapps.eu/user/signin
+```
+### Body:
 ```json
 {
 "email": "moi2@moi.com",
 "password": "bob", 
 } 
 ```
-
-## Response
+### Response:
 ```json
 {
     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkX2F0IjoxNTYzNzM5MjA1LCJ1dWlkIjoid2pVQmhUTGQ1ZVVzU3FIclIyRzk3RSJ9.KB4JJvh3Vp9AYOHrH6hu_HEEsm26W-uV39ynB8gcGqs",
