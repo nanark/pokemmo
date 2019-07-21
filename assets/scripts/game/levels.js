@@ -32,8 +32,8 @@ const loadTiles = item => {
   const tileObject = new PIXI.Graphics();
 
   // Define its properties
-  tileObject.position.x = tileToPixel(item.x);
-  tileObject.position.y = tileToPixel(item.y);
+  tileObject.position.x = tileToPixel(item.x) - Game.tileDistance / 2;
+  tileObject.position.y = tileToPixel(item.y) - Game.tileDistance / 2;
   tileObject.scale.set(Game.tileScale);
 
   for (let tile of item.tiles) {

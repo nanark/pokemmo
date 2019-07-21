@@ -22,8 +22,8 @@ const targetTile = event => {
   _cursorContainer.removeChild(_cursor);
 
   if (!isObstacle) {
-    _cursor.x = tileToPixel(tileX);
-    _cursor.y = tileToPixel(tileY);
+    _cursor.x = tileToPixel(tileX) - Game.tileDistance / 2;
+    _cursor.y = tileToPixel(tileY) - Game.tileDistance / 2;
     _cursorContainer.addChild(_cursor);
   }
 
@@ -57,8 +57,8 @@ export const handlePlayerEvents = () => {
     _cursorContainer.removeChild(_cursor);
 
     if (!isObstacle) {
-      _cursor.x = tileToPixel(tileX);
-      _cursor.y = tileToPixel(tileY);
+      _cursor.x = tileToPixel(tileX) - Game.tileDistance / 2;
+      _cursor.y = tileToPixel(tileY) - Game.tileDistance / 2;
       _cursorContainer.addChild(_cursor);
     }
   };

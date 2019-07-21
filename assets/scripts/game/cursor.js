@@ -5,7 +5,7 @@ const colorYellow = 0xffff0b;
 const colorBlueDenim = 0x1857c3;
 
 export const cursor = mode => {
-  const tilePixelSize = Game.tileSize * Game.tileScale;
+  const tilePixelSize = Game.tileDistance;
 
   const cursor = new PIXI.Graphics();
 
