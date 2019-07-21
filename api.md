@@ -50,10 +50,15 @@ POST https://api.zeapps.eu/user/signin
 
 # Refresh Token
 You have to use it in case of 401 status code on protected endpoint
-## Endpoint GET https://api.zeapps.eu/user/refresh/{refreshtoken}
-Example (in this documentation):
+## Endpoint
+### Url:
+```
+GET https://api.zeapps.eu/user/refresh/{refreshtoken}
+```
+
+### Example (in this documentation):
 https://api.zeapps.eu/user/refresh/5b28e2efeabd456a380410cd5bf95963f3ebb5abad1314df7c7daa0ccb9c849e
-## Response
+### Response:
 ```json
 {
 "accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkX2F0IjoxNTYzNzM5MzExLCJ1dWlkIjoid2pVQmhUTGQ1ZVVzU3FIclIyRzk3RSJ9.Vgrw9ZReLyB3yEQWX2cRGUvFQ3PGVWxwnoUVqp5Ty_Q",
