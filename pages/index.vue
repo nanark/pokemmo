@@ -99,7 +99,7 @@ export default {
 #viewportContainer {
   position: relative;
   flex-grow: 1;
-  height: 100%;
+  height: calc(100% - 50px);
   width: 100%;
 }
 
