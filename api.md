@@ -17,6 +17,7 @@
 ```
 
 accessToken is the JWT you'll have to add in incoming header: 
+
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkX2F0IjoxNTYzNzM5MDMwLCJ1dWlkIjoid2pVQmhUTGQ1ZVVzU3FIclIyRzk3RSJ9.-RJ7DYPc9JarkD5Pxkg3tmjowS93KukZ4u0tBoMc3fA
 
 # Signin
