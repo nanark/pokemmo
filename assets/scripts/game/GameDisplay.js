@@ -20,6 +20,7 @@ export default class GameDisplay {
       antialias: false,
       autoDensity: true,
       height: this.height,
+      resolution: window.devicePixelRatio,
       transparent: false,
       width: this.width
     });
