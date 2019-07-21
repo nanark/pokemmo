@@ -30,7 +30,7 @@ export const Game = {
 
     // World
     this.tileSize = 16;
-    this.tileScale = 3;
+    this.tileScale = 2.6;
     this.tileDistance = this.tileSize * this.tileScale;
     this.population = new Map();
     this.spawningTile = { x: 30, y: 24 };

@@ -38,6 +38,19 @@ export default class Character {
       fill: 0xffffff,
       align: "center"
     });
+    this.layers.label.anchor.set(0.5);
+    this.layers.label.position.y = Game.tileDistance / 2 + 15;
+
+    const labelWidth = this.layers.label.width;
+    const labelHeight = this.layers.label.height;
+    const label = new PIXI.Graphics();
+
+    label.lineStyle(0);
+    label.beginFill(0x000000, 0.2);
+    label.drawRoundedRect(0, 0, labelWidth + 20, labelHeight + 10, 12);
+    label.endFill();
+    label.position.x = (label.width / 2) * -1;
+    label.position.y = Game.tileDistance / 2 + 3;
 
     // Sprite
     this.layers.sprite = new PIXI.AnimatedSprite(sheet);
@@ -45,6 +58,7 @@ export default class Character {
     this.layers.sprite.play();
 
     this.container.addChild(this.layers.sprite);
+    this.container.addChild(label);
     this.container.addChild(this.layers.label);
 
     // Scale
