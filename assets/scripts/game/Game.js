@@ -11,27 +11,29 @@ import { cursor } from "./cursor";
 import { handleKeyboardEvents } from "./controls";
 
 export const Game = {
-  logs: [],
-  users: [], // Temp
-  FPS: 60,
-  loaded: false,
-  online: true,
-  debugMode: false,
-  population: new Map(),
-  ws: null,
-  tileSize: 16,
-  tileScale: 3,
-  spawningTile: { x: 30, y: 24 },
-
   init(user, users) {
-    // Display stats
+    // Tools
     this.displayStats();
+    this.logs = [];
+    this.FPS = 60;
+    this.loaded = false;
+    this.online = true;
+    this.debugMode = false;
 
-    // Temp
+    // Connection
+    this.ws = null;
+
+    // Data
+    this.user = user;
+    this.userId = user.id;
     this.users = users;
 
-    // Movement values
+    // World
+    this.tileSize = 16;
+    this.tileScale = 3;
     this.tileDistance = this.tileSize * this.tileScale;
+    this.population = new Map();
+    this.spawningTile = { x: 30, y: 24 };
 
     // Cursor
     this.cursor = cursor("hover");
@@ -42,10 +44,10 @@ export const Game = {
       allowDiagonal: false
     });
 
+    // Display
     this.display = new GameDisplay();
-    this.user = user;
-    this.userId = user.id;
 
+    // Event handlers
     handlePlayerEvents();
     handleKeyboardEvents();
 

@@ -5,11 +5,10 @@ import { loadResources } from "./loop";
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 export default class GameDisplay {
-  player = {};
-  width = 0;
-  heigth = 0;
-
   constructor() {
+    this.player = {};
+    this.width = 0;
+    this.heigth = 0;
     this.scale = 1.0;
 
     this.setDimensions();
