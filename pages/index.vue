@@ -8,7 +8,10 @@
       </div>
     </template>
     <template v-else>
-      <SignIn @signInClicked="connect" />
+      <div class="cover" />
+      <div id="sign">
+        <SignIn @signInClicked="connect" />
+      </div>
     </template>
   </section>
 </template>
@@ -38,6 +41,13 @@ export default {
     socket: state => state.socket
   }),
   methods: {
+    create() {
+      // Purge game instance
+      Game.disconnect();
+
+      this.connectWebSocket();
+      this.status = "connected";
+    },
     connect() {
       // Purge game instance
       Game.disconnect();
@@ -95,6 +105,36 @@ export default {
 
 #viewport {
   height: 100%;
+  width: 100%;
+}
+
+#sign {
+  align-items: center;
+  background-color: rgba($black, 0.5);
+  bottom: 0;
+  cursor: default;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%;
+}
+
+.cover {
+  align-items: center;
+  background: url("/images/background.jpg") bottom center;
+  background-size: cover;
+  bottom: 0;
+  cursor: default;
+  display: flex;
+  height: 100vh;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
   width: 100%;
 }
 </style>
