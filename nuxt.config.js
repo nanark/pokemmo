@@ -46,12 +46,16 @@ module.exports = {
     "@/plugins/vue_chat_scroll",
     "@/plugins/websocket"
   ],
-  modules: ["@nuxtjs/style-resources", "@nuxtjs/axios"],
+  modules: [
+    "@nuxtjs/style-resources",
+    "@nuxtjs/axios",
+    "nuxt-vuex-localstorage"
+  ],
   styleResources: {
     scss: ["~/assets/styles/partials/_index.scss"]
   },
 
   axios: {
-    // proxyHeaders: false
+    baseURL: "https://api.zeapps.eu"
   }
 };
