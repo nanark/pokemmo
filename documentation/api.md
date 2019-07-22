@@ -9,7 +9,7 @@ POST https://api.zeapps.eu/user/signup
 {
 "email": "moi2@moi.com",
 "password": "bob", 
-"pseudo": "jc"
+"username": "jc"
 } 
 ```
 ### Response:
