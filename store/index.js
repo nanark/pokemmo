@@ -4,30 +4,16 @@ import { Game } from "@/assets/scripts/game/Game";
 export const state = () => ({
   locales: ["en", "fr"],
   locale: "fr",
-  user: "",
   socket: {
     isConnected: false,
     message: "",
     reconnectError: false
-  },
-  jwt: "",
-  users: []
+  }
 });
 
 export const mutations = {
   SET_JWT(state, jwt) {
     state.jwt = jwt;
-  },
-  SET_USERS(state, users) {
-    // Sort the users by id
-    state.users = users.sort((a, b) => {
-      return a.id - b.id;
-    });
-  },
-  SET_USER(state, userId) {
-    state.user = state.users.find(user => {
-      return user.id === userId;
-    });
   },
   SET_LANG(state, locale) {
     if (state.locales.indexOf(locale) !== -1) {
@@ -58,15 +44,4 @@ export const mutations = {
   }
 };
 
-export const actions = {
-  setJwt: function(context, jwt) {
-    context.commit("SET_JWT", jwt);
-  },
-  setUser: function(context, userId) {
-    context.commit("SET_USER", userId);
-  },
-  async getUsers({ commit }) {
-    const users = await this.$axios.$get("https://api.zeapps.eu/users/online");
-    commit("SET_USERS", users);
-  }
-};
+export const actions = {};

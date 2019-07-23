@@ -1,5 +1,8 @@
 module.exports = {
   mode: "spa",
+  env: {
+    baseURL: "https://api.zeapps.eu"
+  },
   /*
    ** Headers of the page
    */

@@ -10,7 +10,7 @@
     <template v-else>
       <div class="cover" />
       <div id="sign">
-        <SignIn @signInClicked="connect" />
+        <WelcomeAuth />
       </div>
     </template>
   </section>
@@ -18,7 +18,7 @@
 
 <script>
 import { mapState } from "vuex";
-import SignIn from "@/components/welcome/WelcomeSignIn";
+import WelcomeAuth from "@/components/welcome/WelcomeAuth";
 import UiChatbox from "@/components/ui/UiChatbox";
 import UiTopBar from "@/components/ui/UiTopBar";
 import ViewportWindow from "@/components/ViewportWindow";
@@ -26,10 +26,10 @@ import { Game } from "@/assets/scripts/game/Game";
 
 export default {
   components: {
-    SignIn,
     UiChatbox,
     UiTopBar,
-    ViewportWindow
+    ViewportWindow,
+    WelcomeAuth
   },
   data() {
     return {

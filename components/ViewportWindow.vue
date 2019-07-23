@@ -17,7 +17,7 @@ export default {
     }
   },
   computed: mapState({
-    users: state => state.users
+    users: state => state.users.users
   }),
   mounted() {
     // Init the Game object

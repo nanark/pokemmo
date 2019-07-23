@@ -6,6 +6,32 @@
     "online_on": "Live",
     "online_off": "Offline"
   },
+  "auth": {
+    "signin": {
+      "title": "Sign in",
+      "description": "If you don't have an account yet, ",
+      "link": "create one",
+      "placeholders": {
+        "email": "Your email",
+        "password": "Your secret password"
+      },
+      "button": "Sign me in"
+    },
+    "signup": {
+      "title": "Sign up",
+      "description": "If you already have an account, ",
+      "link": "click here",
+      "placeholders": {
+        "username": "Choose your username",
+        "email": "Your email",
+        "password": "Type a secret password",
+        "password_copy": "Confirm your password"
+      },
+      "terms": "I accept the ",
+      "terms_link": "Terms of Use & Privacy Policy",
+      "button": "Create the account"
+    }
+  },
   "chatbox": {
     "placeholder": "Your message here",
     "player_name": "You"
