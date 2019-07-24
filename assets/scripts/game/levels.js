@@ -10,8 +10,8 @@ export let pathGrid = null;
 export const load = items => {
   const _viewport = Game.display.viewport;
 
-  for (let item of items) {
-    loadTiles(item);
+  for (const [i, item] of items.entries()) {
+    loadTiles(item, i);
   }
 
   pathGrid = new PF.Grid(grid);
@@ -23,7 +23,7 @@ export const load = items => {
   _viewport.worldHeight = tileToPixel(worldHeight);
 };
 
-const loadTiles = item => {
+const loadTiles = (item, index) => {
   let isObstacle = false;
 
   //===========================================================================
@@ -53,7 +53,7 @@ const loadTiles = item => {
   }
 
   // Add the tile to the map
-  Game.display.mapContainer.addChild(tileObject);
+  Game.display.mapContainer.addChildAt(tileObject, index);
 
   //===========================================================================
   // Generate grid
