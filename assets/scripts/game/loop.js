@@ -213,7 +213,7 @@ export function loadResources() {
     .add(magiscarf)
     .load(() => {
       logIt("Assets loaded.");
-      Game.loaded = true;
+      Game.resourcesLoaded = true;
 
       // Setup the game (load player etc.)
       Game.setup();

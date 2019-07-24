@@ -11,12 +11,15 @@ import { cursor } from "./cursor";
 import { handleKeyboardEvents } from "./controls";
 
 export const Game = {
+  loaded: false,
+
   init(me, users) {
     // Tools
     this.displayStats();
     this.logs = [];
     this.FPS = 60;
-    this.loaded = false;
+    this.loaded = true;
+    this.resourcesLoaded = false;
     this.online = true;
     this.debugMode = false;
 
@@ -83,7 +86,7 @@ export const Game = {
     }
 
     this.ws.addEventListener("message", event => {
-      if (this.loaded && this.online) {
+      if (this.resourcesLoaded && this.online) {
         const message = JSON.parse(event.data);
         const namespace = message.namespace;
 
