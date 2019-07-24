@@ -21,6 +21,10 @@ export const actions = {
   },
   deleteMe: context => {
     context.commit("DELETE_ME");
+
+    context.dispatch("localStorage/setRefreshToken", "", {
+      root: true
+    });
   },
   async signIn(context, credentials) {
     const { accessToken, refreshToken } = await this.$axios.$post(
@@ -54,5 +58,20 @@ export const actions = {
       root: true
     });
     context.commit("SET_JWT", accessToken);
+
+    const me = await this.$axios.$get("/user/me");
+
+    context.commit("SET_ME", me);
+  },
+  async refreshToken(context) {
+    const { accessToken } = await this.$axios.$get(
+      `/user/refresh/${this.state.localStorage.refreshToken}`
+    );
+
+    context.commit("SET_JWT", accessToken);
+
+    const me = await this.$axios.$get("/user/me");
+
+    context.commit("SET_ME", me);
   }
 };

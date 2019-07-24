@@ -49,6 +49,10 @@ export default {
       }
     }
   },
+  mounted() {
+    // Autoreconnect
+    this.$store.dispatch("authentication/refreshToken");
+  },
   methods: {
     connect() {
       // Purge game instance
