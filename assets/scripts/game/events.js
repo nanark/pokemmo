@@ -44,7 +44,7 @@ export const handlePlayerEvents = () => {
   //===========================================================================
   // Click the map:
   //===========================================================================
-  _map.mousedown = _map.touchmove = event => {
+  _map.mousedown = _map.tap = event => {
     const { tileX, tileY, isObstacle } = targetTile(event);
     const _cursorContainer = Game.display.cursorContainer;
     const _cursor = Game.cursorClick;
