@@ -19,6 +19,11 @@ export const actions = {
   setJwt: (context, jwt) => {
     context.commit("SET_JWT", jwt);
   },
+  async getMe(context) {
+    const me = await this.$axios.$get("/user/me");
+
+    context.commit("SET_ME", me);
+  },
   deleteMe: context => {
     context.commit("DELETE_ME");
     context.dispatch("localStorage/setRefreshToken", "", { root: true });
