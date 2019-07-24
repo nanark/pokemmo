@@ -21,8 +21,10 @@ export default {
   }),
   mounted() {
     // Init the Game object
-    Game.init(this.me, this.users);
-    Game.setWebsocket(this.$socket);
+    if (!Game.loaded) {
+      Game.init(this.me, this.users);
+      Game.setWebsocket(this.$socket);
+    }
 
     // Bind it to the DOM
     document.querySelector(".viewport").appendChild(Game.display.app.view);
