@@ -64,7 +64,7 @@ export default class Character {
     // Scale
     this.layers.sprite.width = this.layers.sprite.width * Game.tileScale + 14;
     this.layers.sprite.height = this.layers.sprite.height * Game.tileScale + 14;
-    this.layers.sprite.anchor.set(0.5, 0.9); // Center
+    this.layers.sprite.anchor.set(0.5, 0.77); // Center
     this.layers.sprite.zIndex = 1;
 
     // Place it at the top left corner
