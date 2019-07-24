@@ -66,11 +66,12 @@ export const pressedControlDirections = () => {
   let y = 0;
   let direction = "";
 
-  for (const key of pressedControlKeys) {
-    const control = controls[key];
-    x += control.x;
-    y += control.y;
-    direction = control.direction;
-  }
+  const lastPressed = pressedControlKeys[pressedControlKeys.length - 1];
+
+  const control = controls[lastPressed];
+  x += control.x;
+  y += control.y;
+  direction = control.direction;
+
   return { x, y, direction };
 };
