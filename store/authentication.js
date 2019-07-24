@@ -21,53 +21,36 @@ export const actions = {
   },
   deleteMe: context => {
     context.commit("DELETE_ME");
-
-    context.dispatch("localStorage/setRefreshToken", "", {
-      root: true
-    });
+    context.dispatch("localStorage/setRefreshToken", "", { root: true });
   },
   async signIn(context, credentials) {
-    const { accessToken, refreshToken } = await this.$axios.$post(
-      "/user/signin",
-      {
-        email: credentials.email,
-        password: credentials.password
-      }
-    );
-
-    context.dispatch("localStorage/setRefreshToken", refreshToken, {
-      root: true
+    const data = await this.$axios.$post("/user/signin", {
+      email: credentials.email,
+      password: credentials.password
     });
-    context.commit("SET_JWT", accessToken);
 
-    const me = await this.$axios.$get("/user/me");
-
-    context.commit("SET_ME", me);
+    context.dispatch("connecting", data);
   },
   async signUp(context, credentials) {
-    const { accessToken, refreshToken } = await this.$axios.$post(
-      "/user/signup",
-      {
-        email: credentials.email,
-        password: credentials.password,
-        username: credentials.username
-      }
-    );
-
-    context.dispatch("localStorage/setRefreshToken", refreshToken, {
-      root: true
+    const data = await this.$axios.$post("/user/signup", {
+      email: credentials.email,
+      password: credentials.password,
+      username: credentials.username
     });
-    context.commit("SET_JWT", accessToken);
 
-    const me = await this.$axios.$get("/user/me");
-
-    context.commit("SET_ME", me);
+    context.dispatch("connecting", data);
   },
   async refreshToken(context) {
-    const { accessToken } = await this.$axios.$get(
+    const data = await this.$axios.$get(
       `/user/refresh/${this.state.localStorage.refreshToken}`
     );
 
+    context.dispatch("connecting", data);
+  },
+  async connecting(context, { refreshToken, accessToken }) {
+    context.dispatch("localStorage/setRefreshToken", refreshToken, {
+      root: true
+    });
     context.commit("SET_JWT", accessToken);
 
     const me = await this.$axios.$get("/user/me");
