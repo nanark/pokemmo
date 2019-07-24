@@ -8,7 +8,7 @@ import { detectObstacle } from "../levels";
 export default class Character {
   constructor(type, animation, user) {
     this.type = type;
-    this.id = user.id;
+    this.id = user.uuid;
     this.username = user.username;
     this.animation = animation;
     this.direction = "down";

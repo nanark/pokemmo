@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueNativeSock from "vue-native-websocket";
 
-export const server = "wss://wss.zeapps.eu/ws";
+export const server = "wss://wss.zeapps.eu";
 
 export default ({ store }) => {
   Vue.use(VueNativeSock, server, {

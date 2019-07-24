@@ -1,10 +1,10 @@
 <template>
   <div class="box">
     <template v-if="login">
-      <WelcomeSignIn @toggleBox="login = !login" />
+      <WelcomeSignIn @toggleBox="toggleBox()" />
     </template>
     <template v-else>
-      <WelcomeSignUp @toggleBox="login = !login" />
+      <WelcomeSignUp @toggleBox="toggleBox()" />
     </template>
   </div>
 </template>
@@ -23,6 +23,11 @@ export default {
     return {
       login: true
     };
+  },
+  methods: {
+    toggleBox() {
+      this.login = !this.login;
+    }
   }
 };
 </script>

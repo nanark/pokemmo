@@ -11,7 +11,7 @@ import { cursor } from "./cursor";
 import { handleKeyboardEvents } from "./controls";
 
 export const Game = {
-  init(user, users) {
+  init(me, users) {
     // Tools
     this.displayStats();
     this.logs = [];
@@ -24,8 +24,8 @@ export const Game = {
     this.ws = null;
 
     // Data
-    this.user = user;
-    this.userId = user.id;
+    this.me = me;
+    this.meId = me.uuid;
     this.users = users;
 
     // World
@@ -99,7 +99,7 @@ export const Game = {
     loadLevel(map);
     // });
 
-    const player = new Player(this.user);
+    const player = new Player(this.me);
 
     // Temp: Set the player in the map
     player.setPositionTile(this.spawningTile.x, this.spawningTile.y);

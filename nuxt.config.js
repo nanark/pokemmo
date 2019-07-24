@@ -47,6 +47,7 @@ module.exports = {
   plugins: [
     "@/plugins/i18n",
     "@/plugins/vue_chat_scroll",
+    "@/plugins/axios",
     "@/plugins/websocket"
   ],
   modules: [

@@ -1,10 +1,10 @@
 <template>
   <section id="container">
-    <template v-if="user">
+    <template v-if="me">
       <UiTopBar @disconnect="disconnect" />
       <div id="viewportContainer">
         <UiChatbox id="chatbox" />
-        <ViewportWindow id="viewport" :user="user"> </ViewportWindow>
+        <ViewportWindow id="viewport" :me="me"> </ViewportWindow>
       </div>
     </template>
     <template v-else>
@@ -37,17 +37,19 @@ export default {
     };
   },
   computed: mapState({
-    user: state => state.user,
+    me: state => state.authentication.me,
     socket: state => state.socket
   }),
+  watch: {
+    me(values) {
+      if (values) {
+        this.connect();
+      } else {
+        this.disconnect();
+      }
+    }
+  },
   methods: {
-    create() {
-      // Purge game instance
-      Game.disconnect();
-
-      this.connectWebSocket();
-      this.status = "connected";
-    },
     connect() {
       // Purge game instance
       Game.disconnect();
@@ -56,7 +58,7 @@ export default {
       this.status = "connected";
     },
     connectWebSocket() {
-      this.$connect(`wss://wss.zeapps.eu/ws?user=${this.user.id}`);
+      this.$connect(`wss://wss.zeapps.eu/ws?user=${this.me.uuid}`);
     },
     disconnect() {
       // Disconnect websocket
