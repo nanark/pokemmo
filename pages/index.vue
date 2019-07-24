@@ -67,6 +67,9 @@ export default {
       // Purge game instance
       Game.disconnect();
 
+      // Delete me
+      this.$store.dispatch("authentication/deleteMe");
+
       this.status = "disconnected";
     }
   }

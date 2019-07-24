@@ -9,12 +9,18 @@ export const mutations = {
   },
   SET_ME(state, me) {
     state.me = me;
+  },
+  DELETE_ME(state) {
+    state.me = "";
   }
 };
 
 export const actions = {
   setJwt: (context, jwt) => {
     context.commit("SET_JWT", jwt);
+  },
+  deleteMe: context => {
+    context.commit("DELETE_ME");
   },
   async signIn(context, credentials) {
     const { accessToken, refreshToken } = await this.$axios.$post(
