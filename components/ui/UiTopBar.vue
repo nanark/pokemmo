@@ -1,7 +1,7 @@
 <template>
   <section class="ui-top-bar">
     <div class="left">
-      <UserAvatar :user="user" size="40px" />
+      <UserAvatar :user="me" size="40px" />
     </div>
     <div class="right">
       <button class="toggle" @click="switchOnlineMode(!onlineMode)">
@@ -44,7 +44,7 @@ export default {
         : this.$t("global.debug_off");
     },
     ...mapState({
-      user: state => state.user
+      me: state => state.authentication.me
     })
   },
   methods: {

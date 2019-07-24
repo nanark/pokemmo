@@ -1,5 +1,8 @@
 module.exports = {
   mode: "spa",
+  env: {
+    baseURL: "https://api.zeapps.eu"
+  },
   /*
    ** Headers of the page
    */
@@ -44,14 +47,19 @@ module.exports = {
   plugins: [
     "@/plugins/i18n",
     "@/plugins/vue_chat_scroll",
+    "@/plugins/axios",
     "@/plugins/websocket"
   ],
-  modules: ["@nuxtjs/style-resources", "@nuxtjs/axios"],
+  modules: [
+    "@nuxtjs/style-resources",
+    "@nuxtjs/axios",
+    "nuxt-vuex-localstorage"
+  ],
   styleResources: {
     scss: ["~/assets/styles/partials/_index.scss"]
   },
 
   axios: {
-    // proxyHeaders: false
+    baseURL: "https://api.zeapps.eu"
   }
 };

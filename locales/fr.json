@@ -6,6 +6,32 @@
     "online_on": "Live",
     "online_off": "Offline"
   },
+  "auth": {
+    "signin": {
+      "title": "Se connecter",
+      "description": "Si vous n'avez pas encore de compte, ",
+      "link": "cliquez ici",
+      "placeholders": {
+        "email": "Votre email",
+        "password": "Votre mot de passe secret"
+      },
+      "button": "Connectez-moi"
+    },
+    "signup": {
+      "title": "Créer son compte",
+      "description": "Si vous avez déjà un compte, ",
+      "link": "cliquez ici",
+      "placeholders": {
+        "username": "Choisissez un pseudo",
+        "email": "Votre email",
+        "password": "Tapez un mot de passe",
+        "password_copy": "Confirmez votre mot de passe"
+      },
+      "terms": "J'accepte les ",
+      "terms_link": "Conditions générales d'utilisation",
+      "button": "Créer le compte"
+    }
+  },
   "chatbox": {
     "placeholder": "Votre message ici",
     "player_name": "Vous"

@@ -19,13 +19,15 @@ import UserAvatar from "@/components/users/UserAvatar";
 export default {
   name: "WelcomeUsers",
   components: { UserAvatar },
-  computed: mapState(["users"]),
+  computed: mapState({
+    users: state => state.users.users
+  }),
   created() {
-    this.$store.dispatch("getUsers");
+    this.$store.dispatch("users/getUsers");
   },
   methods: {
     userClicked(id) {
-      this.$store.dispatch("setUser", id);
+      this.$store.dispatch("users/setUser", id);
       this.$emit("clickedUser", true);
     }
   }

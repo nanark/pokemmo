@@ -1,59 +1,82 @@
 <template>
   <section class="welcome-sign-in">
-    <div class="background">
-      <div>
-        <WelcomeUsers @clickedUser="signIn()" />
-        <div class="action">
-          <select v-model="$i18n.locale">
-            <option v-for="(lang, i) in locales" :key="i" :value="lang">
-              {{ lang }}
-            </option>
-          </select>
-        </div>
-      </div>
+    <h2>{{ $t("auth.signin.title") }}</h2>
+    <div class="description">
+      {{ $t("auth.signin.description") }}
+      <span class="link" @click="toggleBox">
+        {{ $t("auth.signin.link") }}
+      </span>
     </div>
+    <div v-if="error" class="error">{{ error }}</div>
+    <form method="post" @submit.prevent="onSubmit">
+      <div class="field">
+        <input
+          v-model.trim="email"
+          type="email"
+          :placeholder="$t(`auth.signin.placeholders.email`)"
+          name="email"
+          required
+        />
+      </div>
+      <div class="field">
+        <input
+          v-model.trim="password"
+          type="password"
+          :placeholder="$t(`auth.signin.placeholders.password`)"
+          name="password"
+          required
+        />
+      </div>
+      <div class="field">
+        <select v-model="$i18n.locale">
+          <option v-for="(lang, i) in locales" :key="i" :value="lang">
+            {{ lang }}
+          </option>
+        </select>
+      </div>
+      <div class="field">
+        <input type="submit" :value="$t(`auth.signin.button`)" />
+      </div>
+    </form>
   </section>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import WelcomeUsers from "./WelcomeUsers";
 
 export default {
   name: "WelcomeSignIn",
-  components: {
-    WelcomeUsers
+  data() {
+    return {
+      email: "",
+      password: "",
+      error: ""
+    };
   },
-  computed: mapState(["users", "locales"]),
+  computed: mapState({
+    locales: state => state.locales
+  }),
   methods: {
-    signIn() {
-      this.$emit("signInClicked", true);
+    // Login
+    async onSubmit() {
+      this.error = "";
+
+      try {
+        await this.$store.dispatch("authentication/signIn", {
+          email: this.email,
+          password: this.password
+        });
+      } catch {
+        this.error = "Error during authentication";
+      }
     },
-    setAvatarStyle(url) {
-      return `background-image: url(${url});`;
+    toggleBox() {
+      this.$emit("toggleBox", false);
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.background {
-  align-items: center;
-  background-color: $black;
-  bottom: 0;
-  cursor: default;
-  display: flex;
-  height: 100vh;
-  justify-content: center;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  width: 100%;
-}
-
-.action {
-  padding-top: 30px;
-  text-align: center;
-}
+@import "@/assets/styles/components/welcome-sign.scss";
 </style>

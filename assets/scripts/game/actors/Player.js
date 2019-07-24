@@ -2,8 +2,8 @@ import Character from "./Character";
 import { Game } from "../Game";
 
 export default class Player extends Character {
-  constructor(name) {
-    super("character", "face-down", name);
+  constructor(user) {
+    super("character", "face-down", user);
 
     const _display = Game.display;
     const _viewport = Game.display.viewport;

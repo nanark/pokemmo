@@ -10,7 +10,7 @@ export const moveCharacters = data => {
     return i.id == goto.user_id;
   });
 
-  if (Game.user.id == user.id) {
+  if (Game.me.id == user.id) {
     return false;
   }
 

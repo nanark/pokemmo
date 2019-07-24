@@ -17,6 +17,8 @@ export default {
   },
   methods: {
     setAvatarStyle() {
+      this.user.avatar =
+        "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/009.png";
       return `background-image: url(${this.user.avatar}); height: ${this.size}; width: ${this.size};`;
     }
   }

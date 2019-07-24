@@ -11,17 +11,17 @@ import { Game } from "@/assets/scripts/game/Game";
 export default {
   name: "ViewportWindow",
   props: {
-    user: {
+    me: {
       type: Object,
       required: true
     }
   },
   computed: mapState({
-    users: state => state.users
+    users: state => state.users.users
   }),
   mounted() {
     // Init the Game object
-    Game.init(this.user, this.users);
+    Game.init(this.me, this.users);
     Game.setWebsocket(this.$socket);
 
     // Bind it to the DOM
