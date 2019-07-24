@@ -31,35 +31,16 @@ export default class Character {
     const sheet = this.buildTextures(this.animation);
     this.container = new PIXI.Container();
 
-    // Text
-    this.layers.label = new PIXI.Text(this.username, {
-      fontFamily: "Arial",
-      fontSize: 14,
-      fill: 0xffffff,
-      align: "center"
-    });
-    this.layers.label.anchor.set(0.5);
-    this.layers.label.position.y = Game.tileDistance / 2 + 15;
-
-    const labelWidth = this.layers.label.width;
-    const labelHeight = this.layers.label.height;
-    const label = new PIXI.Graphics();
-
-    label.lineStyle(0);
-    label.beginFill(0x000000, 0.2);
-    label.drawRoundedRect(0, 0, labelWidth + 20, labelHeight + 10, 12);
-    label.endFill();
-    label.position.x = (label.width / 2) * -1;
-    label.position.y = Game.tileDistance / 2 + 3;
-
     // Sprite
     this.layers.sprite = new PIXI.AnimatedSprite(sheet);
     this.layers.sprite.animationSpeed = 0.14;
     this.layers.sprite.play();
 
+    // Label
+    const label = this.label(this.username);
+
     this.container.addChild(this.layers.sprite);
     this.container.addChild(label);
-    this.container.addChild(this.layers.label);
 
     // Scale
     this.layers.sprite.width = this.layers.sprite.width * Game.tileScale + 14;
@@ -67,7 +48,7 @@ export default class Character {
     this.layers.sprite.anchor.set(0.5, 0.77); // Center
     this.layers.sprite.zIndex = 1;
 
-    // Place it at the top left corner
+    // Place it at the spawning position
     this.setPositionTile(Game.spawningTile.x, Game.spawningTile.y);
   }
 
@@ -83,6 +64,37 @@ export default class Character {
     }
 
     return sheet;
+  }
+
+  label(name) {
+    // Create the content
+    const text = new PIXI.Text(name.trim(), {
+      fontFamily: "Arial",
+      fontSize: 14,
+      fill: 0xffffff,
+      align: "center"
+    });
+    text.anchor.x = 0.5;
+
+    // Create the visual container
+    const labelWidth = text.width;
+    const labelHeight = text.height;
+    const label = new PIXI.Graphics();
+    label.lineStyle(0);
+    label.beginFill(0x000000, 0.2);
+    label.drawRoundedRect(0, 0, labelWidth + 20, labelHeight + 10, 12);
+    label.endFill();
+    label.position.x = (label.width / 2) * -1;
+    label.position.y = Game.tileDistance / 2 + 3;
+
+    // Center the text in the container
+    text.position.x = label.width / 2;
+    text.position.y = 4;
+
+    // Add child
+    label.addChild(text);
+
+    return label;
   }
 
   setAnimation(animation) {
