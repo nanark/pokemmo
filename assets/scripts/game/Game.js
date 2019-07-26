@@ -8,6 +8,7 @@ import { load as loadLevel } from "./levels";
 import { handlePlayerEvents } from "./events";
 import { cursor } from "./cursor";
 import { handleControlEvents } from "./controls";
+import { displayMode } from "./utils";
 
 export const Game = {
   loaded: false,
@@ -32,7 +33,7 @@ export const Game = {
 
     // World
     this.tileSize = 16;
-    this.tileScale = 2.6;
+    this.tileScale = displayMode().isMobile ? 1.3 : 2.6;
     this.tileDistance = this.tileSize * this.tileScale;
     this.population = new Map();
     this.spawningTile = { x: 30, y: 24 };
