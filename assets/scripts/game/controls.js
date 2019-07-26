@@ -77,6 +77,7 @@ export const handleKeyboardEvents = () => {
       }
     }
     if (evt.type === "end") {
+      virtualControlDirection = "";
       pressedControlKeys.length = 0;
     }
   });
