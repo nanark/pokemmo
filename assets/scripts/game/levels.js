@@ -5,6 +5,7 @@ import { tileToPixel } from "./utils";
 import { getTexture } from "./textures";
 
 const grid = [];
+export const charactersGrid = [];
 export let pathGrid = null;
 
 export const load = items => {
@@ -76,6 +77,7 @@ export const detectObstacle = (x, y) => {
   if (!pathGrid) return true;
 
   const nodes = pathGrid.nodes;
+
   if (!nodes) return true;
 
   if (!nodes[y]) return true;

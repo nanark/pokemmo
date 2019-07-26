@@ -1,9 +1,10 @@
+import * as _ from "lodash";
 import * as PIXI from "pixi.js";
 import { Game } from "../Game";
 import { tileToPixel } from "../utils";
 import { pathGrid } from "../levels";
 import { sendPosition } from "../connection";
-import { detectObstacle } from "../levels";
+import { charactersGrid, detectObstacle } from "../levels";
 
 export default class Character {
   constructor(type, animation, user) {
@@ -15,6 +16,7 @@ export default class Character {
     this.position = {};
     this.position.x = 0;
     this.position.y = 0;
+    this.positionBuffer = {};
     this.layers = {};
 
     // Movement variables
@@ -132,7 +134,54 @@ export default class Character {
 
   stand() {
     const animation = `face-${this.direction}`;
+
+    this._setCharacterOnGrid();
     this.setAnimation(animation);
+  }
+
+  _setCharacterOnGrid() {
+    // The character hasn't moved, quit
+    if (_.isEqual(this.positionBuffer, [this.position.x, this.position.y])) {
+      return;
+    }
+
+    // Remove the buffer if it exists
+    if (this.positionBuffer.length > 0) {
+      this._removeFromCharacterGridCell(
+        this.positionBuffer[0],
+        this.positionBuffer[1]
+      );
+    }
+
+    this._addFromCharacterGridCell(this.position.x, this.position.y);
+
+    // Keep the last standing position
+    this.positionBuffer = [this.position.x, this.position.y];
+  }
+
+  _createCharacterGridCell(x, y) {
+    if (!charactersGrid[x]) charactersGrid[x] = [];
+    if (!charactersGrid[x][y]) charactersGrid[x][y] = [];
+  }
+
+  _addFromCharacterGridCell(x, y) {
+    this._createCharacterGridCell(x, y);
+
+    if (!charactersGrid[x][y].includes(this.id)) {
+      charactersGrid[x][y].push(this.id);
+    }
+  }
+
+  _removeFromCharacterGridCell(x, y) {
+    this._createCharacterGridCell(x, y);
+
+    if (charactersGrid[x][y].includes(this.id)) {
+      const userIds = charactersGrid[x][y];
+
+      charactersGrid[x][y] = userIds.filter(userId => {
+        return userId !== this.id;
+      });
+    }
   }
 
   // Place the character on this tile and set position in pixel

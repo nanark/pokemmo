@@ -5,6 +5,7 @@ export const moveCharacters = data => {
   const goto = data;
   const x = goto.x;
   const y = goto.y;
+
   const user = Game.users.find(i => {
     return i.id == goto.user_id;
   });
