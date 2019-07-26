@@ -38,7 +38,8 @@ export default {
   },
   computed: mapState({
     me: state => state.authentication.me,
-    socket: state => state.socket
+    socket: state => state.socket,
+    refreshToken: state => state.localStorage.refreshToken
   }),
   watch: {
     me(values) {
@@ -50,8 +51,8 @@ export default {
     }
   },
   mounted() {
-    // Autoreconnect
-    this.$store.dispatch("authentication/refreshToken");
+    // Autoreconnect if refreshToken is available
+    if (this.refreshToken) this.$store.dispatch("authentication/refreshToken");
   },
   methods: {
     connect() {

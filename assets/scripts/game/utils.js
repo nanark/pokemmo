@@ -11,9 +11,7 @@ export const tileToPixel = value => {
 
 export const displayMode = () => {
   const userAgent = navigator.userAgent;
-  const isLandscape = [0, 180].includes(screen.orientation.angle)
-    ? false
-    : true;
+  const isLandscape = [0, 180].includes(window.orientation) ? false : true;
 
   return { isMobile: isMobile(userAgent).any, isLandscape };
 };
