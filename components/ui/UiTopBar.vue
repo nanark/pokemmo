@@ -4,10 +4,6 @@
       <UserAvatar :user="me" size="40px" />
     </div>
     <div class="right">
-      <button class="toggle" @click="switchOnlineMode(!onlineMode)">
-        <span :class="onlineMode ? `toggle-live` : `toggle-offline`" />
-        {{ onlineModeLabel }}
-      </button>
       <button class="toggle" @click="switchDebugMode(!debugMode)">
         {{ debugModeLabel }}
       </button>
@@ -28,16 +24,10 @@ export default {
   },
   data() {
     return {
-      debugMode: Game.debugMode,
-      onlineMode: Game.online
+      debugMode: Game.debugMode
     };
   },
   computed: {
-    onlineModeLabel() {
-      return this.onlineMode
-        ? this.$t("global.online_on")
-        : this.$t("global.online_off");
-    },
     debugModeLabel() {
       return this.debugMode
         ? this.$t("global.debug_on")
@@ -54,10 +44,6 @@ export default {
     switchDebugMode(mode) {
       this.debugMode = mode;
       Game.setDebug(mode);
-    },
-    switchOnlineMode(mode) {
-      this.onlineMode = mode;
-      Game.setOnline(mode);
     }
   }
 };
