@@ -66,6 +66,7 @@ const moveloop = (character, msElapsed) => {
     if (character.msLeft === 0) {
       // Set the position with integers.
       const currentTile = character.path[0];
+
       character.setPositionTile(currentTile[0], currentTile[1]);
 
       // Step is done, remove from path.

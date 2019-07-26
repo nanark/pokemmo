@@ -136,11 +136,13 @@ export default class Character {
   }
 
   // Place the character on this tile and set position in pixel
-  setPositionTile(x, y) {
+  setPositionTile(x, y, cleanPosition = false) {
     this.position.x = x;
     this.position.y = y;
 
-    this.container.position.set(tileToPixel(x), tileToPixel(y));
+    if (cleanPosition) {
+      this.container.position.set(tileToPixel(x), tileToPixel(y));
+    }
   }
 
   // Place the character at this position in pixels

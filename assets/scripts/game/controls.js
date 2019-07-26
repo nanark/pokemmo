@@ -116,7 +116,9 @@ export const handleControlEvents = () => {
   });
 
   Keyboard.events.on("released", null, keyCode => {
-    if (isControlKey(keyCode)) removePressedControlKey(keyCode);
+    if (isControlKey(keyCode)) {
+      removePressedControlKey(keyCode);
+    }
   });
 };
 

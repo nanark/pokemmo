@@ -89,7 +89,7 @@ export const Game = {
     const player = new Player(this.me);
 
     // Temp: Set the player in the map
-    player.setPositionTile(this.spawningTile.x, this.spawningTile.y);
+    player.setPositionTile(this.spawningTile.x, this.spawningTile.y, true);
     Game.display.viewport.moveCenter(
       player.container.position.x,
       player.container.position.y
