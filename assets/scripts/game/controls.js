@@ -1,4 +1,13 @@
+import nipplejs from "nipplejs";
 import Keyboard from "pixi.js-keyboard";
+
+let virtualControlDirection;
+const virtualControls = {
+  up: "ArrowUp",
+  down: "ArrowDown",
+  left: "ArrowLeft",
+  right: "ArrowRight"
+};
 
 const controls = {
   ArrowUp: {
@@ -51,6 +60,27 @@ const removePressedControlKey = keyCode => {
 
 // Events for Game
 export const handleKeyboardEvents = () => {
+  const options = {
+    zone: document.getElementById("zone_joystick"),
+    mode: "static",
+    position: { right: "60px", bottom: "60px" }
+  };
+  const stick = nipplejs.create(options);
+  stick.on("dir end", (evt, data) => {
+    if (evt.type === "dir") {
+      const virtualDirection = data.direction.angle;
+      const arrowDirection = virtualControls[virtualDirection];
+
+      if (virtualControlDirection !== arrowDirection) {
+        virtualControlDirection = arrowDirection;
+        addPressedControlKey(virtualControlDirection);
+      }
+    }
+    if (evt.type === "end") {
+      pressedControlKeys.length = 0;
+    }
+  });
+
   Keyboard.events.on("pressed", null, keyCode => {
     if (isControlKey(keyCode)) addPressedControlKey(keyCode);
   });

@@ -1,6 +1,7 @@
 <template>
   <div class="viewport-window">
     <section class="viewport"></section>
+    <div id="zone_joystick"></div>
   </div>
 </template>
 
