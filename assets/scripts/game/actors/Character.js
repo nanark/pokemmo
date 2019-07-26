@@ -1,10 +1,9 @@
 import * as _ from "lodash";
 import * as PIXI from "pixi.js";
 import { Game } from "../Game";
-import { tileToPixel } from "../utils";
-import { pathGrid } from "../levels";
+import { tileToPixel, random } from "../utils";
 import { sendPosition } from "../connection";
-import { charactersGrid, detectObstacle } from "../levels";
+import { pathGrid, charactersGrid, detectObstacle } from "../levels";
 
 export default class Character {
   constructor(type, animation, user) {
@@ -99,12 +98,13 @@ export default class Character {
     return label;
   }
 
-  setAnimation(animation) {
+  setAnimation(animation, anchorX = 0.5, anchorY = 0.5) {
     if (animation === this.animation) {
       return false;
     }
 
     this.animation = animation;
+    this.layers.sprite.anchor.set(anchorX, anchorY);
     this.layers.sprite.textures = this.buildTextures(animation);
     this.layers.sprite.gotoAndPlay(1);
   }
@@ -134,9 +134,16 @@ export default class Character {
 
   stand() {
     const animation = `face-${this.direction}`;
-
     this._setCharacterOnGrid();
-    this.setAnimation(animation);
+
+    const charactersCountOnTile = this._countCharactersOnTile();
+
+    // Shift the characters a bit if they share the same tile
+    if (charactersCountOnTile > 1) {
+      this.setAnimation(animation, random(0.3, 0.7), random(0.3, 0.7));
+    } else {
+      this.setAnimation(animation);
+    }
   }
 
   _setCharacterOnGrid() {
@@ -162,6 +169,15 @@ export default class Character {
   _createCharacterGridCell(x, y) {
     if (!charactersGrid[x]) charactersGrid[x] = [];
     if (!charactersGrid[x][y]) charactersGrid[x][y] = [];
+  }
+
+  _countCharactersOnTile() {
+    const x = this.position.x;
+    const y = this.position.y;
+
+    this._createCharacterGridCell(x, y);
+
+    return charactersGrid[x][y].length;
   }
 
   _addFromCharacterGridCell(x, y) {

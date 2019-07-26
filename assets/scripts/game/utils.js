@@ -15,3 +15,7 @@ export const displayMode = () => {
 
   return { isMobile: isMobile(userAgent).any, isLandscape };
 };
+
+export const random = (min, max) => {
+  return Math.random() * (+max - +min) + +min;
+};
