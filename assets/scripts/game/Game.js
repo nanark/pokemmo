@@ -3,7 +3,6 @@ import GameDisplay from "./GameDisplay";
 import Player from "./actors/Player";
 import Stats from "stats.js";
 import { map } from "@/static/sources/map.js";
-import { logIt } from "./utils";
 import { moveCharacters } from "./positions";
 import { load as loadLevel } from "./levels";
 import { handlePlayerEvents } from "./events";
@@ -53,20 +52,9 @@ export const Game = {
     // Event handlers
     handlePlayerEvents();
     handleControlEvents();
-
-    logIt("Initialize the game.");
-  },
-
-  setDebug(mode) {
-    const label = mode ? "debug mode" : "production mode";
-    logIt(`Set to ${label}`);
-    this.debugMode = mode;
   },
 
   setOnline(mode) {
-    const label = mode ? "live" : "offline";
-    logIt(`Set to ${label}`);
-
     // Destroy the other characters
     if (!mode) {
       this.population.forEach(character => {
@@ -80,10 +68,6 @@ export const Game = {
 
   setWebsocket(ws) {
     this.ws = ws;
-
-    if (ws.readyState === 1) {
-      logIt("Opening Websocket for positions");
-    }
 
     this.ws.addEventListener("message", event => {
       if (this.resourcesLoaded && this.online) {

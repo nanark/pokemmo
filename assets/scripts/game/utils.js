@@ -1,6 +1,5 @@
 import { Game } from "./Game";
-
-let previousPositionDebug = [0, 0];
+import isMobileLib from "ismobilejs";
 
 export const pixelToTile = value => {
   return value / Game.tileScale / Game.tileSize;
@@ -10,23 +9,10 @@ export const tileToPixel = value => {
   return value * Game.tileScale * Game.tileSize;
 };
 
-export const displayDebug = delta => {
-  const _sprite = Game.display.player.container;
-  const currentPosition = [_sprite.x, _sprite.y];
-  const differencePosition = [
-    Math.abs(~~(currentPosition[0] - previousPositionDebug[0])),
-    Math.abs(~~(currentPosition[1] - previousPositionDebug[1]))
-  ];
+export const displayMode = () => {
+  const userAgent = navigator.userAgent;
+  const isMobile = isMobileLib(userAgent).any;
+  const isLandscape = window.height > window.width ? true : false;
 
-  previousPositionDebug = currentPosition;
-
-  console.log(
-    `Delta: ${delta} - Movement: ${differencePosition[0]}x${
-      differencePosition[1]
-    }px`
-  );
-};
-
-export const logIt = message => {
-  Game.logs.push({ date: Date.now(), message });
+  return { isMobile, isLandscape };
 };

@@ -4,9 +4,6 @@
       <UserAvatar :user="me" size="40px" />
     </div>
     <div class="right">
-      <button class="toggle" @click="switchDebugMode(!debugMode)">
-        {{ debugModeLabel }}
-      </button>
       <button @click="disconnect">{{ $t("global.disconnect") }}</button>
     </div>
   </section>
@@ -15,24 +12,13 @@
 <script>
 import { mapState } from "vuex";
 import UserAvatar from "@/components/users/UserAvatar";
-import { Game } from "@/assets/scripts/game/Game";
 
 export default {
   name: "UiTopBar",
   components: {
     UserAvatar
   },
-  data() {
-    return {
-      debugMode: Game.debugMode
-    };
-  },
   computed: {
-    debugModeLabel() {
-      return this.debugMode
-        ? this.$t("global.debug_on")
-        : this.$t("global.debug_off");
-    },
     ...mapState({
       me: state => state.authentication.me
     })
@@ -40,10 +26,6 @@ export default {
   methods: {
     disconnect() {
       this.$emit("disconnect", true);
-    },
-    switchDebugMode(mode) {
-      this.debugMode = mode;
-      Game.setDebug(mode);
     }
   }
 };
@@ -70,37 +52,5 @@ export default {
 
 .right {
   padding: 10px;
-}
-
-.toggle {
-  border: 1px solid transparent;
-  background-color: transparent;
-  color: $white;
-  cursor: pointer;
-  padding: 4px 10px;
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  transition: 0.3s;
-
-  &:hover {
-    border: 1px solid rgba($white, 0.4);
-    border-radius: 4px;
-  }
-
-  span {
-    display: inline-block;
-    height: 10px;
-    margin-right: 5px;
-    width: 10px;
-
-    &.toggle-live {
-      background-color: green;
-    }
-
-    &.toggle-offline {
-      background-color: red;
-    }
-  }
 }
 </style>

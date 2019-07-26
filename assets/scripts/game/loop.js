@@ -1,7 +1,6 @@
 import Keyboard from "pixi.js-keyboard";
 import * as PIXI from "pixi.js";
 import { Game } from "./Game";
-import { logIt } from "./utils";
 import { pressedControlDirections, isControlKeyPressed } from "./controls";
 
 const gameloop = delta => {
@@ -188,18 +187,12 @@ const walkWithKeyboard = () => {
 export function loadResources() {
   const characters = {
     name: "character",
-    url: "packs/character.json",
-    onComplete() {
-      logIt("Character loaded.");
-    }
+    url: "packs/character.json"
   };
 
   const magiscarf = {
     name: "magiscarf.png",
-    url: "images/magiscarf.png",
-    onComplete() {
-      logIt("magiscarf loaded.");
-    }
+    url: "images/magiscarf.png"
   };
 
   // Reset all cache and shared sprites resources
@@ -212,7 +205,6 @@ export function loadResources() {
     .add(characters)
     .add(magiscarf)
     .load(() => {
-      logIt("Assets loaded.");
       Game.resourcesLoaded = true;
 
       // Setup the game (load player etc.)

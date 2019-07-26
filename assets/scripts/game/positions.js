@@ -1,6 +1,5 @@
 import NPC from "./actors/NPC";
 import { Game } from "./Game";
-import { logIt } from "./utils";
 
 export const moveCharacters = data => {
   const goto = data;
@@ -15,7 +14,6 @@ export const moveCharacters = data => {
   }
 
   if (!Game.population.has(user.id)) {
-    logIt("Generate a new NPC:" + user.username);
     Game.population.set(user.id, new NPC(user));
   }
 
