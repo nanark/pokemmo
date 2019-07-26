@@ -59,13 +59,18 @@ const removePressedControlKey = keyCode => {
 };
 
 // Events for Game
-export const handleKeyboardEvents = () => {
+export const handleControlEvents = () => {
+  //===========================================================================
+  // Virtual joystick (nipple.js)
+  //===========================================================================
   const options = {
     zone: document.getElementById("zone_joystick"),
     mode: "static",
-    position: { right: "60px", bottom: "60px" }
+    position: { right: "50%", bottom: "60px" }
   };
+
   const stick = nipplejs.create(options);
+
   stick.on("dir end", (evt, data) => {
     if (evt.type === "dir") {
       const virtualDirection = data.direction.angle;
@@ -82,6 +87,9 @@ export const handleKeyboardEvents = () => {
     }
   });
 
+  //===========================================================================
+  // Keyboard
+  //===========================================================================
   Keyboard.events.on("pressed", null, keyCode => {
     if (isControlKey(keyCode)) addPressedControlKey(keyCode);
   });
@@ -91,7 +99,9 @@ export const handleKeyboardEvents = () => {
   });
 };
 
+//=============================================================================
 // Returns the direction for the loop
+//=============================================================================
 export const pressedControlDirections = () => {
   let x = 0;
   let y = 0;

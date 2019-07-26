@@ -8,7 +8,7 @@ import { moveCharacters } from "./positions";
 import { load as loadLevel } from "./levels";
 import { handlePlayerEvents } from "./events";
 import { cursor } from "./cursor";
-import { handleKeyboardEvents } from "./controls";
+import { handleControlEvents } from "./controls";
 
 export const Game = {
   loaded: false,
@@ -52,7 +52,7 @@ export const Game = {
 
     // Event handlers
     handlePlayerEvents();
-    handleKeyboardEvents();
+    handleControlEvents();
 
     logIt("Initialize the game.");
   },
