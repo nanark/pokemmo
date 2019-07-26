@@ -1,5 +1,6 @@
 import nipplejs from "nipplejs";
 import Keyboard from "pixi.js-keyboard";
+import { displayMode } from "./utils";
 
 let virtualControlDirection;
 const virtualControls = {
@@ -63,29 +64,49 @@ export const handleControlEvents = () => {
   //===========================================================================
   // Virtual joystick (nipple.js)
   //===========================================================================
-  const options = {
-    zone: document.getElementById("zone_joystick"),
-    mode: "static",
-    position: { right: "50%", bottom: "60px" }
+  const { isMobile } = displayMode();
+  let stick;
+
+  const buildStick = () => {
+    if (stick) {
+      stick.destroy();
+    }
+
+    const { isLandscape } = displayMode();
+    const position = isLandscape
+      ? { right: "80px", bottom: "80px" }
+      : { right: "50%", bottom: "60px" };
+
+    const options = {
+      zone: document.getElementById("zone_joystick"),
+      mode: "static",
+      position
+    };
+
+    stick = nipplejs.create(options);
+    stick.on("dir end", (evt, data) => {
+      if (evt.type === "dir") {
+        const virtualDirection = data.direction.angle;
+        const arrowDirection = virtualControls[virtualDirection];
+
+        if (virtualControlDirection !== arrowDirection) {
+          virtualControlDirection = arrowDirection;
+          addPressedControlKey(virtualControlDirection);
+        }
+      }
+      if (evt.type === "end") {
+        virtualControlDirection = "";
+        pressedControlKeys.length = 0;
+      }
+    });
   };
 
-  const stick = nipplejs.create(options);
-
-  stick.on("dir end", (evt, data) => {
-    if (evt.type === "dir") {
-      const virtualDirection = data.direction.angle;
-      const arrowDirection = virtualControls[virtualDirection];
-
-      if (virtualControlDirection !== arrowDirection) {
-        virtualControlDirection = arrowDirection;
-        addPressedControlKey(virtualControlDirection);
-      }
-    }
-    if (evt.type === "end") {
-      virtualControlDirection = "";
-      pressedControlKeys.length = 0;
-    }
-  });
+  if (isMobile) {
+    buildStick();
+    window.addEventListener("orientationchange", () => {
+      buildStick();
+    });
+  }
 
   //===========================================================================
   // Keyboard
