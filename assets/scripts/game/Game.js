@@ -18,7 +18,6 @@ export const Game = {
     this.displayStats();
     this.logs = [];
     this.FPS = 60;
-    this.loaded = true;
     this.resourcesLoaded = false;
     this.online = true;
     this.debugMode = false;
@@ -50,9 +49,14 @@ export const Game = {
     // Display
     this.display = new GameDisplay();
 
-    // Event handlers
-    handlePlayerEvents();
-    handleControlEvents();
+    // Only load once
+    if (!this.loaded) {
+      this.loaded = true;
+
+      // Event handlers
+      handlePlayerEvents();
+      handleControlEvents();
+    }
   },
 
   setOnline(mode) {
@@ -99,8 +103,8 @@ export const Game = {
   },
 
   disconnect() {
-    if (Game.display && Game.display.app.stage) {
-      Game.display.app.destroy();
+    if (this.display && this.display.app.stage) {
+      this.display.app.destroy();
     }
   },
 
