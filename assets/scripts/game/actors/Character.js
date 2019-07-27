@@ -98,7 +98,7 @@ export default class Character {
     return label;
   }
 
-  setAnimation(animation, anchorX = 0.5, anchorY = 0.5) {
+  setAnimation(animation, anchorX = 0.5, anchorY = 0.77) {
     if (animation === this.animation) {
       return false;
     }
