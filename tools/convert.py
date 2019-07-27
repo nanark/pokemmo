@@ -2,7 +2,7 @@ import json
 import math
 
 jsonMapFile = open(
-  "../static/sources/test-map.json",
+  "/users/kkuipers/Google Drive/[Pokemmo]/island.json",
   "r"
 )
 
@@ -41,6 +41,8 @@ for tileNumber in range(width * height):
     # Loop layers to parse
     for layer in layers:
 
+        isObstacle = False
+
         # Fetch the tile Id from the current layer
         tileId = layer['data'][tileNumber]
 
@@ -59,8 +61,19 @@ for tileNumber in range(width * height):
                             (prop['type'] != 'bool')):
                         data['properties'][prop['name']] = prop['value']
 
+                    # Detect obstacle
+                    if (prop['name'] == 'obstacle' and prop['value'] is True):
+                        isObstacle = True
+
+            # Skip obstacle layer
+            if (isObstacle is True):
+                continue
+
             opacity = layer['opacity']
             visible = layer['visible']
+
+            if (visible is False):
+                continue
 
             # Only different from full visibility
             if opacity < 1:
@@ -78,7 +91,7 @@ for tileNumber in range(width * height):
                 if (tileId >= tileset['first_gid'] and
                         tileId < tileIdMax):
 
-                    tileIdCurrent = tileId - tileset['first_gid']
+                    tileIdCurrent = tileId - tileset['first_gid'] - 1
 
                     tiles['tileset'] = tileset['image']
 
@@ -90,14 +103,15 @@ for tileNumber in range(width * height):
 
                     # Set Row and Column where to crop the tileset
                     row = math.ceil(position / tileset['columns'])
+
                     column = position - (
                         math.floor(
-                            tileIdCurrent / tileset['columns']
+                            position / tileset['columns']
                         ) * tileset['columns']
                     )
 
-                    tiles['x'] = (column - 1)
-                    tiles['y'] = (row - 1)
+                    tiles['x'] = int(column)
+                    tiles['y'] = int(row)
 
             data['tiles'].append(tiles)
 
