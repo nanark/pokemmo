@@ -35,7 +35,7 @@ export const Game = {
     this.tileScale = displayMode().isMobile ? 1.6 : 2.6;
     this.tileDistance = this.tileSize * this.tileScale;
     this.population = new Map();
-    this.spawningTile = { x: 30, y: 24 };
+    this.spawningTile = { x: 23, y: 19 };
 
     // Cursor
     this.cursor = cursor("hover");
