@@ -3,13 +3,19 @@ export const state = () => ({
 });
 
 export const mutations = {
-  SET_REFRESH_TOKEN(state, refreshToken) {
-    state.refreshToken = refreshToken;
+  SET_TOKENS(state, data) {
+    if (data) {
+      sessionStorage.setItem("jwt", data.jwt);
+      state.refreshToken = data.refreshToken;
+    } else {
+      sessionStorage.setItem("jwt", "");
+      state.refreshToken = "";
+    }
   }
 };
 
 export const actions = {
-  setRefreshToken: function(context, refreshToken) {
-    context.commit("SET_REFRESH_TOKEN", refreshToken);
+  setTokens: function(context, data) {
+    context.commit("SET_TOKENS", data);
   }
 };

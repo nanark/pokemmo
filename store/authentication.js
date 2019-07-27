@@ -26,22 +26,24 @@ export const actions = {
   },
   deleteMe: context => {
     context.commit("DELETE_ME");
-    context.dispatch("localStorage/setRefreshToken", "", { root: true });
+    context.dispatch("localStorage/setTokens", "", { root: true });
   },
   async signIn(context, credentials) {
-    const data = await this.$axios.$post("/user/signin", {
+    const payload = {
       email: credentials.email,
       password: credentials.password
-    });
+    };
+    const data = await this.$axios.$post("/user/signin", payload);
 
     context.dispatch("connecting", data);
   },
   async signUp(context, credentials) {
-    const data = await this.$axios.$post("/user/signup", {
+    const payload = {
       email: credentials.email,
       password: credentials.password,
       username: credentials.username
-    });
+    };
+    const data = await this.$axios.$post("/user/signup", payload);
 
     context.dispatch("connecting", data);
   },
@@ -53,7 +55,11 @@ export const actions = {
     context.dispatch("connecting", data);
   },
   async connecting(context, { refreshToken, accessToken }) {
-    context.dispatch("localStorage/setRefreshToken", refreshToken, {
+    const payload = {
+      jwt: accessToken,
+      refreshToken
+    };
+    context.dispatch("localStorage/setTokens", payload, {
       root: true
     });
     context.commit("SET_JWT", accessToken);
