@@ -38,17 +38,20 @@ export default class GameDisplay {
     this.mapContainer = new PIXI.Container();
     this.cursorContainer = new PIXI.Container();
     this.unitsContainer = new PIXI.Container();
+    this.mapOverlayContainer = new PIXI.Container();
     this.menuContainer = new PIXI.Container();
 
     this.mapContainer.zIndex = 5;
+    this.mapOverlayContainer.zIndex = 15;
     this.mapContainer.interactive = true;
     this.unitsContainer.zIndex = 10;
     this.menuContainer.zIndex = 20;
 
     this.viewport.addChild(this.mapContainer);
-    this.viewport.addChild(this.menuContainer);
     this.viewport.addChild(this.cursorContainer);
     this.viewport.addChild(this.unitsContainer);
+    this.viewport.addChild(this.mapOverlayContainer);
+    this.viewport.addChild(this.menuContainer);
 
     this.app.stage.addChild(this.viewport);
 

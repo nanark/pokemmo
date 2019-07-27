@@ -12,7 +12,9 @@ export const load = items => {
   const _viewport = Game.display.viewport;
 
   for (const item of items) {
-    loadTiles(item);
+    loadTiles(item, true);
+    loadTiles(item, false);
+    loadObstacle(item);
   }
 
   pathGrid = new PF.Grid(grid);
@@ -24,40 +26,14 @@ export const load = items => {
   _viewport.worldHeight = tileToPixel(worldHeight);
 };
 
-const loadTiles = item => {
+const loadObstacle = item => {
   let isObstacle = false;
-
-  //===========================================================================
-  // Generate tile
-  //===========================================================================
-  const tileObject = new PIXI.Graphics();
-
-  // Define its properties
-  tileObject.position.x = tileToPixel(item.x) - Game.tileDistance / 2;
-  tileObject.position.y = tileToPixel(item.y) - Game.tileDistance / 2;
-  tileObject.scale.set(Game.tileScale);
 
   const properties = item.properties;
   if (properties) {
     isObstacle = properties.obstacle || false;
   }
 
-  for (const tile of item.tiles) {
-    // Add a key in texturesCache if not available
-    const texture = getTexture(tile);
-
-    const alpha = tile.opacity || 100;
-
-    tileObject.beginTextureFill(texture, 0xffffff, alpha);
-    tileObject.drawRect(0, 0, Game.tileSize, Game.tileSize);
-  }
-
-  // Add the tile to the map
-  Game.display.mapContainer.addChildAt(tileObject);
-
-  //===========================================================================
-  // Generate grid
-  //===========================================================================
   // Initialize row
   if (!grid[item.y]) grid[item.y] = [];
 
@@ -66,6 +42,41 @@ const loadTiles = item => {
     grid[item.y].push(1);
   } else {
     grid[item.y].push(0);
+  }
+};
+
+const loadTiles = (item, overlay) => {
+  let hasLayer = false;
+
+  const tileObject = new PIXI.Graphics();
+
+  // Define its properties
+  tileObject.position.x = tileToPixel(item.x) - Game.tileDistance / 2;
+  tileObject.position.y = tileToPixel(item.y) - Game.tileDistance / 2;
+  tileObject.scale.set(Game.tileScale);
+
+  for (const tile of item.tiles) {
+    // Add a key in texturesCache if not available
+    const texture = getTexture(tile);
+
+    const alpha = tile.opacity || 100;
+
+    const isOverlay = tile.overlay || false;
+
+    if (isOverlay === overlay) {
+      hasLayer = true;
+      tileObject.beginTextureFill(texture, 0xffffff, alpha);
+      tileObject.drawRect(0, 0, Game.tileSize, Game.tileSize);
+    }
+  }
+
+  // Add the tile to the map
+  if (hasLayer) {
+    if (overlay) {
+      Game.display.mapOverlayContainer.addChildAt(tileObject);
+    } else {
+      Game.display.mapContainer.addChildAt(tileObject);
+    }
   }
 };
 

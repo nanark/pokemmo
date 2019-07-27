@@ -42,6 +42,7 @@ for tileNumber in range(width * height):
     for layer in layers:
 
         isObstacle = False
+        isOverlay = False
 
         # Fetch the tile Id from the current layer
         tileId = layer['data'][tileNumber]
@@ -65,6 +66,10 @@ for tileNumber in range(width * height):
                     if (prop['name'] == 'obstacle' and prop['value'] is True):
                         isObstacle = True
 
+                    # Detect overlay
+                    if (prop['name'] == 'overlay' and prop['value'] is True):
+                        isOverlay = True
+
             # Skip obstacle layer
             if (isObstacle is True):
                 continue
@@ -82,6 +87,10 @@ for tileNumber in range(width * height):
             # Indicate only different from True
             if visible is False:
                 tiles['visible'] = layer['visible']
+
+            # Indicate only different from False
+            if isOverlay is True:
+                tiles['overlay'] = True
 
             # Search for the tileset targeted via the first_gid
             for tileset in tilesets:
