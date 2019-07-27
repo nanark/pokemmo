@@ -1,12 +1,13 @@
-# pokemmo
+# Codename Pokemmo
 
-> Nuxt.js project
+## API documentation
+https://app.swaggerhub.com/apis/nanark/PokemmoAPI/1.0.0#/
 
 ## Build Setup
 
 ``` bash
 # install dependencies
-$ npm install # Or yarn install
+$ yarn install
 
 # serve with hot reload at localhost:3000
 $ npm run dev
@@ -17,7 +18,8 @@ $ npm start
 
 # generate static project
 $ npm run generate
-```
 
-For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
+# Deploy on heroku
+$ git push heroku master
+```
 
