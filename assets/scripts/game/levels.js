@@ -37,13 +37,12 @@ const loadTiles = item => {
   tileObject.position.y = tileToPixel(item.y) - Game.tileDistance / 2;
   tileObject.scale.set(Game.tileScale);
 
-  for (let tile of item.tiles) {
-    // Obstacle
-    if (tile.visible === false) {
-      isObstacle = true;
-      break;
-    }
+  const properties = item.properties;
+  if (properties) {
+    isObstacle = properties.obstacle || false;
+  }
 
+  for (const tile of item.tiles) {
     // Add a key in texturesCache if not available
     const texture = getTexture(tile);
 
