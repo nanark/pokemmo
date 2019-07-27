@@ -54,15 +54,15 @@ export const actions = {
 
     context.dispatch("connecting", data);
   },
-  async connecting(context, { refreshToken, accessToken }) {
+  async connecting(context, { refresh_token, access_token }) {
     const payload = {
-      jwt: accessToken,
-      refreshToken
+      jwt: refresh_token,
+      refreshToken: access_token
     };
     context.dispatch("localStorage/setTokens", payload, {
       root: true
     });
-    context.commit("SET_JWT", accessToken);
+    context.commit("SET_JWT", access_token);
 
     const me = await this.$axios.$get("/user/me");
 
