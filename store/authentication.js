@@ -56,8 +56,8 @@ export const actions = {
   },
   async connecting(context, { refresh_token, access_token }) {
     const payload = {
-      jwt: refresh_token,
-      refreshToken: access_token
+      jwt: access_token,
+      refreshToken: refresh_token
     };
     context.dispatch("localStorage/setTokens", payload, {
       root: true

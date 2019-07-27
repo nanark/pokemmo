@@ -8,7 +8,7 @@ export const mutations = {
       sessionStorage.setItem("jwt", data.jwt);
       state.refreshToken = data.refreshToken;
     } else {
-      sessionStorage.setItem("jwt", "");
+      sessionStorage.removeItem("jwt");
       state.refreshToken = "";
     }
   }
