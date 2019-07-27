@@ -49,14 +49,9 @@ export const Game = {
     // Display
     this.display = new GameDisplay();
 
-    // Only load once
-    if (!this.loaded) {
-      this.loaded = true;
-
-      // Event handlers
-      handlePlayerEvents();
-      handleControlEvents();
-    }
+    // Event handlers
+    handleControlEvents();
+    handlePlayerEvents();
   },
 
   setOnline(mode) {
