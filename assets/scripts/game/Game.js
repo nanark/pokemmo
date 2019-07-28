@@ -78,9 +78,7 @@ export const Game = {
         const message = JSON.parse(event.data);
         const namespace = message.namespace;
 
-        if (namespace === "position") {
-          moveCharacters(message.data);
-        }
+        if (namespace === "position") moveCharacters(message.data);
       }
     });
   },

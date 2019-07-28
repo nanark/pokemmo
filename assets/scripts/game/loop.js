@@ -124,26 +124,30 @@ const moving = character => {
   }
 
   // Moving the sprite based on the step direction
+  let x = _sprite.x;
+  let y = _sprite.y;
   switch (direction) {
     case "up":
-      _sprite.y -= distance;
+      y -= distance;
       character.go("up");
       break;
     case "down":
-      _sprite.y += distance;
+      y += distance;
       character.go("down");
       break;
     case "left":
-      _sprite.x -= distance;
+      x -= distance;
       character.go("left");
       break;
     case "right":
-      _sprite.x += distance;
+      x += distance;
       character.go("right");
       break;
     default:
       break;
   }
+
+  character.setPositionPixel(x, y);
 };
 
 const whichDirection = character => {

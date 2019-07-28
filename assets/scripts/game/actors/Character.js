@@ -17,6 +17,7 @@ export default class Character {
     this.position.y = user.position.y;
     this.positionBuffer = {};
     this.layers = {};
+    this.sortableChildren = true;
 
     // Movement variables
     this.isWalking = false;
@@ -42,6 +43,7 @@ export default class Character {
 
     this.container.addChild(this.layers.sprite);
     this.container.addChild(label);
+    this.container.zIndex = this.position.y;
 
     // Scale
     this.layers.sprite.width = this.layers.sprite.width * Game.tileScale + 14;
@@ -140,7 +142,7 @@ export default class Character {
 
     // Shift the characters a bit if they share the same tile
     if (charactersCountOnTile > 1) {
-      this.setAnimation(animation, random(0.3, 0.7), random(0.3, 0.7));
+      this.setAnimation(animation, random(0.3, 0.7), 0.5);
     } else {
       this.setAnimation(animation);
     }
@@ -212,6 +214,9 @@ export default class Character {
 
   // Place the character at this position in pixels
   setPositionPixel(x, y) {
+    this.container.zIndex = parseInt(y);
+    Game.display.unitsContainer.sortChildren();
+    console.log(this.container.zIndex);
     this.container.position.set(x, y);
   }
 
