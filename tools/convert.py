@@ -43,6 +43,7 @@ for tileNumber in range(width * height):
 
         isObstacle = False
         isOverlay = False
+        goto = None
 
         # Fetch the tile Id from the current layer
         tileId = layer['data'][tileNumber]
@@ -70,8 +71,14 @@ for tileNumber in range(width * height):
                     if (prop['name'] == 'overlay' and prop['value'] is True):
                         isOverlay = True
 
+                    # Detect goto
+                    if (prop['name'] == 'goto' and prop['value'] is not None):
+                        goto = prop['value']
+
             # Skip obstacle layer
             if (isObstacle is True):
+                continue
+            if (goto is not None):
                 continue
 
             opacity = layer['opacity']
