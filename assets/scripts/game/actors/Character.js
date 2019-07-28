@@ -8,13 +8,13 @@ import { pathGrid, charactersGrid, detectObstacle } from "../levels";
 export default class Character {
   constructor(type, animation, user) {
     this.type = type;
-    this.id = user.uuid;
+    this.uuid = user.uuid;
     this.username = user.username;
     this.animation = animation;
     this.direction = "down";
     this.position = {};
-    this.position.x = 0;
-    this.position.y = 0;
+    this.position.x = user.position.x;
+    this.position.y = user.position.y;
     this.positionBuffer = {};
     this.layers = {};
 
@@ -50,7 +50,7 @@ export default class Character {
     this.layers.sprite.zIndex = 1;
 
     // Place it at the spawning position
-    this.setPositionTile(Game.spawningTile.x, Game.spawningTile.y);
+    this.setPositionTile(user.position.x, user.position.y);
   }
 
   buildTextures(animation) {
@@ -183,19 +183,19 @@ export default class Character {
   _addFromCharacterGridCell(x, y) {
     this._createCharacterGridCell(x, y);
 
-    if (!charactersGrid[x][y].includes(this.id)) {
-      charactersGrid[x][y].push(this.id);
+    if (!charactersGrid[x][y].includes(this.uuid)) {
+      charactersGrid[x][y].push(this.uuid);
     }
   }
 
   _removeFromCharacterGridCell(x, y) {
     this._createCharacterGridCell(x, y);
 
-    if (charactersGrid[x][y].includes(this.id)) {
+    if (charactersGrid[x][y].includes(this.uuid)) {
       const userIds = charactersGrid[x][y];
 
       charactersGrid[x][y] = userIds.filter(userId => {
-        return userId !== this.id;
+        return userId !== this.uuid;
       });
     }
   }
