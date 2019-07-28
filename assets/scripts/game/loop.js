@@ -13,7 +13,9 @@ const gameloop = delta => {
   const msElapsed = msBetweenFrames + delta;
 
   // Move the player if isWalking is true
-  if (_player.isWalking) moveloop(_player, msElapsed);
+  if (_player.isWalking) {
+    moveloop(_player, msElapsed);
+  }
 
   // If path is over and no msLeft, the player has stopped:
   // * Set isWalking to false

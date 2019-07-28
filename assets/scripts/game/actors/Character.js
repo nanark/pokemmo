@@ -206,7 +206,7 @@ export default class Character {
     this.position.y = y;
 
     if (cleanPosition) {
-      this.container.position.set(tileToPixel(x), tileToPixel(y));
+      this.setPositionPixel(tileToPixel(x), tileToPixel(y));
     }
   }
 

@@ -1,6 +1,7 @@
 import axios from "axios";
 import Character from "./Character";
 import { Game } from "../Game";
+import { gates } from "../levels";
 
 export default class Player extends Character {
   constructor(user) {
@@ -25,5 +26,23 @@ export default class Player extends Character {
     const headers = { headers: { Authorization: `Bearer ${jwt}` } };
     const payload = { x, y };
     axios.post("https://api.zeapps.eu/positions/beacon", payload, headers);
+
+    // Is on a gate
+    if (gates[y][x]) {
+      // Fetch data for teleport
+      let [, gotoX, gotoY, moveX, moveY] = gates[y][x]
+        .split(",")
+        .map((item, i) => {
+          return i > 0 ? parseInt(item) : item;
+        });
+
+      this.setPositionTile(gotoX, gotoY, true);
+      // Teleport
+      setTimeout(() => {
+        setTimeout(() => {
+          this.relativeMove(moveX, moveY);
+        }, 300);
+      }, 100);
+    }
   }
 }

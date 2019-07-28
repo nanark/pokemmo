@@ -5,6 +5,7 @@ import { tileToPixel } from "./utils";
 import { getTexture } from "./textures";
 
 const grid = [];
+export const gates = [];
 export const charactersGrid = [];
 export let pathGrid = null;
 
@@ -15,6 +16,7 @@ export const load = items => {
     loadTiles(item, true);
     loadTiles(item, false);
     loadObstacle(item);
+    loadGate(item);
   }
 
   pathGrid = new PF.Grid(grid);
@@ -24,6 +26,25 @@ export const load = items => {
   const worldHeight = pathGrid.height;
   _viewport.worldWidth = tileToPixel(worldWidth);
   _viewport.worldHeight = tileToPixel(worldHeight);
+};
+
+const loadGate = item => {
+  let gate = null;
+
+  const properties = item.properties;
+  if (properties) {
+    gate = properties.goto || null;
+  }
+
+  // Initialize row
+  if (!gates[item.y]) gates[item.y] = [];
+
+  // Build the grid to init the gate manager
+  if (gate) {
+    gates[item.y].push(gate);
+  } else {
+    gates[item.y].push(null);
+  }
 };
 
 const loadObstacle = item => {
