@@ -1,3 +1,4 @@
+import PF from "pathfinding";
 import GameDisplay from "./GameDisplay";
 import Stats from "stats.js";
 import { moveCharacters } from "./positions";
@@ -32,6 +33,11 @@ export const Game = {
     // Cursors
     this.cursor = cursor("hover");
     this.cursorClick = cursor("click");
+
+    // Pathfinder
+    this.finder = new PF.AStarFinder({
+      allowDiagonal: false
+    });
 
     // Display
     this.display = new GameDisplay(me);

@@ -130,6 +130,7 @@ export default class GameDisplay {
   // * Load the player
   // * Place the camera
   setup() {
+    // Load the map // Todo: make it dynamic
     loadLevel(map);
 
     // Create the player and place it
