@@ -1,9 +1,8 @@
 import Keyboard from "pixi.js-keyboard";
-import * as PIXI from "pixi.js";
 import { Game } from "./Game";
 import { pressedControlDirections, isControlKeyPressed } from "./controls";
 
-const gameloop = delta => {
+export const gameloop = delta => {
   const _player = Game.display.player;
 
   Game.stats.begin();
@@ -189,36 +188,3 @@ const walkWithKeyboard = () => {
   _player.go(direction);
   _player.relativeMove(x, y);
 };
-
-// Loading all resources and add the gameloop in the ticker.
-export function loadResources() {
-  const characters = {
-    name: "character",
-    url: "packs/character.json"
-  };
-
-  const magiscarf = {
-    name: "magiscarf.png",
-    url: "images/magiscarf.png"
-  };
-
-  // Reset all cache and shared sprites resources
-  // Avoid error and warnings during hot reload.
-  PIXI.Loader.shared.reset();
-  PIXI.utils.clearTextureCache();
-
-  // Loading required assets
-  PIXI.Loader.shared
-    .add(characters)
-    .add(magiscarf)
-    .load(() => {
-      Game.resourcesLoaded = true;
-
-      // Setup the game (load player etc.)
-      Game.setup();
-
-      // Add a tickerTime
-      Game.display.app.ticker.maxFPS = Game.FPS;
-      Game.display.app.ticker.add(delta => gameloop(delta));
-    });
-}

@@ -1,21 +1,23 @@
 import * as PIXI from "pixi.js";
 import { Viewport } from "pixi-viewport";
-import { loadResources } from "./loop";
+import { Game } from "./game";
+import Player from "./actors/Player";
+import { map } from "@/static/sources/map.js";
+import { load as loadLevel } from "./levels";
+import { gameloop } from "./loop";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 export default class GameDisplay {
-  constructor() {
+  constructor(me) {
+    this.me = me;
     this.player = {};
     this.width = 0;
     this.heigth = 0;
-    this.scale = 1.0;
 
     this.setDimensions();
 
-    //=========================================================================
-    // Creating the Application
-    //=========================================================================
+    // Creating the Application and Renderer
     this.app = new PIXI.Application({
       antialias: false,
       autoDensity: true,
@@ -25,12 +27,22 @@ export default class GameDisplay {
       width: this.width
     });
 
-    //=========================================================================
-    // Handle viewport and subcontainers
-    //=========================================================================
+    this.app.renderer.view.style.position = "absolute";
+    this.app.renderer.view.style.display = "block";
+    this.app.renderer.autoResize = true;
+
+    // Viewports
+    this.createViewports();
+
+    // Load resources and start loop
+    this.loadResources();
+  }
+
+  // Handle viewport and subcontainers
+  createViewports() {
     this.viewport = new Viewport({
-      screenWidth: this.width,
       screenHeight: this.height,
+      screenWidth: this.width,
       interaction: this.app.renderer.plugins.interaction // Pixi-viewport
     }).clamp({ direction: "all" });
 
@@ -55,37 +67,78 @@ export default class GameDisplay {
 
     this.app.stage.addChild(this.viewport);
 
-    const resize = () => {
-      this.setDimensions();
-      this.app.renderer.resize(this.width, this.height);
-
-      // Resize the viewport params too and place the player at the center
-      this.viewport.screenWidth = this.width;
-      this.viewport.screenHeight = this.height;
-
-      // Set the player at the center
-      this.viewport.moveCenter(
-        this.player.container.x,
-        this.player.container.y
-      );
-
-      // Set new size for viewport features (mouseEdges...)
-      this.viewport.resize(this.width, this.height);
-    };
-
-    addEventListener("resize", resize);
-
-    // Styles for fullscreen
-    this.app.renderer.view.style.position = "absolute";
-    this.app.renderer.view.style.display = "block";
-    this.app.renderer.autoResize = true;
-
-    // Load resources and start loop
-    loadResources();
+    addEventListener("resize", this.resize);
   }
 
+  // Handle window resizing
+  resize() {
+    this.setDimensions();
+    this.app.renderer.resize(this.width, this.height);
+
+    // Resize the viewport params too and place the player at the center
+    this.viewport.screenWidth = this.width;
+    this.viewport.screenHeight = this.height;
+
+    // Set the player at the center
+    this.viewport.moveCenter(this.player.container.x, this.player.container.y);
+
+    // Set new size for viewport features (mouseEdges...)
+    this.viewport.resize(this.width, this.height);
+  }
+
+  // Set viewport dimensions
   setDimensions() {
     this.width = document.getElementById("viewport").offsetWidth;
     this.height = document.getElementById("viewport").offsetHeight;
+  }
+
+  // Loading all resources and add the gameloop in the ticker.
+  loadResources() {
+    const characters = {
+      name: "character",
+      url: "packs/character.json"
+    };
+
+    const magiscarf = {
+      name: "magiscarf.png",
+      url: "images/magiscarf.png"
+    };
+
+    // Reset all cache and shared sprites resources
+    // Avoid error and warnings during hot reload.
+    PIXI.Loader.shared.reset();
+    PIXI.utils.clearTextureCache();
+
+    // Loading required assets
+    PIXI.Loader.shared
+      .add(characters)
+      .add(magiscarf)
+      .load(() => {
+        Game.resourcesLoaded = true;
+
+        // Setup the game (load player etc.)
+        this.setup();
+
+        // Add a tickerTime
+        this.app.ticker.maxFPS = Game.FPS;
+        this.app.ticker.add(delta => gameloop(delta));
+      });
+  }
+
+  // Setup the game:
+  // * Load the map
+  // * Load the player
+  // * Place the camera
+  setup() {
+    loadLevel(map);
+
+    // Create the player and place it
+    const player = new Player(this.me);
+    player.setPositionTile(this.me.position.x, this.me.position.y, true);
+    this.player = player;
+
+    // Aim the player with the viewport
+    const playerPosition = player.container.position;
+    this.viewport.moveCenter(playerPosition.x, playerPosition.y);
   }
 }
