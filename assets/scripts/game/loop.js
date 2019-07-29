@@ -75,7 +75,7 @@ const moveloop = (character, msElapsed) => {
 
       // No more step available.
       if (character.path.length === 0) {
-        _display.cursorContainer.removeChild(Game.cursorClick);
+        _display.cursorContainer.removeChild(_display.cursorClick);
 
         // Stop the animation if no control is pressed.
         // Use to keep the animation if the character walks against an obstacle.

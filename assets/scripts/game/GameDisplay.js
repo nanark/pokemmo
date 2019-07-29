@@ -3,6 +3,7 @@ import { Viewport } from "pixi-viewport";
 import { Game } from "./game";
 import Player from "./actors/Player";
 import { map } from "@/static/sources/map.js";
+import { cursor } from "./cursor";
 import { load as loadLevel } from "./levels";
 import { gameloop } from "./loop";
 
@@ -14,6 +15,12 @@ export default class GameDisplay {
     this.player = {};
     this.width = 0;
     this.heigth = 0;
+
+    // Temp
+    const defaultSpawningTile = { x: 23, y: 19 };
+    if (!this.me.position || !this.me.position.x || !this.me.position.y) {
+      this.me.position = defaultSpawningTile;
+    }
 
     this.setDimensions();
 
@@ -31,11 +38,18 @@ export default class GameDisplay {
     this.app.renderer.view.style.display = "block";
     this.app.renderer.autoResize = true;
 
-    // Viewports
+    // Build
+    this.createCursors();
     this.createViewports();
 
     // Load resources and start loop
     this.loadResources();
+  }
+
+  // Handle viewport and subcontainers
+  createCursors() {
+    this.cursor = cursor("hover");
+    this.cursorClick = cursor("click");
   }
 
   // Handle viewport and subcontainers

@@ -7,7 +7,7 @@ import { detectObstacle } from "./levels";
 const targetTile = event => {
   const _viewportPosition = Game.display.viewport.position;
   const _cursorContainer = Game.display.cursorContainer;
-  const _cursor = Game.cursor;
+  const _cursor = Game.display.cursor;
 
   const data = event.data.global;
   const mouseX = data.x - _viewportPosition.x;
@@ -47,7 +47,7 @@ export const handlePlayerEvents = () => {
   _map.mousedown = _map.tap = event => {
     const { tileX, tileY, isObstacle } = targetTile(event);
     const _cursorContainer = Game.display.cursorContainer;
-    const _cursor = Game.cursorClick;
+    const _cursor = Game.display.cursorClick;
     const _player = Game.display.player;
 
     // Move the player
