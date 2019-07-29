@@ -23,8 +23,6 @@ export const moveCharacters = data => {
     return false;
   }
 
-  console.log(user);
-
   if (!Game.population.has(user.uuid)) {
     Game.population.set(user.uuid, new NPC(user));
   }

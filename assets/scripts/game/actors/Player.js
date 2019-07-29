@@ -1,7 +1,7 @@
-import axios from "axios";
 import Character from "./Character";
 import { Game } from "../Game";
 import { gates } from "../levels";
+import { sendPositionBeacon } from "../db";
 
 export default class Player extends Character {
   constructor(user) {
@@ -22,10 +22,8 @@ export default class Player extends Character {
     super.setPositionTile(x, y, cleanPosition);
 
     // Send the position beacon for the server
-    const jwt = window.sessionStorage.getItem("jwt");
-    const headers = { headers: { Authorization: `Bearer ${jwt}` } };
     const payload = { x, y };
-    axios.post("https://api.zeapps.eu/positions/beacon", payload, headers);
+    sendPositionBeacon(payload);
 
     // Is on a gate
     if (gates[y][x]) {
