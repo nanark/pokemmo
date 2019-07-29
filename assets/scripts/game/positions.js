@@ -1,23 +1,15 @@
 import NPC from "./actors/NPC";
 import { Game } from "./Game";
+import { getUser } from "./db";
 
-export const moveCharacters = data => {
+export const moveCharacters = async data => {
   const goto = data;
   const x = goto.x;
   const y = goto.y;
 
-  // const user = Game.users.find(i => {
-  //   return i.uuid == goto.user_id;
-  // });
+  const response = await getUser(data.uuid);
 
-  const user = {
-    uuid: data.uuid,
-    username: "test",
-    position: {
-      x,
-      y
-    }
-  };
+  const user = response.data;
 
   if (Game.me.uuid == user.uuid) {
     return false;

@@ -10,3 +10,7 @@ const _headers = () => {
 export const sendPositionBeacon = payload => {
   return axios.post(`${baseUrl}/positions/beacon`, payload, _headers());
 };
+
+export const getUser = uuid => {
+  return axios.get(`${baseUrl}/user/info/${uuid}`, _headers());
+};
