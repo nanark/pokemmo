@@ -1,10 +1,6 @@
 {
   "global": {
-    "disconnect": "Disconnect",
-    "debug_on": "Debug",
-    "debug_off": "Production",
-    "online_on": "Live",
-    "online_off": "Offline"
+    "disconnect": "Disconnect"
   },
   "auth": {
     "signin": {

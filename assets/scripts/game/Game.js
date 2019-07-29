@@ -19,8 +19,6 @@ export const Game = {
     this.logs = [];
     this.FPS = 60;
     this.resourcesLoaded = false;
-    this.online = true;
-    this.debugMode = false;
 
     // Connection
     this.ws = null;
@@ -58,23 +56,11 @@ export const Game = {
     handlePlayerEvents();
   },
 
-  setOnline(mode) {
-    // Destroy the other characters
-    if (!mode) {
-      this.population.forEach(character => {
-        Game.display.app.stage.removeChild(character.container);
-      });
-      this.population = new Map();
-    }
-
-    this.online = mode;
-  },
-
   setWebsocket(ws) {
     this.ws = ws;
 
     this.ws.addEventListener("message", event => {
-      if (this.resourcesLoaded && this.online) {
+      if (this.resourcesLoaded) {
         const message = JSON.parse(event.data);
         const namespace = message.namespace;
 
