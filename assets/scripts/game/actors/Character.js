@@ -12,11 +12,11 @@ export default class Character {
     this.username = user.username;
     this.animation = animation;
     this.direction = "down";
-    this.position = {};
-    this.position.x = user.position.x;
-    this.position.y = user.position.y;
+    this.position = {
+      x: user.position.x,
+      y: user.position.y
+    };
     this.positionBuffer = {};
-    this.layers = {};
     this.sortableChildren = true;
 
     // Movement variables
@@ -34,22 +34,22 @@ export default class Character {
     this.container = new PIXI.Container();
 
     // Sprite
-    this.layers.sprite = new PIXI.AnimatedSprite(sheet);
-    this.layers.sprite.animationSpeed = 0.14;
-    this.layers.sprite.play();
+    this.sprite = new PIXI.AnimatedSprite(sheet);
+    this.sprite.animationSpeed = 0.14;
+    this.sprite.play();
 
     // Label
     const label = this.label(this.username);
 
-    this.container.addChild(this.layers.sprite);
+    this.container.addChild(this.sprite);
     this.container.addChild(label);
     this.container.zIndex = this.position.y;
 
     // Scale
-    this.layers.sprite.width = this.layers.sprite.width * Game.tileScale + 14;
-    this.layers.sprite.height = this.layers.sprite.height * Game.tileScale + 14;
-    this.layers.sprite.anchor.set(0.5, 0.77); // Center
-    this.layers.sprite.zIndex = 1;
+    this.sprite.width = this.sprite.width * Game.tileScale + 14;
+    this.sprite.height = this.sprite.height * Game.tileScale + 14;
+    this.sprite.anchor.set(0.5, 0.77); // Center
+    this.sprite.zIndex = 1;
 
     // Place it at the spawning position
     this.setPositionTile(user.position.x, user.position.y);
@@ -106,9 +106,9 @@ export default class Character {
     }
 
     this.animation = animation;
-    this.layers.sprite.anchor.set(anchorX, anchorY);
-    this.layers.sprite.textures = this.buildTextures(animation);
-    this.layers.sprite.gotoAndPlay(1);
+    this.sprite.anchor.set(anchorX, anchorY);
+    this.sprite.textures = this.buildTextures(animation);
+    this.sprite.gotoAndPlay(1);
   }
 
   relativeMove(x, y) {

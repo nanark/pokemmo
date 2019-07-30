@@ -14,9 +14,8 @@ export const moveCharacters = async data => {
 
   const user = response.data;
 
-  if ($me.uuid == user.uuid) {
-    return false;
-  }
+  // If the user is me, break
+  if ($me.uuid == user.uuid) return;
 
   if (!$population.has(user.uuid)) {
     $population.set(user.uuid, new NPC(user));

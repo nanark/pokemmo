@@ -13,7 +13,6 @@ export const gameloop = delta => {
   _msElapsed = _msBetweenFrames + delta;
 
   _playerMovement();
-
   _populationMovement();
 
   if (isControlKeyPressed()) walkWithKeyboard();
