@@ -2,18 +2,28 @@ import nipplejs from "nipplejs";
 import Keyboard from "pixi.js-keyboard";
 import { displayMode } from "./utils";
 
+//=============================================================================
+// Handle all controls for the game
+//
+// isControlKeyPressed(): Returns boolean if any control key is pressed
+// pressedControlDirections(): Returns a direction object with x, y, and
+//   direction
+// handleControlEvents(): Activate the control events for the game.
+//   Both virtual stick (nipple) and keyboard.
+//=============================================================================
+
 let _stick; // Virtual stick object
 let _stickDirectionBuffer; // Virtual stick direction pressed
 const _pressedControlKeysBuffer = []; // Control keys pressed with history
 
+// Direction mapping for stick and keyboard
 const _stickControls = {
   up: "ArrowUp",
   down: "ArrowDown",
   left: "ArrowLeft",
   right: "ArrowRight"
 };
-
-const _controls = {
+const _keyboardControls = {
   ArrowUp: {
     x: 0,
     y: -1,
@@ -39,12 +49,6 @@ const _controls = {
 // Return a boolean if any control key is pressed
 export const isControlKeyPressed = () => !!_pressedControlKeysBuffer.length;
 
-// Convrol events for Game
-export const handleControlEvents = () => {
-  _handleVirtualStick();
-  _handleKeyboard();
-};
-
 // Returns the direction for the loop
 export const pressedControlDirections = () => {
   let x = 0;
@@ -53,7 +57,7 @@ export const pressedControlDirections = () => {
 
   const lastPressed =
     _pressedControlKeysBuffer[_pressedControlKeysBuffer.length - 1];
-  const control = _controls[lastPressed];
+  const control = _keyboardControls[lastPressed];
 
   x += control.x;
   y += control.y;
@@ -62,9 +66,15 @@ export const pressedControlDirections = () => {
   return { x, y, direction };
 };
 
+// Control events for Game
+export const handleControlEvents = () => {
+  _handleVirtualStick();
+  _handleKeyboard();
+};
+
 // Check if key pressed is meant for direction
 const _isControlKey = keyCode => {
-  return !!_controls[keyCode];
+  return !!_keyboardControls[keyCode];
 };
 
 // A control key is pressed, add it at the end of _pressedControlKeysBuffer[]
