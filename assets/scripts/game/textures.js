@@ -6,7 +6,7 @@ const _texturesCache = [];
 // Return a PIXI.Texture for a tile.
 // Create a new one or use cache for similar.
 export const getTexture = tile => {
-  const _tileSize = Game.tileSize;
+  const $tileSize = Game.tileSize;
   const ref = _textureRef(tile);
 
   if (!_texturesCache[ref]) {
@@ -14,10 +14,10 @@ export const getTexture = tile => {
     const texture = new PIXI.Texture(
       resource,
       new PIXI.Rectangle(
-        tile.x * _tileSize,
-        tile.y * _tileSize,
-        _tileSize,
-        _tileSize
+        tile.x * $tileSize,
+        tile.y * $tileSize,
+        $tileSize,
+        $tileSize
       )
     );
 
