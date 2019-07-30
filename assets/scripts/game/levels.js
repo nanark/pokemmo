@@ -4,32 +4,58 @@ import { Game } from "./Game";
 import { tileToPixel } from "./utils";
 import { getTexture } from "./textures";
 
-const grid = [];
-export const gates = [];
-export const charactersGrid = [];
-export let pathGrid = null;
+//=============================================================================
+// Handle level management for the game
+//
+// load(): Load a level (tiles, obstacles, grids...)
+// detectObstacle(): Return a boolean if the tile is an obstacle or not
+//=============================================================================
+
+const _grid = []; // Local grid used to build pathfinderGrid
+
+export let pathfinderGrid; // Grid built by Pathfinder.js
+export const gatesGrid = []; // Gates available on the grid
+export const charactersGrid = []; // Characters available on the grid
 export const defaultSpawningTile = { x: 23, y: 19 }; // Temp
 
 export const load = items => {
-  const _viewport = Game.display.viewport;
+  const $viewport = Game.display.viewport;
 
   for (const item of items) {
-    loadTiles(item, true);
-    loadTiles(item, false);
-    loadObstacle(item);
-    loadGate(item);
+    _loadTiles(item, true);
+    _loadTiles(item, false);
+    _loadObstacle(item);
+    _loadGate(item);
   }
 
-  pathGrid = new PF.Grid(grid);
+  pathfinderGrid = new PF.Grid(_grid);
 
   // Set the dimensions for the viewport scrolling (PIXI-viewport)
-  const worldWidth = pathGrid.width;
-  const worldHeight = pathGrid.height;
-  _viewport.worldWidth = tileToPixel(worldWidth);
-  _viewport.worldHeight = tileToPixel(worldHeight);
+  const worldWidth = pathfinderGrid.width;
+  const worldHeight = pathfinderGrid.height;
+  $viewport.worldWidth = tileToPixel(worldWidth);
+  $viewport.worldHeight = tileToPixel(worldHeight);
 };
 
-const loadGate = item => {
+// Detect from the pathfinderGrid if the tile is an obstacle.
+// Return true if pathfinderGrid or nodes are missing.
+// It happens when the map is not fully loaded yet.
+export const detectObstacle = (x, y) => {
+  if (!pathfinderGrid) return true;
+
+  const nodes = pathfinderGrid.nodes;
+
+  if (!nodes) return true;
+
+  if (!nodes[y]) return true;
+  if (!nodes[y][x]) return true;
+
+  const isWalkable = nodes[y][x].walkable;
+
+  return !isWalkable;
+};
+
+const _loadGate = item => {
   let gate = null;
 
   const properties = item.properties;
@@ -38,17 +64,17 @@ const loadGate = item => {
   }
 
   // Initialize row
-  if (!gates[item.y]) gates[item.y] = [];
+  if (!gatesGrid[item.y]) gatesGrid[item.y] = [];
 
   // Build the grid to init the gate manager
   if (gate) {
-    gates[item.y].push(gate);
+    gatesGrid[item.y].push(gate);
   } else {
-    gates[item.y].push(null);
+    gatesGrid[item.y].push(null);
   }
 };
 
-const loadObstacle = item => {
+const _loadObstacle = item => {
   let isObstacle = false;
 
   const properties = item.properties;
@@ -57,17 +83,17 @@ const loadObstacle = item => {
   }
 
   // Initialize row
-  if (!grid[item.y]) grid[item.y] = [];
+  if (!_grid[item.y]) _grid[item.y] = [];
 
   // Build the grid to init the pathfinder
   if (isObstacle) {
-    grid[item.y].push(1);
+    _grid[item.y].push(1);
   } else {
-    grid[item.y].push(0);
+    _grid[item.y].push(0);
   }
 };
 
-const loadTiles = (item, overlay) => {
+const _loadTiles = (item, overlay) => {
   let hasLayer = false;
 
   const tileObject = new PIXI.Graphics();
@@ -100,22 +126,4 @@ const loadTiles = (item, overlay) => {
       Game.display.mapContainer.addChildAt(tileObject);
     }
   }
-};
-
-// Detect from the pathGrid if the tile is an obstacle.
-// Return true if pathGrid or nodes are missing.
-// It happens when the map is not fully loaded yet.
-export const detectObstacle = (x, y) => {
-  if (!pathGrid) return true;
-
-  const nodes = pathGrid.nodes;
-
-  if (!nodes) return true;
-
-  if (!nodes[y]) return true;
-  if (!nodes[y][x]) return true;
-
-  const isWalkable = nodes[y][x].walkable;
-
-  return !isWalkable;
 };

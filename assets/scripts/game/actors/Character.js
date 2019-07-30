@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 import { Game } from "../Game";
 import { tileToPixel, random } from "../utils";
 import { sendPosition } from "../connection";
-import { pathGrid, charactersGrid, detectObstacle } from "../levels";
+import { pathfinderGrid, charactersGrid, detectObstacle } from "../levels";
 
 export default class Character {
   constructor(type, animation, user) {
@@ -171,7 +171,7 @@ export default class Character {
   setPathTo(destinationX, destinationY) {
     // Clone the grid so you can use it later
     // Pathfinding destroys it afer use
-    const gridClone = pathGrid.clone();
+    const gridClone = pathfinderGrid.clone();
 
     // Fetch the next tile if available
     this.path = this.path.slice(0, 1);

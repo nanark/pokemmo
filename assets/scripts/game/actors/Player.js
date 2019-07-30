@@ -1,6 +1,6 @@
 import Character from "./Character";
 import { Game } from "../Game";
-import { gates } from "../levels";
+import { gatesGrid } from "../levels";
 import { sendPositionBeacon } from "../db";
 
 export default class Player extends Character {
@@ -26,9 +26,9 @@ export default class Player extends Character {
     sendPositionBeacon(payload);
 
     // Is on a gate
-    if (gates[y][x]) {
+    if (gatesGrid[y][x]) {
       // Fetch data for teleport
-      let [, gotoX, gotoY, moveX, moveY] = gates[y][x]
+      let [, gotoX, gotoY, moveX, moveY] = gatesGrid[y][x]
         .split(",")
         .map((item, i) => {
           return i > 0 ? parseInt(item) : item;

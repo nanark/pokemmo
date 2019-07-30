@@ -1,28 +1,30 @@
 import * as PIXI from "pixi.js";
 import { Game } from "./Game";
 
-const texturesCache = [];
+const _texturesCache = [];
 
-const textureRef = tile => {
-  return `${tile.x}_${tile.y}_${tile.tileset}`;
-};
-
+// Return a PIXI.Texture for a tile.
+// Create a new one or use cache for similar.
 export const getTexture = tile => {
-  const ref = textureRef(tile);
+  const _tileSize = Game.tileSize;
+  const ref = _textureRef(tile);
 
-  if (!texturesCache[ref]) {
+  if (!_texturesCache[ref]) {
     const resource = PIXI.Loader.shared.resources[tile.tileset].texture;
-
-    texturesCache[ref] = new PIXI.Texture(
+    const texture = new PIXI.Texture(
       resource,
       new PIXI.Rectangle(
-        tile.x * Game.tileSize,
-        tile.y * Game.tileSize,
-        Game.tileSize,
-        Game.tileSize
+        tile.x * _tileSize,
+        tile.y * _tileSize,
+        _tileSize,
+        _tileSize
       )
     );
+
+    _texturesCache[ref] = texture;
   }
 
-  return texturesCache[ref];
+  return _texturesCache[ref];
 };
+
+const _textureRef = tile => `${tile.x}_${tile.y}_${tile.tileset}`;
