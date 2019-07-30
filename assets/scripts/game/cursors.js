@@ -3,9 +3,17 @@ import { Game } from "./Game";
 import { pixelToTile, tileToPixel } from "./utils";
 import { isObstacle } from "./levels";
 
+//=============================================================================
+// Handle the cursors and their behavior
+//
+// cursor(): Create a cursor
+// handleCursorEvents(): Cursor behavior management
+//=============================================================================
+
 const _colorYellow = 0xffff0b;
 const _colorBlueDenim = 0x1857c3;
 
+// Create a cursor
 export const cursor = mode => {
   const $tilePixelSize = Game.tileDistance;
   const cursor = new PIXI.Graphics();
@@ -28,13 +36,12 @@ export const cursor = mode => {
   return cursor;
 };
 
+// Handle cursor events
 export const handleCursorEvents = () => {
   const $map = Game.display.mapContainer;
 
   // Hover the map
-  $map.mousemove = $map.touchmove = event => {
-    _targetTile(event);
-  };
+  $map.mousemove = $map.touchmove = event => _targetTile(event);
 
   // Click the map
   $map.mousedown = $map.tap = event => {
