@@ -2,9 +2,11 @@ import nipplejs from "nipplejs";
 import Keyboard from "pixi.js-keyboard";
 import { displayMode } from "./utils";
 
-// nippleJs variables
-let _virtualDirectionBuffer;
-const _virtualControls = {
+let _stick; // Virtual stick object
+let _stickDirectionBuffer; // Virtual stick direction pressed
+const _pressedControlKeysBuffer = []; // Control keys pressed with history
+
+const _stickControls = {
   up: "ArrowUp",
   down: "ArrowDown",
   left: "ArrowLeft",
@@ -34,11 +36,8 @@ const _controls = {
   }
 };
 
-// Control keys pressed
-export const pressedControlKeys = [];
-
 // Return a boolean if any control key is pressed
-export const isControlKeyPressed = () => !!pressedControlKeys.length;
+export const isControlKeyPressed = () => !!_pressedControlKeysBuffer.length;
 
 // Convrol events for Game
 export const handleControlEvents = () => {
@@ -52,7 +51,8 @@ export const pressedControlDirections = () => {
   let y = 0;
   let direction = "";
 
-  const lastPressed = pressedControlKeys[pressedControlKeys.length - 1];
+  const lastPressed =
+    _pressedControlKeysBuffer[_pressedControlKeysBuffer.length - 1];
   const control = _controls[lastPressed];
 
   x += control.x;
@@ -67,16 +67,16 @@ const _isControlKey = keyCode => {
   return !!_controls[keyCode];
 };
 
-// A control key is pressed, add it at the end of pressedControlKeys[]
+// A control key is pressed, add it at the end of _pressedControlKeysBuffer[]
 const _addKey = keyCode => {
-  pressedControlKeys.push(keyCode);
+  _pressedControlKeysBuffer.push(keyCode);
 };
 
-// A control key is released, remove it from pressedControlKeys[]
+// A control key is released, remove it from _pressedControlKeysBuffer[]
 const _removeKey = keyCode => {
-  for (var i = 0; i < pressedControlKeys.length; i++) {
-    if (pressedControlKeys[i] === keyCode) {
-      pressedControlKeys.splice(i, 1);
+  for (var i = 0; i < _pressedControlKeysBuffer.length; i++) {
+    if (_pressedControlKeysBuffer[i] === keyCode) {
+      _pressedControlKeysBuffer.splice(i, 1);
     }
   }
 };
@@ -99,7 +99,6 @@ const _handleKeyboard = () => {
 //=============================================================================
 // Virtual joystick (nipple.js)
 //=============================================================================
-let _stick;
 const _handleVirtualStick = () => {
   const { isMobile } = displayMode();
 
@@ -139,20 +138,20 @@ const _buildStick = () => {
   _stick.on("dir end", (evt, data) => {
     if (evt.type === "dir") {
       const direction = data.direction.angle; // up down left right
-      const arrowDirection = _virtualControls[direction]; // ArrowUp ArrowDown...
+      const arrowDirection = _stickControls[direction]; // ArrowUp ArrowDown...
 
-      // Direction is sent, add key to pressedControlKeys[]
-      if (_virtualDirectionBuffer !== arrowDirection) {
-        _virtualDirectionBuffer = arrowDirection;
+      // Direction is sent, add key to _pressedControlKeysBuffer[]
+      if (_stickDirectionBuffer !== arrowDirection) {
+        _stickDirectionBuffer = arrowDirection;
         _addKey(arrowDirection);
       }
     }
 
-    // Direction is released, reset pressedControlKeys[]
+    // Direction is released, reset _pressedControlKeysBuffer[]
     // Do not keep control key history as with the keyboard control
     if (evt.type === "end") {
-      _virtualDirectionBuffer = "";
-      pressedControlKeys.length = 0;
+      _stickDirectionBuffer = "";
+      _pressedControlKeysBuffer.length = 0;
     }
   });
 };
