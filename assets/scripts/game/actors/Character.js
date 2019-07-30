@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 import { Game } from "../Game";
 import { tileToPixel, random } from "../utils";
 import { sendPosition } from "../connection";
-import { pathfinderGrid, charactersGrid, detectObstacle } from "../levels";
+import { pathfinderGrid, charactersGrid, isObstacle } from "../levels";
 
 export default class Character {
   constructor(type, animation, user) {
@@ -115,9 +115,7 @@ export default class Character {
     const tileX = this.position.x + x;
     const tileY = this.position.y + y;
 
-    const isObstacle = detectObstacle(tileX, tileY);
-
-    if (!isObstacle) {
+    if (!isObstacle(tileX, tileY)) {
       this.setPathTo(tileX, tileY);
       sendPosition(tileX, tileY);
     }

@@ -8,7 +8,7 @@ import { getTexture } from "./textures";
 // Handle level management for the game
 //
 // load(): Load a level (tiles, obstacles, grids...)
-// detectObstacle(): Return a boolean if the tile is an obstacle or not
+// isObstacle(): Return a boolean if the tile is an obstacle or not
 //=============================================================================
 
 const _grid = []; // Local grid used to build pathfinderGrid
@@ -28,6 +28,7 @@ export const load = items => {
     _loadGate(item);
   }
 
+  // Build the grid for pathfinder.js
   pathfinderGrid = new PF.Grid(_grid);
 
   // Set the dimensions for the viewport scrolling (PIXI-viewport)
@@ -38,15 +39,14 @@ export const load = items => {
 };
 
 // Detect from the pathfinderGrid if the tile is an obstacle.
-// Return true if pathfinderGrid or nodes are missing.
-// It happens when the map is not fully loaded yet.
-export const detectObstacle = (x, y) => {
+export const isObstacle = (x, y) => {
   if (!pathfinderGrid) return true;
 
   const nodes = pathfinderGrid.nodes;
 
+  // Return true if pathfinderGrid or nodes are missing.
+  // It happens when the map is not fully loaded yet.
   if (!nodes) return true;
-
   if (!nodes[y]) return true;
   if (!nodes[y][x]) return true;
 
@@ -59,9 +59,7 @@ const _loadGate = item => {
   let gate = null;
 
   const properties = item.properties;
-  if (properties) {
-    gate = properties.goto || null;
-  }
+  if (properties) gate = properties.goto || null;
 
   // Initialize row
   if (!gatesGrid[item.y]) gatesGrid[item.y] = [];

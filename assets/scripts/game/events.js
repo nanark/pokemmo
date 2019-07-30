@@ -1,6 +1,6 @@
 import { Game } from "./Game";
 import { pixelToTile, tileToPixel } from "./utils";
-import { detectObstacle } from "./levels";
+import { isObstacle } from "./levels";
 
 // Catch the mouse event and convert the position into a tile
 // and obstacle bool
@@ -16,12 +16,10 @@ const targetTile = event => {
   const tileX = Math.ceil(pixelToTile(mouseX)) - 1;
   const tileY = Math.ceil(pixelToTile(mouseY)) - 1;
 
-  const isObstacle = detectObstacle(tileX, tileY);
-
   // Handle the cursor
   _cursorContainer.removeChild(_cursor);
 
-  if (!isObstacle) {
+  if (!isObstacle(tileX, tileY)) {
     _cursor.x = tileToPixel(tileX) - Game.tileDistance / 2;
     _cursor.y = tileToPixel(tileY) - Game.tileDistance / 2;
     _cursorContainer.addChild(_cursor);
