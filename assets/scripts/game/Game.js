@@ -1,10 +1,10 @@
 import PF from "pathfinding";
-import GameDisplay from "./GameDisplay";
+import Display from "./Display";
 import Stats from "stats.js";
 import { moveCharacters } from "./positions";
 import { handleCursorEvents } from "./cursors";
 import { handleControlEvents } from "./controls";
-import { displayMode } from "./utils";
+import { displayMode, viewportDimensions } from "./utils";
 
 export const Game = {
   loaded: false,
@@ -30,7 +30,15 @@ export const Game = {
     });
 
     // Display
-    this.display = new GameDisplay(me);
+    const options = {
+      resolution: window.devicePixelRatio,
+      transparent: false,
+      antialias: false,
+      autoDensity: true,
+      autoResize: true,
+      ...viewportDimensions()
+    };
+    this.display = new Display(options, me);
 
     // Event handlers
     handleControlEvents();
@@ -51,8 +59,8 @@ export const Game = {
   },
 
   disconnect() {
-    if (this.display && this.display.app.stage) {
-      this.display.app.destroy();
+    if (this.display && this.display.stage) {
+      this.display.destroy();
     }
   },
 

@@ -25,3 +25,10 @@ export const displayMode = () => {
 export const random = (min, max) => {
   return Math.random() * (+max - +min) + +min;
 };
+
+export const viewportDimensions = () => {
+  return {
+    width: document.getElementById("viewport").offsetWidth,
+    height: document.getElementById("viewport").offsetHeight
+  };
+};

@@ -9,7 +9,7 @@ export const gameloop = delta => {
   Game.stats.begin();
 
   // Set the time elapsed between frames
-  _msBetweenFrames = 1000 / Game.display.app.ticker.FPS;
+  _msBetweenFrames = 1000 / Game.display.ticker.FPS;
   _msElapsed = _msBetweenFrames + delta;
 
   _playerMovement();
