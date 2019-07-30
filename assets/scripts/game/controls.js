@@ -2,6 +2,7 @@ import nipplejs from "nipplejs";
 import Keyboard from "pixi.js-keyboard";
 import { displayMode } from "./utils";
 
+// nippleJs variables
 let virtualControlDirection;
 const virtualControls = {
   up: "ArrowUp",
@@ -41,24 +42,6 @@ export const isControlKeyPressed = () => {
   return !!pressedControlKeys.length;
 };
 
-const isControlKey = keyCode => {
-  return !!controls[keyCode];
-};
-
-// A control key is pressed, add it at the end of pressedControlKeys[]
-const addPressedControlKey = keyCode => {
-  pressedControlKeys.push(keyCode);
-};
-
-// A control key is released, remove it from pressedControlKeys[]
-const removePressedControlKey = keyCode => {
-  for (var i = 0; i < pressedControlKeys.length; i++) {
-    if (pressedControlKeys[i] === keyCode) {
-      pressedControlKeys.splice(i, 1);
-    }
-  }
-};
-
 // Events for Game
 export const handleControlEvents = () => {
   //===========================================================================
@@ -91,7 +74,7 @@ export const handleControlEvents = () => {
 
         if (virtualControlDirection !== arrowDirection) {
           virtualControlDirection = arrowDirection;
-          addPressedControlKey(virtualControlDirection);
+          _addKey(virtualControlDirection);
         }
       }
       if (evt.type === "end") {
@@ -112,12 +95,12 @@ export const handleControlEvents = () => {
   // Keyboard
   //===========================================================================
   Keyboard.events.on("pressed", null, keyCode => {
-    if (isControlKey(keyCode)) addPressedControlKey(keyCode);
+    if (_isControlKey(keyCode)) _addKey(keyCode);
   });
 
   Keyboard.events.on("released", null, keyCode => {
-    if (isControlKey(keyCode)) {
-      removePressedControlKey(keyCode);
+    if (_isControlKey(keyCode)) {
+      _removeKey(keyCode);
     }
   });
 };
@@ -138,4 +121,23 @@ export const pressedControlDirections = () => {
   direction = control.direction;
 
   return { x, y, direction };
+};
+
+// Check if key pressed is meant for direction
+const _isControlKey = keyCode => {
+  return !!controls[keyCode];
+};
+
+// A control key is pressed, add it at the end of pressedControlKeys[]
+const _addKey = keyCode => {
+  pressedControlKeys.push(keyCode);
+};
+
+// A control key is released, remove it from pressedControlKeys[]
+const _removeKey = keyCode => {
+  for (var i = 0; i < pressedControlKeys.length; i++) {
+    if (pressedControlKeys[i] === keyCode) {
+      pressedControlKeys.splice(i, 1);
+    }
+  }
 };

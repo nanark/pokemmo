@@ -8,6 +8,7 @@ const grid = [];
 export const gates = [];
 export const charactersGrid = [];
 export let pathGrid = null;
+export const defaultSpawningTile = { x: 23, y: 19 }; // Temp
 
 export const load = items => {
   const _viewport = Game.display.viewport;

@@ -4,7 +4,7 @@ import { Game } from "./game";
 import Player from "./actors/Player";
 import { map } from "@/static/sources/map.js";
 import { cursor } from "./cursor";
-import { load as loadLevel } from "./levels";
+import { load as loadLevel, defaultSpawningTile } from "./levels";
 import { gameloop } from "./loop";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -16,13 +16,12 @@ export default class GameDisplay {
     this.width = 0;
     this.heigth = 0;
 
-    // Temp
-    const defaultSpawningTile = { x: 23, y: 19 };
+    // Temp: Setting default position
     if (!this.me.position || !this.me.position.x || !this.me.position.y) {
       this.me.position = defaultSpawningTile;
     }
 
-    this.setDimensions();
+    this._setDimensions();
 
     // Creating the Application and Renderer
     this.app = new PIXI.Application({
@@ -38,22 +37,24 @@ export default class GameDisplay {
     this.app.renderer.view.style.display = "block";
     this.app.renderer.autoResize = true;
 
+    addEventListener("resize", this._resize.bind(this));
+
     // Build
-    this.createCursors();
-    this.createViewports();
+    this._createCursors();
+    this._createViewports();
 
     // Load resources and start loop
-    this.loadResources();
+    this._loadResources();
   }
 
   // Handle viewport and subcontainers
-  createCursors() {
+  _createCursors() {
     this.cursor = cursor("hover");
     this.cursorClick = cursor("click");
   }
 
   // Handle viewport and subcontainers
-  createViewports() {
+  _createViewports() {
     this.viewport = new Viewport({
       screenHeight: this.height,
       screenWidth: this.width,
@@ -80,13 +81,11 @@ export default class GameDisplay {
     this.viewport.addChild(this.menuContainer);
 
     this.app.stage.addChild(this.viewport);
-
-    addEventListener("resize", this.resize);
   }
 
   // Handle window resizing
-  resize() {
-    this.setDimensions();
+  _resize() {
+    this._setDimensions();
     this.app.renderer.resize(this.width, this.height);
 
     // Resize the viewport params too and place the player at the center
@@ -97,17 +96,17 @@ export default class GameDisplay {
     this.viewport.moveCenter(this.player.container.x, this.player.container.y);
 
     // Set new size for viewport features (mouseEdges...)
-    this.viewport.resize(this.width, this.height);
+    this.viewport._resize(this.width, this.height);
   }
 
   // Set viewport dimensions
-  setDimensions() {
+  _setDimensions() {
     this.width = document.getElementById("viewport").offsetWidth;
     this.height = document.getElementById("viewport").offsetHeight;
   }
 
   // Loading all resources and add the gameloop in the ticker.
-  loadResources() {
+  _loadResources() {
     const characters = {
       name: "character",
       url: "packs/character.json"
@@ -131,7 +130,7 @@ export default class GameDisplay {
         Game.resourcesLoaded = true;
 
         // Setup the game (load player etc.)
-        this.setup();
+        this._setup();
 
         // Add a tickerTime
         this.app.ticker.maxFPS = Game.FPS;
@@ -143,7 +142,7 @@ export default class GameDisplay {
   // * Load the map
   // * Load the player
   // * Place the camera
-  setup() {
+  _setup() {
     // Load the map // Todo: make it dynamic
     loadLevel(map);
 
