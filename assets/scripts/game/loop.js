@@ -2,35 +2,53 @@ import Keyboard from "pixi.js-keyboard";
 import { Game } from "./Game";
 import { pressedControlDirections, isControlKeyPressed } from "./controls";
 
-export const gameloop = delta => {
-  const _player = Game.display.player;
+let _msBetweenFrames;
+let _msElapsed;
 
+export const gameloop = delta => {
   Game.stats.begin();
 
   // Set the time elapsed between frames
-  const msBetweenFrames = 1000 / Game.display.app.ticker.FPS;
-  const msElapsed = msBetweenFrames + delta;
+  _msBetweenFrames = 1000 / Game.display.app.ticker.FPS;
+  _msElapsed = _msBetweenFrames + delta;
+
+  _playerMovement();
+
+  _populationMovement();
+
+  if (isControlKeyPressed()) walkWithKeyboard();
+
+  Keyboard.update();
+  Game.stats.end();
+};
+
+const _playerMovement = () => {
+  const $player = Game.display.player;
 
   // Move the player if isWalking is true
-  if (_player.isWalking) {
-    moveloop(_player, msElapsed);
+  if ($player.isWalking) {
+    _moveloop($player, _msElapsed);
   }
 
   // If path is over and no msLeft, the player has stopped:
   // * Set isWalking to false
   // * Pause the follow mode for the viewport
-  if (_player.path.length === 0 && _player.msLeft === 0) {
-    _player.isWalking = false;
+  if ($player.path.length === 0 && $player.msLeft === 0) {
+    $player.isWalking = false;
   }
 
   // Stop the animation
-  if (!_player.isWalking && !isControlKeyPressed()) _player.stand();
+  if (!$player.isWalking && !isControlKeyPressed()) $player.stand();
+};
+
+const _populationMovement = () => {
+  const $population = Game.population;
 
   // Moving the population
-  if (Game.population.size > 0) {
-    for (let npc of Game.population.values()) {
+  if ($population.size > 0) {
+    for (let npc of $population.values()) {
       // Move the player if isWalking is true
-      if (npc.isWalking) moveloop(npc, msElapsed);
+      if (npc.isWalking) _moveloop(npc, _msElapsed);
 
       // If path is over and no msLeft, the player has stopped:
       // * Set isWalking to false
@@ -40,17 +58,12 @@ export const gameloop = delta => {
       }
     }
   }
-
-  if (isControlKeyPressed()) walkWithKeyboard();
-
-  Keyboard.update();
-  Game.stats.end();
 };
 
 // Moving loop for the character.
 // Based on time elapsed routine.
-const moveloop = (character, msElapsed) => {
-  const _display = Game.display;
+const _moveloop = (character, msElapsed) => {
+  const $display = Game.display;
 
   // Set the buffer for that frame.
   // The loop will go on until that buffer is empty.
@@ -75,7 +88,7 @@ const moveloop = (character, msElapsed) => {
 
       // No more step available.
       if (character.path.length === 0) {
-        _display.cursorContainer.removeChild(_display.cursorClick);
+        $display.cursorContainer.removeChild($display.cursorClick);
 
         // Stop the animation if no control is pressed.
         // Use to keep the animation if the character walks against an obstacle.
@@ -91,7 +104,7 @@ const moving = character => {
   const _sprite = character.container;
 
   // Where to head.
-  const direction = whichDirection(character);
+  const direction = _whichDirection(character);
 
   // No movement left, exit function and all ms values.
   if (!direction) {
@@ -149,7 +162,7 @@ const moving = character => {
   character.setPositionPixel(x, y);
 };
 
-const whichDirection = character => {
+const _whichDirection = character => {
   const _path = character.path;
 
   // If path is empty, exit
@@ -179,12 +192,12 @@ const whichDirection = character => {
 };
 
 const walkWithKeyboard = () => {
-  const _player = Game.display.player;
+  const $player = Game.display.player;
 
-  if (_player.isWalking && _player.msLeft) return;
+  if ($player.isWalking && $player.msLeft) return;
 
   const { x, y, direction } = pressedControlDirections();
 
-  _player.go(direction);
-  _player.relativeMove(x, y);
+  $player.go(direction);
+  $player.relativeMove(x, y);
 };
