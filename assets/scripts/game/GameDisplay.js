@@ -49,8 +49,8 @@ export default class GameDisplay {
 
   // Handle viewport and subcontainers
   _createCursors() {
-    this.cursor = cursor("hover");
-    this.cursorClick = cursor("click");
+    this.cursorHover = cursor("hover");
+    this.cursorGo = cursor("go");
   }
 
   // Handle viewport and subcontainers

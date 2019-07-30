@@ -17,7 +17,7 @@ export const cursor = mode => {
       cursor.drawRoundedRect(0, 0, $tilePixelSize, $tilePixelSize, 15);
       cursor.endFill();
       break;
-    case "click":
+    case "go":
       cursor.lineStyle(3, _colorBlueDenim, 0.5);
       cursor.drawRoundedRect(0, 0, $tilePixelSize, $tilePixelSize, 15);
       break;
@@ -31,39 +31,61 @@ export const cursor = mode => {
 export const handleCursorEvents = () => {
   const $map = Game.display.mapContainer;
 
-  // Hover the map:
+  // Hover the map
   $map.mousemove = $map.touchmove = event => {
     _targetTile(event);
   };
 
-  // Click the map:
+  // Click the map
   $map.mousedown = $map.tap = event => {
-    const $cursorContainer = Game.display.cursorContainer;
-    const $cursor = Game.display.cursorClick;
+    const $cursorGo = Game.display.cursorGo;
     const $player = Game.display.player;
 
-    const { tileX, tileY, isObstacle } = _targetTile(event);
+    const { tileX, tileY, isWalkable } = _targetTile(event);
+
+    if (!isWalkable) return;
 
     // Move the player
     $player.move(tileX, tileY);
 
-    // Handle the cursor
-    $cursorContainer.removeChild($cursor);
-
-    if (!isObstacle) {
-      $cursor.x = tileToPixel(tileX) - Game.tileDistance / 2;
-      $cursor.y = tileToPixel(tileY) - Game.tileDistance / 2;
-      $cursorContainer.addChild($cursor);
-    }
+    // Cursor behaviour
+    _removeCursor($cursorGo);
+    _addCursor($cursorGo, tileX, tileY);
   };
+
+  // Leave the map
+  $map.mouseout = () => {
+    const $cursorHover = Game.display.cursorHover;
+
+    // Remove the cursor
+    _removeCursor($cursorHover);
+  };
+};
+
+// Add a cursor on the cursorContainer
+const _addCursor = (cursor, x, y) => {
+  const $cursorContainer = Game.display.cursorContainer;
+
+  const convertPosition = value => tileToPixel(value) - Game.tileDistance / 2;
+
+  cursor.x = convertPosition(x);
+  cursor.y = convertPosition(y);
+
+  $cursorContainer.addChild(cursor);
+};
+
+// Remove a cursor of the cursorContainer
+const _removeCursor = cursor => {
+  const $cursorContainer = Game.display.cursorContainer;
+
+  $cursorContainer.removeChild(cursor);
 };
 
 // Catch the mouse event and convert the position into a tile
 // and obstacle bool
 const _targetTile = event => {
   const $viewportPosition = Game.display.viewport.position;
-  const $cursorContainer = Game.display.cursorContainer;
-  const $cursor = Game.display.cursor;
+  const $cursorHover = Game.display.cursorHover;
 
   const data = event.data.global;
   const mouseX = data.x - $viewportPosition.x;
@@ -72,14 +94,12 @@ const _targetTile = event => {
   const tileX = Math.ceil(pixelToTile(mouseX)) - 1;
   const tileY = Math.ceil(pixelToTile(mouseY)) - 1;
 
-  // Handle the cursor
-  $cursorContainer.removeChild($cursor);
+  // Remove the cursor hover
+  _removeCursor($cursorHover);
 
-  if (!isObstacle(tileX, tileY)) {
-    $cursor.x = tileToPixel(tileX) - Game.tileDistance / 2;
-    $cursor.y = tileToPixel(tileY) - Game.tileDistance / 2;
-    $cursorContainer.addChild($cursor);
-  }
+  // Add a cursor hover
+  const isWalkable = !isObstacle(tileX, tileY);
+  if (isWalkable) _addCursor($cursorHover, tileX, tileY);
 
-  return { tileX, tileY, isObstacle };
+  return { tileX, tileY, isWalkable };
 };
