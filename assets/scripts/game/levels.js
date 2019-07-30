@@ -76,9 +76,7 @@ const _loadObstacle = item => {
   let isObstacle = false;
 
   const properties = item.properties;
-  if (properties) {
-    isObstacle = properties.obstacle || false;
-  }
+  if (properties) isObstacle = properties.obstacle || false;
 
   // Initialize row
   if (!_grid[item.y]) _grid[item.y] = [];

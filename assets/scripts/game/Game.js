@@ -2,7 +2,7 @@ import PF from "pathfinding";
 import GameDisplay from "./GameDisplay";
 import Stats from "stats.js";
 import { moveCharacters } from "./positions";
-import { handlePlayerEvents } from "./events";
+import { handleCursorEvents } from "./cursors";
 import { handleControlEvents } from "./controls";
 import { displayMode } from "./utils";
 
@@ -34,7 +34,7 @@ export const Game = {
 
     // Event handlers
     handleControlEvents();
-    handlePlayerEvents();
+    handleCursorEvents();
   },
 
   setWebsocket(ws) {

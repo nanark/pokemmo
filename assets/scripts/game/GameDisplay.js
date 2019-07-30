@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Viewport } from "pixi-viewport";
-import { Game } from "./game";
+import { Game } from "./Game";
 import Player from "./actors/Player";
 import { map } from "@/static/sources/map.js";
 import { cursor } from "./cursors";
