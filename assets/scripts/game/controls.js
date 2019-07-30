@@ -91,9 +91,7 @@ const _removeKey = keyCode => {
   }
 };
 
-//=============================================================================
 // Keyboard
-//=============================================================================
 const _handleKeyboard = () => {
   Keyboard.events.on("pressed", null, keyCode => {
     if (_isControlKey(keyCode)) _addKey(keyCode);
@@ -106,9 +104,7 @@ const _handleKeyboard = () => {
   });
 };
 
-//=============================================================================
 // Virtual joystick (nipple.js)
-//=============================================================================
 const _handleVirtualStick = () => {
   const { isMobile } = displayMode();
 
@@ -142,7 +138,7 @@ const _buildStick = () => {
   };
   _stick = nipplejs.create(options);
 
-  // Events for nippleJs: https://github.com/yoannmoinet/nipplejs#events
+  // Add events for nippleJs: https://github.com/yoannmoinet/nipplejs#events
   // dir: detect direction (4 directions with 45˚ angles)
   // end: detect end of direction
   _stick.on("dir end", (evt, data) => {

@@ -3,7 +3,7 @@ import { Viewport } from "pixi-viewport";
 import { Game } from "./game";
 import Player from "./actors/Player";
 import { map } from "@/static/sources/map.js";
-import { cursor } from "./cursor";
+import { cursor } from "./cursors";
 import { load as loadLevel, defaultSpawningTile } from "./levels";
 import { gameloop } from "./loop";
 
