@@ -26,11 +26,11 @@ export default class Character {
     this.distanceEachMs = Game.tileDistance / this.msToReachTile;
 
     // Movement Buffers
-    this.msElapsedBuffer = 0;
-    this.msLeft = 0;
+    this.msLeftForFrame = 0; // Remaining ms to move during the frame
+    this.msLeft = 0; // Remaining ms to end the movement (ie: reaching a tile)
 
     // Building the animations
-    const sheet = this.buildTextures(this.animation);
+    const sheet = this._buildTextures(this.animation);
     this.container = new PIXI.Container();
 
     // Sprite
@@ -39,7 +39,7 @@ export default class Character {
     this.sprite.play();
 
     // Label
-    const label = this.label(this.username);
+    const label = this._label(this.username);
 
     this.container.addChild(this.sprite);
     this.container.addChild(label);
@@ -55,7 +55,10 @@ export default class Character {
     this.setPositionTile(user.position.x, user.position.y);
   }
 
-  buildTextures(animation) {
+  //===========================================================================
+  // Visuals
+  //===========================================================================
+  _buildTextures(animation) {
     const spritesheet = PIXI.Loader.shared.resources[this.type].spritesheet;
     let sheet;
 
@@ -69,7 +72,7 @@ export default class Character {
     return sheet;
   }
 
-  label(name) {
+  _label(name) {
     // Create the content
     const text = new PIXI.Text(name.trim(), {
       fontFamily: "Arial",
@@ -100,17 +103,49 @@ export default class Character {
     return label;
   }
 
-  setAnimation(animation, anchorX = 0.5, anchorY = 0.77) {
+  _setAnimation(animation, anchorX = 0.5, anchorY = 0.77) {
     if (animation === this.animation) {
       return false;
     }
 
     this.animation = animation;
     this.sprite.anchor.set(anchorX, anchorY);
-    this.sprite.textures = this.buildTextures(animation);
+    this.sprite.textures = this._buildTextures(animation);
     this.sprite.gotoAndPlay(1);
   }
 
+  whichDirection = () => {
+    const $path = this.path;
+
+    // If path is empty, exit
+    if ($path.length === 0) return false;
+
+    // Fetch the first step in the path
+    const gotoPosition = $path[0];
+
+    // Tiles to go to
+    const gotoX = gotoPosition[0];
+    const gotoY = gotoPosition[1];
+
+    // Set direction
+    let direction;
+    if (gotoY > this.position.y) direction = "down";
+    if (gotoY < this.position.y) direction = "up";
+    if (gotoX > this.position.x) direction = "right";
+    if (gotoX < this.position.x) direction = "left";
+
+    // No direction defined, exit
+    if (!direction) return false;
+
+    // This is a new move, set an initial msLeft
+    if (this.msLeft === 0) this.msLeft = this.msToReachTile;
+
+    return direction;
+  };
+
+  //===========================================================================
+  // Movements
+  //===========================================================================
   relativeMove(x, y) {
     const tileX = this.position.x + x;
     const tileY = this.position.y + y;
@@ -128,7 +163,7 @@ export default class Character {
 
   go(direction) {
     const animation = `walk-${direction}`;
-    this.setAnimation(animation);
+    this._setAnimation(animation);
     this.direction = direction;
   }
 
@@ -140,9 +175,9 @@ export default class Character {
 
     // Shift the characters a bit if they share the same tile
     if (charactersCountOnTile > 1) {
-      this.setAnimation(animation, random(0.3, 0.7), 0.5);
+      this._setAnimation(animation, random(0.3, 0.7), 0.5);
     } else {
-      this.setAnimation(animation);
+      this._setAnimation(animation);
     }
   }
 
@@ -164,7 +199,7 @@ export default class Character {
   }
 
   //=========================================================================
-  // Moving the player, Pathfinding:
+  // Pathfinding
   //=========================================================================
   setPathTo(destinationX, destinationY) {
     // Clone the grid so you can use it later
@@ -210,7 +245,7 @@ export default class Character {
   }
 
   //=========================================================================
-  // Character Grid:
+  // Character Grid
   //=========================================================================
   _setCharacterOnGrid() {
     // The character hasn't moved, quit

@@ -2,31 +2,31 @@ import Keyboard from "pixi.js-keyboard";
 import { Game } from "./Game";
 import { pressedControlDirections, isControlKeyPressed } from "./controls";
 
-let _msBetweenFrames;
-let _msElapsed;
-
 export const gameloop = delta => {
   Game.stats.begin();
 
   // Set the time elapsed between frames
-  _msBetweenFrames = 1000 / Game.display.ticker.FPS;
-  _msElapsed = _msBetweenFrames + delta;
+  const msBetweenFrames = 1000 / Game.display.ticker.FPS;
+  const msElapsed = msBetweenFrames + delta;
 
-  _playerMovement();
-  _populationMovement();
+  _playerMovement(msElapsed);
+  _populationMovement(msElapsed);
 
-  if (isControlKeyPressed()) walkWithKeyboard();
-
+  // Necessary for pixi.js-keyboard to avoid keyboard glitches (autorun...)
   Keyboard.update();
+
   Game.stats.end();
 };
 
-const _playerMovement = () => {
+const _playerMovement = msElapsed => {
   const $player = Game.display.player;
+
+  // Detect direction key pressure
+  if (isControlKeyPressed()) walkWithKeyboard();
 
   // Move the player if isWalking is true
   if ($player.isWalking) {
-    _moveloop($player, _msElapsed);
+    _moveloop($player, msElapsed);
   }
 
   // If path is over and no msLeft, the player has stopped:
@@ -40,14 +40,14 @@ const _playerMovement = () => {
   if (!$player.isWalking && !isControlKeyPressed()) $player.stand();
 };
 
-const _populationMovement = () => {
+const _populationMovement = msElapsed => {
   const $population = Game.population;
 
   // Moving the population
   if ($population.size > 0) {
     for (let npc of $population.values()) {
       // Move the player if isWalking is true
-      if (npc.isWalking) _moveloop(npc, _msElapsed);
+      if (npc.isWalking) _moveloop(npc, msElapsed);
 
       // If path is over and no msLeft, the player has stopped:
       // * Set isWalking to false
@@ -66,10 +66,10 @@ const _moveloop = (character, msElapsed) => {
 
   // Set the buffer for that frame.
   // The loop will go on until that buffer is empty.
-  character.msElapsedBuffer = msElapsed;
+  character.msLeftForFrame = msElapsed;
 
-  while (character.msElapsedBuffer > 0) {
-    // Move the character until msElapsedBuffer or msLeft is empty.
+  while (character.msLeftForFrame > 0) {
+    // Move the character until msLeftForFrame or msLeft is empty.
     moving(character);
 
     // The current step is done, set the position based on tile
@@ -100,14 +100,14 @@ const _moveloop = (character, msElapsed) => {
 
 // Moving the player.
 const moving = character => {
-  const _sprite = character.container;
+  const $sprite = character.container;
 
   // Where to head.
-  const direction = _whichDirection(character);
+  const direction = character.whichDirection();
 
   // No movement left, exit function and all ms values.
   if (!direction) {
-    character.msElapsedBuffer = 0;
+    character.msLeftForFrame = 0;
     character.msLeft = 0;
     return false;
   }
@@ -117,26 +117,26 @@ const moving = character => {
 
   // The movement requires more time than available for that frame:
   // * substract that time from msLeft
-  // * set the distance based on msElapsedBuffer
-  // * empty msElapsedBuffer
-  if (character.msLeft >= character.msElapsedBuffer) {
-    character.msLeft -= character.msElapsedBuffer;
-    distance = character.msElapsedBuffer * character.distanceEachMs;
-    character.msElapsedBuffer = 0;
+  // * set the distance based on msLeftForFrame
+  // * empty msLeftForFrame
+  if (character.msLeft >= character.msLeftForFrame) {
+    character.msLeft -= character.msLeftForFrame;
+    distance = character.msLeftForFrame * character.distanceEachMs;
+    character.msLeftForFrame = 0;
 
     // The movement last less time than available for that frame:
     // * set the distance based on msLeft
-    // * substract msLeft from msElapsedBuffer
+    // * substract msLeft from msLeftForFrame
     // * empty msLeft
   } else {
     distance = character.msLeft * character.distanceEachMs;
-    character.msElapsedBuffer -= character.msLeft;
+    character.msLeftForFrame -= character.msLeft;
     character.msLeft = 0;
   }
 
   // Moving the sprite based on the step direction
-  let x = _sprite.x;
-  let y = _sprite.y;
+  let x = $sprite.x;
+  let y = $sprite.y;
   switch (direction) {
     case "up":
       y -= distance;
@@ -159,35 +159,6 @@ const moving = character => {
   }
 
   character.setPositionPixel(x, y);
-};
-
-const _whichDirection = character => {
-  const _path = character.path;
-
-  // If path is empty, exit
-  if (_path.length === 0) return false;
-
-  // Fetch the first step in the path
-  const gotoPosition = _path[0];
-
-  // Tiles to go to
-  const gotoX = gotoPosition[0];
-  const gotoY = gotoPosition[1];
-
-  // Set direction
-  let direction;
-  if (gotoY > character.position.y) direction = "down";
-  if (gotoY < character.position.y) direction = "up";
-  if (gotoX > character.position.x) direction = "right";
-  if (gotoX < character.position.x) direction = "left";
-
-  // No direction defined, exit
-  if (!direction) return false;
-
-  // This is a new move, set an initial msLeft
-  if (character.msLeft === 0) character.msLeft = character.msToReachTile;
-
-  return direction;
 };
 
 const walkWithKeyboard = () => {
