@@ -3,7 +3,7 @@ import { Game } from "../Game";
 import { tileToPixel, random } from "../utils";
 import { sendPosition } from "../connection";
 import {
-  pathfinderGrid,
+  pathfinderMatrix,
   isObstacle,
   addToPopulation,
   countPopulation
@@ -210,7 +210,7 @@ export default class Character {
   setPathTo(destinationX, destinationY) {
     // Clone the grid so you can use it later
     // Pathfinding destroys it afer use
-    const gridClone = pathfinderGrid.clone();
+    const gridClone = pathfinderMatrix.clone();
 
     // Fetch the next tile if available
     this.path = this.path.slice(0, 1);

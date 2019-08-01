@@ -10,11 +10,11 @@ import { getTexture } from "./textures";
 //
 // load(): Load a level (tiles, obstacles, grids...)
 // isObstacle(): Return a boolean if the tile is an obstacle or not
+// addToPopulation(): Add a character to a tile population
+// countPopulation(): Count population on a tile
 //=============================================================================
 
-const _grid = []; // Local grid used to build pathfinderGrid
-
-export let pathfinderGrid; // Grid built by Pathfinder.js
+export let pathfinderMatrix; // Grid built by Pathfinder.js
 export let matrix;
 export const gatesGrid = []; // Gates available on the grid
 export const charactersGrid = []; // Characters available on the grid
@@ -23,56 +23,31 @@ export const defaultSpawningTile = { x: 23, y: 19 }; // Temp
 export const load = items => {
   const $viewport = Game.display.viewport;
 
+  // Build the matrix for the population and gates
   matrix = _buildMatrix(items);
+
+  // Build the grid for pathfinder.js
+  pathfinderMatrix = _buildPathfinder(items);
 
   for (const item of items) {
     _loadTiles(item, true);
     _loadTiles(item, false);
-    _loadObstacle(item);
   }
 
-  // Build the grid for pathfinder.js
-  pathfinderGrid = new PF.Grid(_grid);
-
   // Set the dimensions for the viewport scrolling (PIXI-viewport)
-  const worldWidth = pathfinderGrid.width;
-  const worldHeight = pathfinderGrid.height;
+  const worldWidth = pathfinderMatrix.width;
+  const worldHeight = pathfinderMatrix.height;
   $viewport.worldWidth = tileToPixel(worldWidth);
   $viewport.worldHeight = tileToPixel(worldHeight);
 };
 
-const _buildMatrix = items => {
-  const { x: cols, y: rows } = _.last(items);
-
-  // Preparing the matrix
-  const matrix = [...Array(rows)].map(() => {
-    return [...Array(cols)].map(() => {
-      return {
-        population: [],
-        gate: null
-      };
-    });
-  });
-
-  // Creating gates
-  for (const item of items) {
-    const { x, y, properties } = item;
-    if (properties) {
-      const goto = properties.goto;
-      if (goto) matrix[y][x].gate = goto;
-    }
-  }
-
-  return matrix;
-};
-
-// Detect from the pathfinderGrid if the tile is an obstacle.
+// Detect from the pathfinderMatrix if the tile is an obstacle.
 export const isObstacle = (x, y) => {
-  if (!pathfinderGrid) return true;
+  if (!pathfinderMatrix) return true;
 
-  const nodes = pathfinderGrid.nodes;
+  const nodes = pathfinderMatrix.nodes;
 
-  // Return true if pathfinderGrid or nodes are missing.
+  // Return true if pathfinderMatrix or nodes are missing.
   // It happens when the map is not fully loaded yet.
   if (!nodes) return true;
   if (!nodes[y]) return true;
@@ -81,23 +56,6 @@ export const isObstacle = (x, y) => {
   const isWalkable = nodes[y][x].walkable;
 
   return !isWalkable;
-};
-
-const _loadObstacle = item => {
-  let isObstacle = false;
-
-  const properties = item.properties;
-  if (properties) isObstacle = properties.obstacle || false;
-
-  // Initialize row
-  if (!_grid[item.y]) _grid[item.y] = [];
-
-  // Build the grid to init the pathfinder
-  if (isObstacle) {
-    _grid[item.y].push(1);
-  } else {
-    _grid[item.y].push(0);
-  }
 };
 
 const _loadTiles = (item, overlay) => {
@@ -133,6 +91,56 @@ const _loadTiles = (item, overlay) => {
       Game.display.mapContainer.addChildAt(tileObject);
     }
   }
+};
+
+// Build the pathfinder
+const _buildPathfinder = items => {
+  const grid = [];
+
+  for (const item of items) {
+    let isObstacle = false;
+
+    const properties = item.properties;
+    if (properties) isObstacle = properties.obstacle || false;
+
+    // Initialize row
+    if (!grid[item.y]) grid[item.y] = [];
+
+    // Build the grid to init the pathfinder
+    if (isObstacle) {
+      grid[item.y].push(1);
+    } else {
+      grid[item.y].push(0);
+    }
+  }
+
+  return new PF.Grid(grid);
+};
+
+// Build the matrix for the population and gates
+const _buildMatrix = items => {
+  const { x: cols, y: rows } = _.last(items);
+
+  // Preparing the matrix
+  const matrix = [...Array(rows)].map(() => {
+    return [...Array(cols)].map(() => {
+      return {
+        population: [],
+        gate: null
+      };
+    });
+  });
+
+  // Creating gates
+  for (const item of items) {
+    const { x, y, properties } = item;
+    if (properties) {
+      const goto = properties.goto;
+      if (goto) matrix[y][x].gate = goto;
+    }
+  }
+
+  return matrix;
 };
 
 //=========================================================================
