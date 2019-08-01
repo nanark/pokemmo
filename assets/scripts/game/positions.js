@@ -10,17 +10,16 @@ export const moveCharacters = async data => {
   const x = goto.x;
   const y = goto.y;
 
-  const response = await getUser(data.uuid);
-
-  const user = response.data;
-
   // If the user is me, break
-  if ($me.uuid == user.uuid) return;
+  if ($me.uuid == data.uuid) return;
 
-  if (!$population.has(user.uuid)) {
-    $population.set(user.uuid, new NPC(user));
+  // Fetch data only once
+  let user = $population.get(data.uuid);
+  if (!user) {
+    const response = await getUser(data.uuid);
+    $population.set(data.uuid, new NPC(response.data));
   }
 
   // Set the new destination
-  $population.get(user.uuid).setPathTo(x, y);
+  $population.get(data.uuid).setPathTo(x, y);
 };
