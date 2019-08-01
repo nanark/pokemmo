@@ -2,6 +2,7 @@ import Character from "./Character";
 import { Game } from "../Game";
 import { matrix } from "../maps";
 import { sendPositionBeacon } from "../db";
+import { sendPosition } from "../connection";
 
 export default class Player extends Character {
   constructor(user) {
@@ -16,6 +17,9 @@ export default class Player extends Character {
     // Prepare the follow plugin for the viewport.
     // Pause it to enable it only when the character is moving.
     $viewport.follow(this.container, { speed: 40 });
+
+    // Send the position
+    sendPosition(this.tilePosition.x, this.tilePosition.y);
   }
 
   setPositionTile(x, y, cleanPosition = false) {
@@ -36,6 +40,7 @@ export default class Player extends Character {
       });
 
     this.setPositionTile(gotoX, gotoY, true);
+
     // Teleport
     setTimeout(() => {
       setTimeout(() => {
