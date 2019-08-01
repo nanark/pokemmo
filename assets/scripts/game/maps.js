@@ -30,8 +30,8 @@ export const load = items => {
   pathfinderMatrix = _buildPathfinder(items);
 
   for (const item of items) {
-    _loadTiles(item, true);
-    _loadTiles(item, false);
+    _buildTiles(item, true, Game.display.mapOverlayContainer);
+    _buildTiles(item, false, Game.display.mapContainer);
   }
 
   // Set the dimensions for the viewport scrolling (PIXI-viewport)
@@ -58,7 +58,7 @@ export const isObstacle = (x, y) => {
   return !isWalkable;
 };
 
-const _loadTiles = (item, overlay) => {
+const _buildTiles = (item, overlay, container) => {
   let hasLayer = false;
 
   const tileObject = new PIXI.Graphics();
@@ -84,13 +84,7 @@ const _loadTiles = (item, overlay) => {
   }
 
   // Add the tile to the map
-  if (hasLayer) {
-    if (overlay) {
-      Game.display.mapOverlayContainer.addChildAt(tileObject);
-    } else {
-      Game.display.mapContainer.addChildAt(tileObject);
-    }
-  }
+  if (hasLayer) container.addChildAt(tileObject);
 };
 
 // Build the pathfinder
