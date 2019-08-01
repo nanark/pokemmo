@@ -146,15 +146,16 @@ export const addToPopulation = character => {
   const $population = matrix[y][x].population;
 
   // The character hasn't moved, quit
-  if (!_.isEqual($positionBuffer, $position)) {
-    // Remove the buffer if it exists
-    if (!_.isEmpty($positionBuffer)) _removeFromPopulation($positionBuffer);
+  if (_.isEqual($positionBuffer, $position)) return;
 
-    if (!$population.includes($uuid)) $population.push($uuid);
+  // Remove the buffer if it exists
+  if (!_.isEmpty($positionBuffer)) _removeFromPopulation($positionBuffer);
 
-    // Keep the last standing position
-    $positionBuffer = _.cloneDeep($position);
-  }
+  // Add to the population
+  if (!$population.includes($uuid)) $population.push($uuid);
+
+  // Keep the last standing position
+  $positionBuffer = _.cloneDeep($position);
 };
 
 export const countPopulation = position => {
