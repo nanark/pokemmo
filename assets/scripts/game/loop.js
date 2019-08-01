@@ -43,12 +43,6 @@ const _populationMovement = msElapsed => {
   }
 };
 
-const _checkMovement = character => {
-  if (character.path.length === 0 && character.msLeft === 0) {
-    character.isWalking = false;
-  }
-};
-
 // Moving loop for the character.
 // Based on time elapsed routine.
 const _moveloop = (character, msElapsed) => {
@@ -92,7 +86,9 @@ const _moveloop = (character, msElapsed) => {
   // If path is over and no msLeft, the player has stopped:
   // * Set isWalking to false
   // * Pause the follow mode for the viewport
-  _checkMovement(character);
+  if (character.path.length === 0 && character.msLeft === 0) {
+    character.isWalking = false;
+  }
 };
 
 // Moving the player.
@@ -160,8 +156,6 @@ const _moveCharacter = character => {
 
 const walkWithKeyboard = () => {
   const $player = Game.display.player;
-
-  if ($player.isWalking && $player.msLeft) return;
 
   const { x, y, direction } = pressedControlDirections();
 
