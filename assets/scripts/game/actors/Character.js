@@ -1,9 +1,13 @@
-import * as _ from "lodash";
 import * as PIXI from "pixi.js";
 import { Game } from "../Game";
 import { tileToPixel, random } from "../utils";
 import { sendPosition } from "../connection";
-import { pathfinderGrid, charactersGrid, isObstacle } from "../levels";
+import {
+  pathfinderGrid,
+  isObstacle,
+  addToPopulation,
+  countPopulation
+} from "../maps";
 
 export default class Character {
   constructor(type, animation, user) {
@@ -12,11 +16,11 @@ export default class Character {
     this.username = user.username;
     this.animation = animation;
     this.direction = "down";
-    this.position = {
+    this.tilePosition = {
       x: user.position.x,
       y: user.position.y
     };
-    this.positionBuffer = {};
+    this.tilePositionBuffer = {};
     this.sortableChildren = true;
 
     // Movement variables
@@ -43,7 +47,7 @@ export default class Character {
 
     this.container.addChild(this.sprite);
     this.container.addChild(label);
-    this.container.zIndex = this.position.y;
+    this.container.zIndex = this.tilePosition.y;
 
     // Scale
     this.sprite.width = this.sprite.width * Game.tileScale + 14;
@@ -114,8 +118,12 @@ export default class Character {
     this.sprite.gotoAndPlay(1);
   }
 
-  whichDirection = () => {
+  //===========================================================================
+  // Movements
+  //===========================================================================
+  nextDirection = () => {
     const $path = this.path;
+    const $position = this.tilePosition;
 
     // If path is empty, exit
     if ($path.length === 0) return false;
@@ -129,10 +137,10 @@ export default class Character {
 
     // Set direction
     let direction;
-    if (gotoY > this.position.y) direction = "down";
-    if (gotoY < this.position.y) direction = "up";
-    if (gotoX > this.position.x) direction = "right";
-    if (gotoX < this.position.x) direction = "left";
+    if (gotoY > $position.y) direction = "down";
+    if (gotoY < $position.y) direction = "up";
+    if (gotoX > $position.x) direction = "right";
+    if (gotoX < $position.x) direction = "left";
 
     // No direction defined, exit
     if (!direction) return false;
@@ -143,12 +151,9 @@ export default class Character {
     return direction;
   };
 
-  //===========================================================================
-  // Movements
-  //===========================================================================
   relativeMove(x, y) {
-    const tileX = this.position.x + x;
-    const tileY = this.position.y + y;
+    const tileX = this.tilePosition.x + x;
+    const tileY = this.tilePosition.y + y;
 
     if (!isObstacle(tileX, tileY)) {
       this.setPathTo(tileX, tileY);
@@ -169,9 +174,10 @@ export default class Character {
 
   stand() {
     const animation = `face-${this.direction}`;
-    this._setCharacterOnGrid();
 
-    const charactersCountOnTile = this._countCharactersOnTile();
+    addToPopulation(this);
+
+    const charactersCountOnTile = countPopulation(this.tilePosition);
 
     // Shift the characters a bit if they share the same tile
     if (charactersCountOnTile > 1) {
@@ -183,8 +189,8 @@ export default class Character {
 
   // Place the character on this tile and set position in pixel
   setPositionTile(x, y, cleanPosition = false) {
-    this.position.x = x;
-    this.position.y = y;
+    this.tilePosition.x = x;
+    this.tilePosition.y = y;
 
     if (cleanPosition) {
       this.setPositionPixel(tileToPixel(x), tileToPixel(y));
@@ -217,8 +223,8 @@ export default class Character {
       y = this.path[0][1];
       // No path available, start from the character position
     } else {
-      x = this.position.x;
-      y = this.position.y;
+      x = this.tilePosition.x;
+      y = this.tilePosition.y;
     }
 
     const path = Game.finder.findPath(
@@ -241,63 +247,6 @@ export default class Character {
       this.isWalking = true;
       if (this.path) this.path = this.path.concat(path);
       if (this.msLeft === 0) this.msLeft = this.msToReachTile;
-    }
-  }
-
-  //=========================================================================
-  // Character Grid
-  //=========================================================================
-  _setCharacterOnGrid() {
-    // The character hasn't moved, quit
-    if (_.isEqual(this.positionBuffer, [this.position.x, this.position.y])) {
-      return;
-    }
-
-    // Remove the buffer if it exists
-    if (this.positionBuffer.length > 0) {
-      this._removeFromCharacterGridCell(
-        this.positionBuffer[0],
-        this.positionBuffer[1]
-      );
-    }
-
-    this._addFromCharacterGridCell(this.position.x, this.position.y);
-
-    // Keep the last standing position
-    this.positionBuffer = [this.position.x, this.position.y];
-  }
-
-  _createCharacterGridCell(x, y) {
-    if (!charactersGrid[x]) charactersGrid[x] = [];
-    if (!charactersGrid[x][y]) charactersGrid[x][y] = [];
-  }
-
-  _countCharactersOnTile() {
-    const x = this.position.x;
-    const y = this.position.y;
-
-    this._createCharacterGridCell(x, y);
-
-    return charactersGrid[x][y].length;
-  }
-
-  _addFromCharacterGridCell(x, y) {
-    this._createCharacterGridCell(x, y);
-
-    if (!charactersGrid[x][y].includes(this.uuid)) {
-      charactersGrid[x][y].push(this.uuid);
-    }
-  }
-
-  _removeFromCharacterGridCell(x, y) {
-    this._createCharacterGridCell(x, y);
-
-    if (charactersGrid[x][y].includes(this.uuid)) {
-      const userIds = charactersGrid[x][y];
-
-      charactersGrid[x][y] = userIds.filter(userId => {
-        return userId !== this.uuid;
-      });
     }
   }
 }

@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Game } from "./Game";
 import { pixelToTile, tileToPixel } from "./utils";
-import { isObstacle } from "./levels";
+import { isObstacle } from "./maps";
 
 //=============================================================================
 // Handle the cursors and their behavior

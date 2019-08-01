@@ -103,7 +103,7 @@ const moving = character => {
   const $sprite = character.container;
 
   // Where to head.
-  const direction = character.whichDirection();
+  const direction = character.nextDirection();
 
   // No movement left, exit function and all ms values.
   if (!direction) {

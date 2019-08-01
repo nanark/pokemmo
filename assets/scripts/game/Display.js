@@ -4,7 +4,7 @@ import { Game } from "./Game";
 import Player from "./actors/Player";
 import { map } from "@/static/sources/map.js";
 import { cursor } from "./cursors";
-import { load as loadLevel, defaultSpawningTile } from "./levels";
+import { load as loadMap, defaultSpawningTile } from "./maps";
 import { gameloop } from "./loop";
 import { viewportDimensions } from "./utils";
 
@@ -127,7 +127,7 @@ export default class Display extends PIXI.Application {
   // * Place the camera
   _setup() {
     // Load the map // Todo: make it dynamic
-    loadLevel(map);
+    loadMap(map);
 
     // Create the player and place it
     const player = new Player(this.me);

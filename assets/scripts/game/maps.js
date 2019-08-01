@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import * as PIXI from "pixi.js";
 import PF from "pathfinding";
 import { Game } from "./Game";
@@ -14,6 +15,7 @@ import { getTexture } from "./textures";
 const _grid = []; // Local grid used to build pathfinderGrid
 
 export let pathfinderGrid; // Grid built by Pathfinder.js
+export let matrix;
 export const gatesGrid = []; // Gates available on the grid
 export const charactersGrid = []; // Characters available on the grid
 export const defaultSpawningTile = { x: 23, y: 19 }; // Temp
@@ -21,11 +23,12 @@ export const defaultSpawningTile = { x: 23, y: 19 }; // Temp
 export const load = items => {
   const $viewport = Game.display.viewport;
 
+  matrix = _buildMatrix(items);
+
   for (const item of items) {
     _loadTiles(item, true);
     _loadTiles(item, false);
     _loadObstacle(item);
-    _loadGate(item);
   }
 
   // Build the grid for pathfinder.js
@@ -36,6 +39,31 @@ export const load = items => {
   const worldHeight = pathfinderGrid.height;
   $viewport.worldWidth = tileToPixel(worldWidth);
   $viewport.worldHeight = tileToPixel(worldHeight);
+};
+
+const _buildMatrix = items => {
+  const { x: cols, y: rows } = _.last(items);
+
+  // Preparing the matrix
+  const matrix = [...Array(rows)].map(() => {
+    return [...Array(cols)].map(() => {
+      return {
+        population: [],
+        gate: null
+      };
+    });
+  });
+
+  // Creating gates
+  for (const item of items) {
+    const { x, y, properties } = item;
+    if (properties) {
+      const goto = properties.goto;
+      if (goto) matrix[y][x].gate = goto;
+    }
+  }
+
+  return matrix;
 };
 
 // Detect from the pathfinderGrid if the tile is an obstacle.
@@ -53,23 +81,6 @@ export const isObstacle = (x, y) => {
   const isWalkable = nodes[y][x].walkable;
 
   return !isWalkable;
-};
-
-const _loadGate = item => {
-  let gate = null;
-
-  const properties = item.properties;
-  if (properties) gate = properties.goto || null;
-
-  // Initialize row
-  if (!gatesGrid[item.y]) gatesGrid[item.y] = [];
-
-  // Build the grid to init the gate manager
-  if (gate) {
-    gatesGrid[item.y].push(gate);
-  } else {
-    gatesGrid[item.y].push(null);
-  }
 };
 
 const _loadObstacle = item => {
@@ -122,4 +133,40 @@ const _loadTiles = (item, overlay) => {
       Game.display.mapContainer.addChildAt(tileObject);
     }
   }
+};
+
+//=========================================================================
+// Population
+//=========================================================================
+export const addToPopulation = character => {
+  const $uuid = character.uuid;
+  const $position = character.tilePosition;
+  const { x, y } = $position;
+  let $positionBuffer = character.tilePositionBuffer;
+  const $population = matrix[y][x].population;
+
+  // The character hasn't moved, quit
+  if (!_.isEqual($positionBuffer, $position)) {
+    // Remove the buffer if it exists
+    if (!_.isEmpty($positionBuffer)) _removeFromPopulation($positionBuffer);
+
+    if (!$population.includes($uuid)) $population.push($uuid);
+
+    // Keep the last standing position
+    $positionBuffer = _.cloneDeep($position);
+  }
+};
+
+export const countPopulation = position => {
+  const { x, y } = position;
+
+  return matrix[y][x].population.length;
+};
+
+const _removeFromPopulation = character => {
+  const $uuid = character.uuid;
+  const $position = character.position;
+  const { x, y } = $position;
+
+  matrix[y][x].population.filter(uuid => uuid !== $uuid);
 };

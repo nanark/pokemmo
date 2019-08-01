@@ -1,21 +1,21 @@
 import Character from "./Character";
 import { Game } from "../Game";
-import { gatesGrid } from "../levels";
+import { matrix } from "../maps";
 import { sendPositionBeacon } from "../db";
 
 export default class Player extends Character {
   constructor(user) {
     super("character", "face-down", user);
 
-    const _display = Game.display;
-    const _viewport = Game.display.viewport;
+    const $display = Game.display;
+    const $viewport = Game.display.viewport;
 
     // Add the player to the stage
-    _display.unitsContainer.addChild(this.container);
+    $display.unitsContainer.addChild(this.container);
 
     // Prepare the follow plugin for the viewport.
     // Pause it to enable it only when the character is moving.
-    _viewport.follow(this.container, { speed: 40 });
+    $viewport.follow(this.container, { speed: 40 });
   }
 
   setPositionTile(x, y, cleanPosition = false) {
@@ -26,21 +26,21 @@ export default class Player extends Character {
     sendPositionBeacon(payload);
 
     // Is on a gate
-    if (gatesGrid[y][x]) {
-      // Fetch data for teleport
-      let [, gotoX, gotoY, moveX, moveY] = gatesGrid[y][x]
-        .split(",")
-        .map((item, i) => {
-          return i > 0 ? parseInt(item) : item;
-        });
+    if (!matrix[y][x].gate) return;
 
-      this.setPositionTile(gotoX, gotoY, true);
-      // Teleport
+    // Fetch data for teleport
+    let [, gotoX, gotoY, moveX, moveY] = matrix[y][x].gate
+      .split(",")
+      .map((item, i) => {
+        return i > 0 ? parseInt(item) : item;
+      });
+
+    this.setPositionTile(gotoX, gotoY, true);
+    // Teleport
+    setTimeout(() => {
       setTimeout(() => {
-        setTimeout(() => {
-          this.relativeMove(moveX, moveY);
-        }, 300);
-      }, 100);
-    }
+        this.relativeMove(moveX, moveY);
+      }, 300);
+    }, 100);
   }
 }
