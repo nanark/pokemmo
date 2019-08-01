@@ -25,6 +25,7 @@ export default class Character {
 
     // Movement variables
     this.isWalking = false;
+    this.hasToStop = false;
     this.path = [];
     this.msToReachTile = 200;
     this.distanceEachMs = Game.tileDistance / this.msToReachTile;

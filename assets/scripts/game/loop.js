@@ -25,16 +25,7 @@ const _playerMovement = msElapsed => {
   if (isControlKeyPressed()) walkWithKeyboard();
 
   // Move the player if isWalking is true
-  if ($player.isWalking) {
-    _moveloop($player, msElapsed);
-  }
-
-  // If path is over and no msLeft, the player has stopped:
-  // * Set isWalking to false
-  // * Pause the follow mode for the viewport
-  if ($player.path.length === 0 && $player.msLeft === 0) {
-    $player.isWalking = false;
-  }
+  _moveloop($player, msElapsed);
 
   // Stop the animation
   if (!$player.isWalking && !isControlKeyPressed()) $player.stand();
@@ -47,21 +38,22 @@ const _populationMovement = msElapsed => {
   if ($population.size > 0) {
     for (let npc of $population.values()) {
       // Move the player if isWalking is true
-      if (npc.isWalking) _moveloop(npc, msElapsed);
-
-      // If path is over and no msLeft, the player has stopped:
-      // * Set isWalking to false
-      // * Pause the follow mode for the viewport
-      if (npc.path.length === 0 && npc.msLeft === 0) {
-        npc.isWalking = false;
-      }
+      _moveloop(npc, msElapsed);
     }
+  }
+};
+
+const _checkMovement = character => {
+  if (character.path.length === 0 && character.msLeft === 0) {
+    character.isWalking = false;
   }
 };
 
 // Moving loop for the character.
 // Based on time elapsed routine.
 const _moveloop = (character, msElapsed) => {
+  if (!character.isWalking) return;
+
   const $display = Game.display;
 
   // Set the buffer for that frame.
@@ -70,7 +62,7 @@ const _moveloop = (character, msElapsed) => {
 
   while (character.msLeftForFrame > 0) {
     // Move the character until msLeftForFrame or msLeft is empty.
-    moving(character);
+    _moveCharacter(character);
 
     // The current step is done, set the position based on tile
     // to avoid position with decimals.
@@ -96,10 +88,15 @@ const _moveloop = (character, msElapsed) => {
       }
     }
   }
+
+  // If path is over and no msLeft, the player has stopped:
+  // * Set isWalking to false
+  // * Pause the follow mode for the viewport
+  _checkMovement(character);
 };
 
 // Moving the player.
-const moving = character => {
+const _moveCharacter = character => {
   const $sprite = character.container;
 
   // Where to head.
