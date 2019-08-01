@@ -1,9 +1,13 @@
-import * as _ from "lodash";
 import * as PIXI from "pixi.js";
 import { Game } from "../Game";
 import { tileToPixel, random } from "../utils";
 import { sendPosition } from "../connection";
-import { pathGrid, charactersGrid, detectObstacle } from "../levels";
+import {
+  pathfinderMatrix,
+  isObstacle,
+  addToPopulation,
+  countPopulation
+} from "../maps";
 
 export default class Character {
   constructor(type, animation, user) {
@@ -12,50 +16,54 @@ export default class Character {
     this.username = user.username;
     this.animation = animation;
     this.direction = "down";
-    this.position = {};
-    this.position.x = user.position.x;
-    this.position.y = user.position.y;
-    this.positionBuffer = {};
-    this.layers = {};
+    this.tilePosition = {
+      x: user.position.x,
+      y: user.position.y
+    };
+    this.tilePositionBuffer = {};
     this.sortableChildren = true;
 
     // Movement variables
     this.isWalking = false;
+    this.hasToStop = false;
     this.path = [];
     this.msToReachTile = 200;
     this.distanceEachMs = Game.tileDistance / this.msToReachTile;
 
     // Movement Buffers
-    this.msElapsedBuffer = 0;
-    this.msLeft = 0;
+    this.msLeftForFrame = 0; // Remaining ms to move during the frame
+    this.msLeft = 0; // Remaining ms to end the movement (ie: reaching a tile)
 
     // Building the animations
-    const sheet = this.buildTextures(this.animation);
+    const sheet = this._buildTextures(this.animation);
     this.container = new PIXI.Container();
 
     // Sprite
-    this.layers.sprite = new PIXI.AnimatedSprite(sheet);
-    this.layers.sprite.animationSpeed = 0.14;
-    this.layers.sprite.play();
+    this.sprite = new PIXI.AnimatedSprite(sheet);
+    this.sprite.animationSpeed = 0.14;
+    this.sprite.play();
 
     // Label
-    const label = this.label(this.username);
+    const label = this._label(this.username);
 
-    this.container.addChild(this.layers.sprite);
+    this.container.addChild(this.sprite);
     this.container.addChild(label);
-    this.container.zIndex = this.position.y;
+    this.container.zIndex = this.tilePosition.y;
 
     // Scale
-    this.layers.sprite.width = this.layers.sprite.width * Game.tileScale + 14;
-    this.layers.sprite.height = this.layers.sprite.height * Game.tileScale + 14;
-    this.layers.sprite.anchor.set(0.5, 0.77); // Center
-    this.layers.sprite.zIndex = 1;
+    this.sprite.width = this.sprite.width * Game.tileScale + 14;
+    this.sprite.height = this.sprite.height * Game.tileScale + 14;
+    this.sprite.anchor.set(0.5, 0.77); // Center
+    this.sprite.zIndex = 1;
 
     // Place it at the spawning position
     this.setPositionTile(user.position.x, user.position.y);
   }
 
-  buildTextures(animation) {
+  //===========================================================================
+  // Visuals
+  //===========================================================================
+  _buildTextures(animation) {
     const spritesheet = PIXI.Loader.shared.resources[this.type].spritesheet;
     let sheet;
 
@@ -69,7 +77,7 @@ export default class Character {
     return sheet;
   }
 
-  label(name) {
+  _label(name) {
     // Create the content
     const text = new PIXI.Text(name.trim(), {
       fontFamily: "Arial",
@@ -100,24 +108,55 @@ export default class Character {
     return label;
   }
 
-  setAnimation(animation, anchorX = 0.5, anchorY = 0.77) {
+  _setAnimation(animation, anchorX = 0.5, anchorY = 0.77) {
     if (animation === this.animation) {
       return false;
     }
 
     this.animation = animation;
-    this.layers.sprite.anchor.set(anchorX, anchorY);
-    this.layers.sprite.textures = this.buildTextures(animation);
-    this.layers.sprite.gotoAndPlay(1);
+    this.sprite.anchor.set(anchorX, anchorY);
+    this.sprite.textures = this._buildTextures(animation);
+    this.sprite.gotoAndPlay(1);
   }
 
+  //===========================================================================
+  // Movements
+  //===========================================================================
+  nextDirection = () => {
+    const $path = this.path;
+    const $position = this.tilePosition;
+
+    // If path is empty, exit
+    if ($path.length === 0) return false;
+
+    // Fetch the first step in the path
+    const gotoPosition = $path[0];
+
+    // Tiles to go to
+    const gotoX = gotoPosition[0];
+    const gotoY = gotoPosition[1];
+
+    // Set direction
+    let direction;
+    if (gotoY > $position.y) direction = "down";
+    if (gotoY < $position.y) direction = "up";
+    if (gotoX > $position.x) direction = "right";
+    if (gotoX < $position.x) direction = "left";
+
+    // No direction defined, exit
+    if (!direction) return false;
+
+    // This is a new move, set an initial msLeft
+    if (this.msLeft === 0) this.msLeft = this.msToReachTile;
+
+    return direction;
+  };
+
   relativeMove(x, y) {
-    const tileX = this.position.x + x;
-    const tileY = this.position.y + y;
+    const tileX = this.tilePosition.x + x;
+    const tileY = this.tilePosition.y + y;
 
-    const isObstacle = detectObstacle(tileX, tileY);
-
-    if (!isObstacle) {
+    if (!isObstacle(tileX, tileY)) {
       this.setPathTo(tileX, tileY);
       sendPosition(tileX, tileY);
     }
@@ -130,28 +169,29 @@ export default class Character {
 
   go(direction) {
     const animation = `walk-${direction}`;
-    this.setAnimation(animation);
+    this._setAnimation(animation);
     this.direction = direction;
   }
 
   stand() {
     const animation = `face-${this.direction}`;
-    this._setCharacterOnGrid();
 
-    const charactersCountOnTile = this._countCharactersOnTile();
+    addToPopulation(this);
+
+    const charactersCountOnTile = countPopulation(this.tilePosition);
 
     // Shift the characters a bit if they share the same tile
     if (charactersCountOnTile > 1) {
-      this.setAnimation(animation, random(0.3, 0.7), 0.5);
+      this._setAnimation(animation, random(0.3, 0.7), 0.5);
     } else {
-      this.setAnimation(animation);
+      this._setAnimation(animation);
     }
   }
 
   // Place the character on this tile and set position in pixel
   setPositionTile(x, y, cleanPosition = false) {
-    this.position.x = x;
-    this.position.y = y;
+    this.tilePosition.x = x;
+    this.tilePosition.y = y;
 
     if (cleanPosition) {
       this.setPositionPixel(tileToPixel(x), tileToPixel(y));
@@ -166,12 +206,12 @@ export default class Character {
   }
 
   //=========================================================================
-  // Moving the player, Pathfinding:
+  // Pathfinding
   //=========================================================================
   setPathTo(destinationX, destinationY) {
     // Clone the grid so you can use it later
     // Pathfinding destroys it afer use
-    const gridClone = pathGrid.clone();
+    const gridClone = pathfinderMatrix.clone();
 
     // Fetch the next tile if available
     this.path = this.path.slice(0, 1);
@@ -184,8 +224,8 @@ export default class Character {
       y = this.path[0][1];
       // No path available, start from the character position
     } else {
-      x = this.position.x;
-      y = this.position.y;
+      x = this.tilePosition.x;
+      y = this.tilePosition.y;
     }
 
     const path = Game.finder.findPath(
@@ -208,63 +248,6 @@ export default class Character {
       this.isWalking = true;
       if (this.path) this.path = this.path.concat(path);
       if (this.msLeft === 0) this.msLeft = this.msToReachTile;
-    }
-  }
-
-  //=========================================================================
-  // Character Grid:
-  //=========================================================================
-  _setCharacterOnGrid() {
-    // The character hasn't moved, quit
-    if (_.isEqual(this.positionBuffer, [this.position.x, this.position.y])) {
-      return;
-    }
-
-    // Remove the buffer if it exists
-    if (this.positionBuffer.length > 0) {
-      this._removeFromCharacterGridCell(
-        this.positionBuffer[0],
-        this.positionBuffer[1]
-      );
-    }
-
-    this._addFromCharacterGridCell(this.position.x, this.position.y);
-
-    // Keep the last standing position
-    this.positionBuffer = [this.position.x, this.position.y];
-  }
-
-  _createCharacterGridCell(x, y) {
-    if (!charactersGrid[x]) charactersGrid[x] = [];
-    if (!charactersGrid[x][y]) charactersGrid[x][y] = [];
-  }
-
-  _countCharactersOnTile() {
-    const x = this.position.x;
-    const y = this.position.y;
-
-    this._createCharacterGridCell(x, y);
-
-    return charactersGrid[x][y].length;
-  }
-
-  _addFromCharacterGridCell(x, y) {
-    this._createCharacterGridCell(x, y);
-
-    if (!charactersGrid[x][y].includes(this.uuid)) {
-      charactersGrid[x][y].push(this.uuid);
-    }
-  }
-
-  _removeFromCharacterGridCell(x, y) {
-    this._createCharacterGridCell(x, y);
-
-    if (charactersGrid[x][y].includes(this.uuid)) {
-      const userIds = charactersGrid[x][y];
-
-      charactersGrid[x][y] = userIds.filter(userId => {
-        return userId !== this.uuid;
-      });
     }
   }
 }

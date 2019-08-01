@@ -3,22 +3,23 @@ import { Game } from "./Game";
 import { getUser } from "./db";
 
 export const moveCharacters = async data => {
+  const $population = Game.population;
+  const $me = Game.display.me;
+
   const goto = data;
   const x = goto.x;
   const y = goto.y;
 
-  const response = await getUser(data.uuid);
+  // If the user is me, break
+  if ($me.uuid == data.uuid) return;
 
-  const user = response.data;
-
-  if (Game.me.uuid == user.uuid) {
-    return false;
-  }
-
-  if (!Game.population.has(user.uuid)) {
-    Game.population.set(user.uuid, new NPC(user));
+  // Fetch data only once
+  let user = $population.get(data.uuid);
+  if (!user) {
+    const response = await getUser(data.uuid);
+    $population.set(data.uuid, new NPC(response.data));
   }
 
   // Set the new destination
-  Game.population.get(user.uuid).setPathTo(x, y);
+  $population.get(data.uuid).setPathTo(x, y);
 };

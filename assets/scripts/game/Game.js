@@ -1,14 +1,10 @@
 import PF from "pathfinding";
-import GameDisplay from "./GameDisplay";
-import Player from "./actors/Player";
+import Display from "./Display";
 import Stats from "stats.js";
-import { map } from "@/static/sources/map.js";
 import { moveCharacters } from "./positions";
-import { load as loadLevel } from "./levels";
-import { handlePlayerEvents } from "./events";
-import { cursor } from "./cursor";
+import { handleCursorEvents } from "./cursors";
 import { handleControlEvents } from "./controls";
-import { displayMode } from "./utils";
+import { displayMode, viewportDimensions } from "./utils";
 
 export const Game = {
   loaded: false,
@@ -16,32 +12,17 @@ export const Game = {
   init(me) {
     // Tools
     this.displayStats();
-    this.logs = [];
     this.FPS = 60;
     this.resourcesLoaded = false;
 
     // Connection
     this.ws = null;
 
-    // Player
-    this.me = me;
-    const defaultSpawningTile = { x: 23, y: 19 };
-    if (!this.me.position || !this.me.position.x || !this.me.position.y) {
-      this.me.position = {
-        x: defaultSpawningTile.x,
-        y: defaultSpawningTile.y
-      };
-    }
-
-    // World
+    // Define World
     this.tileSize = 16;
     this.tileScale = displayMode().isMobile ? 1.6 : 2.6;
     this.tileDistance = this.tileSize * this.tileScale;
-    this.population = new Map();
-
-    // Cursor
-    this.cursor = cursor("hover");
-    this.cursorClick = cursor("click");
+    this.population = new Map(); // Store the population active on the map
 
     // Pathfinder
     this.finder = new PF.AStarFinder({
@@ -49,11 +30,19 @@ export const Game = {
     });
 
     // Display
-    this.display = new GameDisplay();
+    const options = {
+      resolution: window.devicePixelRatio,
+      transparent: false,
+      antialias: false,
+      autoDensity: true,
+      autoResize: true,
+      ...viewportDimensions()
+    };
+    this.display = new Display(options, me);
 
     // Event handlers
     handleControlEvents();
-    handlePlayerEvents();
+    handleCursorEvents();
   },
 
   setWebsocket(ws) {
@@ -69,36 +58,23 @@ export const Game = {
     });
   },
 
-  setup() {
-    // axios.get(this.mapUrl).then(response => {
-    loadLevel(map);
-    // });
-
-    const player = new Player(this.me);
-
-    // Temp: Set the player in the map
-    player.setPositionTile(this.me.position.x, this.me.position.y, true);
-    Game.display.viewport.moveCenter(
-      player.container.position.x,
-      player.container.position.y
-    );
-    Game.display.player = player;
-  },
-
   disconnect() {
-    if (this.display && this.display.app.stage) {
-      this.display.app.destroy();
+    if (this.display && this.display.stage) {
+      this.display.destroy();
     }
   },
 
   // Display stats panel in the corner
   displayStats() {
-    this.stats = new Stats();
-    this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    this.stats.dom.style.position = "absolute";
-    this.stats.dom.style.top = "60px";
-    this.stats.dom.style.left = "auto";
-    this.stats.dom.style.right = "10px";
+    const stats = new Stats();
+
+    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    stats.dom.style.position = "absolute";
+    stats.dom.style.top = "60px";
+    stats.dom.style.left = "auto";
+    stats.dom.style.right = "10px";
+
+    this.stats = stats;
     document.body.appendChild(this.stats.dom);
   }
 };

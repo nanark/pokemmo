@@ -22,7 +22,7 @@ export default {
     Game.setWebsocket(this.$socket);
 
     // Bind it to the DOM
-    document.querySelector(".viewport").appendChild(Game.display.app.view);
+    document.querySelector(".viewport").appendChild(Game.display.view);
   },
   methods: {}
 };
