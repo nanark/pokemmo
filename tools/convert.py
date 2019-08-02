@@ -118,7 +118,7 @@ for tileNumber in range(width * height):
                     position = tileIdCurrent + 1
 
                     # Set Row and Column where to crop the tileset
-                    row = math.ceil(position / tileset['columns'])
+                    row = math.floor(position / tileset['columns'])
 
                     column = position - (
                         math.floor(
