@@ -22,7 +22,9 @@ const _playerMovement = msElapsed => {
   const $player = Game.display.player;
 
   // Detect direction key pressure
-  if (isControlKeyPressed()) walkWithKeyboard();
+  if ($player.controllable) {
+    if (isControlKeyPressed()) walkWithKeyboard();
+  }
 
   // Move the player if isWalking is true
   _moveloop($player, msElapsed);
@@ -158,6 +160,8 @@ const walkWithKeyboard = () => {
   const $player = Game.display.player;
 
   const { x, y, direction } = pressedControlDirections();
+
+  if ($player.isWalking) return;
 
   $player.go(direction);
   $player.relativeMove(x, y);

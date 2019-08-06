@@ -5,6 +5,8 @@ import { sendPositionBeacon } from "../db";
 import { sendPosition } from "../connection";
 
 export default class Player extends Character {
+  controllable = true;
+
   constructor(user) {
     super("character", "face-down", user);
 
@@ -32,6 +34,10 @@ export default class Player extends Character {
     // Is on a gate
     if (!matrix[y][x].gate) return;
 
+    // Try to just stop the character
+    this.isWalking = false;
+    this.controllable = false;
+
     // Fetch data for teleport
     let [, gotoX, gotoY, moveX, moveY] = matrix[y][x].gate
       .split(",")
@@ -39,13 +45,16 @@ export default class Player extends Character {
         return i > 0 ? parseInt(item) : item;
       });
 
-    this.setPositionTile(gotoX, gotoY, true);
-
     // Teleport
     setTimeout(() => {
+      this.setPositionTile(gotoX, gotoY, true);
+      // Teleport
       setTimeout(() => {
         this.relativeMove(moveX, moveY);
-      }, 300);
+        setTimeout(() => {
+          this.controllable = true;
+        }, 50);
+      }, 500);
     }, 100);
   }
 }

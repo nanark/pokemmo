@@ -209,10 +209,6 @@ export default class Character {
   // Pathfinding
   //=========================================================================
   setPathTo(destinationX, destinationY) {
-    // Clone the grid so you can use it later
-    // Pathfinding destroys it afer use
-    const gridClone = pathfinderMatrix.clone();
-
     // Fetch the next tile if available
     this.path = this.path.slice(0, 1);
 
@@ -228,6 +224,9 @@ export default class Character {
       y = this.tilePosition.y;
     }
 
+    // Clone the grid so you can use it later
+    // Pathfinding destroys it afer use
+    const gridClone = pathfinderMatrix.clone();
     const path = Game.finder.findPath(
       x,
       y,

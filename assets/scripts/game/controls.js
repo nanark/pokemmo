@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import nipplejs from "nipplejs";
 import Keyboard from "pixi.js-keyboard";
 import { displayMode } from "./utils";
@@ -55,8 +56,7 @@ export const pressedControlDirections = () => {
   let y = 0;
   let direction = "";
 
-  const lastPressed =
-    _pressedControlKeysBuffer[_pressedControlKeysBuffer.length - 1];
+  const lastPressed = _.last(_pressedControlKeysBuffer);
   const control = _keyboardControls[lastPressed];
 
   x += control.x;
