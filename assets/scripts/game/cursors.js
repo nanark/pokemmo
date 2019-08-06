@@ -48,6 +48,9 @@ export const handleCursorEvents = () => {
     const $cursorGo = Game.display.cursorGo;
     const $player = Game.display.player;
 
+    // Set the pathfinded flag to the player
+    $player.pathfinded = true;
+
     const { tileX, tileY, isWalkable } = _targetTile(event);
 
     if (!isWalkable) return;

@@ -161,7 +161,9 @@ const walkWithKeyboard = () => {
 
   const { x, y, direction } = pressedControlDirections();
 
-  if ($player.isWalking) return;
+  if ($player.isWalking && !$player.pathfinded) return;
+
+  $player.pathfinded = false;
 
   $player.go(direction);
   $player.relativeMove(x, y);

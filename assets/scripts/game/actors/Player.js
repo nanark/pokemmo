@@ -6,6 +6,7 @@ import { sendPosition } from "../connection";
 
 export default class Player extends Character {
   controllable = true;
+  pathfinded = false;
 
   constructor(user) {
     super("character", "face-down", user);
