@@ -4,6 +4,7 @@
       <UserAvatar :user="me" size="40px" />
     </div>
     <div class="right">
+      <button @click="reset">{{ $t("global.reset") }}</button>
       <button @click="disconnect">{{ $t("global.disconnect") }}</button>
     </div>
   </section>
@@ -11,6 +12,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { Game } from "@/assets/scripts/game/Game";
 import UserAvatar from "@/components/users/UserAvatar";
 
 export default {
@@ -24,6 +26,9 @@ export default {
     })
   },
   methods: {
+    reset() {
+      Game.resetPlayerPosition();
+    },
     disconnect() {
       this.$emit("disconnect", true);
     }

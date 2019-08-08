@@ -1,5 +1,6 @@
 {
   "global": {
+    "reset": "Reset",
     "disconnect": "Disconnect"
   },
   "auth": {

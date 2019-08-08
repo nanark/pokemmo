@@ -151,7 +151,10 @@ export const addToPopulation = character => {
   if (_.isEqual($positionBuffer, $position)) return;
 
   // Remove the buffer if it exists
-  if (!_.isEmpty($positionBuffer)) _removeFromPopulation($positionBuffer);
+  if (!_.isEmpty($positionBuffer)) {
+    alert("What?"); // To debug
+    removeFromPopulation(character);
+  }
 
   // Add to the population
   if (!$population.includes($uuid)) $population.push($uuid);
@@ -166,9 +169,9 @@ export const countPopulation = position => {
   return matrix[y][x].population.length;
 };
 
-const _removeFromPopulation = character => {
+export const removeFromPopulation = character => {
   const $uuid = character.uuid;
-  const $position = character.position;
+  const $position = character.tilePosition;
   const { x, y } = $position;
 
   matrix[y][x].population.filter(uuid => uuid !== $uuid);

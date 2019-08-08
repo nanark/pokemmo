@@ -5,6 +5,7 @@ import { moveCharacters } from "./positions";
 import { handleCursorEvents } from "./cursors";
 import { handleControlEvents } from "./controls";
 import { displayMode, viewportDimensions } from "./utils";
+import { defaultSpawningTile, removeFromPopulation } from "./maps";
 
 export const Game = {
   loaded: false,
@@ -43,6 +44,18 @@ export const Game = {
     // Event handlers
     handleControlEvents();
     handleCursorEvents();
+  },
+
+  resetPlayerPosition() {
+    this.display.player.path = [];
+    this.display.player.isWalking = false;
+    console.log(this.display.player);
+    removeFromPopulation(this.display.player);
+    this.display.player.setPositionTile(
+      defaultSpawningTile.x,
+      defaultSpawningTile.y,
+      true
+    );
   },
 
   setWebsocket(ws) {
