@@ -182,7 +182,7 @@ export default class Character {
 
     // Shift the characters a bit if they share the same tile
     if (charactersCountOnTile > 1) {
-      this._setAnimation(animation, random(0.3, 0.7), 0.5);
+      this._setAnimation(animation, random(0.3, 0.7), 0.77);
     } else {
       this._setAnimation(animation);
     }

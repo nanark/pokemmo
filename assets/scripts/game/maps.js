@@ -148,16 +148,13 @@ export const addToPopulation = character => {
   if (_.isEqual($positionBuffer, $position)) return;
 
   // Remove the buffer if it exists
-  if (!_.isEmpty($positionBuffer)) {
-    alert("What?"); // To debug
-    removeFromPopulation(character);
-  }
+  if (!_.isEmpty($positionBuffer)) removeFromPopulation(character);
 
   // Add to the population
   if (!$population.includes($uuid)) $population.push($uuid);
 
   // Keep the last standing position
-  $positionBuffer = _.cloneDeep($position);
+  character.tilePositionBuffer = _.cloneDeep($position);
 };
 
 export const countPopulation = position => {
