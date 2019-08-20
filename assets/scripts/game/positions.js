@@ -21,5 +21,10 @@ export const moveCharacters = async data => {
   }
 
   // Set the new destination
-  $population.get(data.uuid).setPathTo(x, y);
+  const isPathAvailable = user.setPathTo(x, y);
+
+  // If pathfinding returns false, set tile with absolute values
+  if (!isPathAvailable) {
+    user.setPositionTile(x, y, true);
+  }
 };

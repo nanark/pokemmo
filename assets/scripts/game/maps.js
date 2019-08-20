@@ -15,7 +15,7 @@ import { getTexture } from "./textures";
 //=============================================================================
 
 export let pathfinderMatrix; // Grid built by Pathfinder.js
-export let matrix;
+export let matrix; // Matrix that stores information such as gate positions
 export const gatesGrid = []; // Gates available on the grid
 export const charactersGrid = []; // Characters available on the grid
 export const defaultSpawningTile = { x: 23, y: 19 }; // Temp
@@ -137,9 +137,6 @@ const _buildMatrix = items => {
   return matrix;
 };
 
-//=========================================================================
-// Population
-//=========================================================================
 export const addToPopulation = character => {
   const $uuid = character.uuid;
   const $position = character.tilePosition;

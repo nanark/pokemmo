@@ -35,7 +35,7 @@ export const actions = {
   },
   deleteMe: context => {
     context.commit("DELETE_ME");
-    context.dispatch("setTokens", "");
+    context.commit("SET_TOKENS", "");
   },
   async signIn(context, credentials) {
     const payload = {
@@ -67,7 +67,7 @@ export const actions = {
       jwt: access_token,
       refreshToken: refresh_token
     };
-    context.dispatch("setTokens", payload);
+    context.commit("SET_TOKENS", payload);
     context.commit("SET_JWT", access_token);
 
     const me = await this.$axios.$get("/user/me");

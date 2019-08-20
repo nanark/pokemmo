@@ -247,6 +247,9 @@ export default class Character {
       this.isWalking = true;
       if (this.path) this.path = this.path.concat(path);
       if (this.msLeft === 0) this.msLeft = this.msToReachTile;
+      return true;
     }
+
+    return false;
   }
 }
