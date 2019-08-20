@@ -12,6 +12,15 @@ export const mutations = {
   },
   DELETE_ME(state) {
     state.me = "";
+  },
+  SET_TOKENS(state, data) {
+    if (data) {
+      sessionStorage.setItem("jwt", data.jwt);
+      localStorage.setItem("refreshToken", data.refreshToken);
+    } else {
+      sessionStorage.removeItem("jwt");
+      localStorage.removeItem("refreshToken", data.refreshToken);
+    }
   }
 };
 
@@ -26,7 +35,7 @@ export const actions = {
   },
   deleteMe: context => {
     context.commit("DELETE_ME");
-    context.dispatch("localStorage/setTokens", "", { root: true });
+    context.dispatch("setTokens", "");
   },
   async signIn(context, credentials) {
     const payload = {
@@ -48,9 +57,8 @@ export const actions = {
     context.dispatch("connecting", data);
   },
   async refreshToken(context) {
-    const data = await this.$axios.$get(
-      `/user/refresh/${this.state.localStorage.refreshToken}`
-    );
+    const uri = `/user/refresh/${localStorage.getItem("refreshToken")}`;
+    const data = await this.$axios.$get(uri);
 
     context.dispatch("connecting", data);
   },
@@ -59,9 +67,7 @@ export const actions = {
       jwt: access_token,
       refreshToken: refresh_token
     };
-    context.dispatch("localStorage/setTokens", payload, {
-      root: true
-    });
+    context.dispatch("setTokens", payload);
     context.commit("SET_JWT", access_token);
 
     const me = await this.$axios.$get("/user/me");

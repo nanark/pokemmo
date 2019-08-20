@@ -50,11 +50,7 @@ module.exports = {
     "@/plugins/axios",
     "@/plugins/websocket"
   ],
-  modules: [
-    "@nuxtjs/style-resources",
-    "@nuxtjs/axios",
-    "nuxt-vuex-localstorage"
-  ],
+  modules: ["@nuxtjs/style-resources", "@nuxtjs/axios"],
   styleResources: {
     scss: ["~/assets/styles/partials/_index.scss"]
   },
