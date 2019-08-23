@@ -64,3 +64,31 @@ Each message must declare a namespace attribute and a data object.
 }
 
 ```
+
+### Initialization
+```json
+{
+  "namespace": "position",
+  "event_type": "init",
+  "data": [
+    {
+      "uuid": "xRTEx452h",
+      "x": 13,
+      "y": 1
+    }
+  ]
+}
+
+```
+
+### Disconnect
+```json
+{
+  "namespace": "position",
+  "event_type": "disconnect",
+  "data": {
+    "uuid": "xRTEx452h"
+   }
+}
+
+```
