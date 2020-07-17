@@ -18,7 +18,7 @@
     "core-js": "2.5.7",
     "firebase": "^6.1.1",
     "ismobilejs": "^0.5.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "nipplejs": "^0.8.2",
     "nuxt": "^2.0.0",
     "pathfinding": "^0.4.18",
